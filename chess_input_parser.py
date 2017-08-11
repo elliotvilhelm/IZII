@@ -1,3 +1,5 @@
+import BoardRepresentation as chess
+
 
 def algebraic_notation_input(alg_not):
 	input = []
@@ -48,8 +50,11 @@ def algebraic_notation_input(alg_not):
 		else:
 			# print("else", alg_not[i])
 			i+=1
+	to_indexes.append(to_index)
 	# print(to_indexes)
 	return to_indexes
+
+
 def generate_from_indexes(to_indexes):
 	Chess = chess.Game()
 
@@ -123,10 +128,13 @@ def generate_from_indexes(to_indexes):
 						# print("its in knight: ", piece.get_index(), index_to_chess_notation(piece.get_index()))
 						# print(pairs[i])
 			print("i: ", i, len(pairs)-1)
-			Chess.test_run_chess_notation([pairs[i]]) # should work when its all there
+			temp = len(pairs)-1
+			Chess.test_run_chess_notation([pairs[temp]])  # should work when its all there
+			# Chess.test_run_chess_notation([pairs[i]]) # should work when its all there
 			# else:
 			# 	real_to_index = to_index[1]+to_index[2]
 			# 	# print("real_ to index: ", real_to_index)
+
 		elif to_index[0] in squares:
 			# print("i: ", i, len(pairs)-1)
 			print("pawn", i)
@@ -175,19 +183,13 @@ def generate_from_indexes(to_indexes):
 							if file[from_file] == index[1]:
 								pairs.append([index_to_chess_notation(piece.get_index()), real_to_index])
 			print("i: ", i, len(pairs) - 1)
-						# if from_file != None:
-						# 	index = piece.get_index()
-						# 	if file[from_file] == index[1]:
-						# 		pairs.append([index_to_chess_notation(piece.get_index()), real_to_index])
-						# if from_row != None:
-						# 	index = piece.get_index()
-						# 	if piece.row == index[1]:
-						# 		pairs.append([index_to_chess_notation(piece.get_index()), real_to_index])
-						# else:
-						# 	pairs.append([index_to_chess_notation(piece.get_index()), real_to_index])
 
-			Chess.test_run_chess_notation([pairs[i]])  # should work when its all there
-					# print("possible_moves PAWN = ", moves)
+			temp = len(pairs) - 1
+			Chess.test_run_chess_notation([pairs[temp]])  # should work when its all
+			# Chess.test_run_chess_notation([pairs[i]])  # should work when its all there
+
+
+							# print("possible_moves PAWN = ", moves)
 				# print("pawn up: ", real_to_index)
 				# pawn move up
 			# pairs.append(['', to_index])
@@ -233,3 +235,27 @@ def generate_from_indexes(to_indexes):
 	# print("to index: ", to_indexes_cleaned) #, len(to_indexes), len(to_indexes_cleaned))
 	# print("pairs", pairs)
 	return pairs
+
+
+def index_to_chess_notation(index):
+	letters = "ABCDEFGH"
+	numbers = "87654321"
+	return letters[index[1]]+numbers[index[0]]
+
+
+def chess_notation_to_index(index):
+	letters = "ABCDEFGH"
+	index = index.upper()
+	column_letter = index[0]
+	row_number = index[1]
+	row_index = 8 - int(row_number)
+	column_index = letters.index(column_letter)
+	return (row_index, column_index)
+
+
+def convert(set):
+	to_indexes = algebraic_notation_input(set)
+	# print(to_indexes)
+	move_set = generate_from_indexes(to_indexes)
+	print(move_set)
+	return move_set
