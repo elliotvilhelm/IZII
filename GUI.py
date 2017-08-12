@@ -46,6 +46,7 @@ class Chess_GUI(object):
 		self.move_set = move_set
 		pygame.display.set_caption("Chess")
 		pygame.mouse.set_visible(False)
+
 	def initialize_images(self):
 		self.white_king = pygame.image.load("images/white_king.gif").convert_alpha()
 		self.white_king_rect = self.white_king.get_rect()
@@ -112,8 +113,10 @@ class Chess_GUI(object):
 					self.__init__()
 
 		return False
+
 	def add_move(self, move):
 		pass
+
 	def step(self):
 		if not self.game_over:
 			# i = 0
@@ -133,6 +136,7 @@ class Chess_GUI(object):
 			# 	self.clock.tick(10)
 		if self.done == True:
 			pygame.quit()
+
 	def run_steps(self):
 		i = 0
 		while True:
@@ -140,6 +144,7 @@ class Chess_GUI(object):
 			if i < len(self.move_set):
 				self.chess_game.step(self.move_set[i])
 				i += 1
+
 	def run_random_step(self):
 		if not self.game_over:
 			i = 0
@@ -152,8 +157,31 @@ class Chess_GUI(object):
 				self.clock.tick(1)
 				# self.chess_game.board.evaluate_board()
 				# self.chess_game.test_run_chess_notation([self.move_set[i]])
-				x = input()
+				# x = input()
 				success = self.chess_game.random_step()
+				self.chess_game.board.evaluate_board()
+
+				# print(success)
+				if success == False:
+					time.sleep(100)
+				i += 1
+			if self.done == True:
+				pygame.quit()
+	def run_best_step(self):
+		if not self.game_over:
+			i = 0
+			x = ""
+			while x != "x":
+
+				# print([self.move_set[i]])
+				self.done = self.process_events()
+				self.display_frame(self.screen)
+				self.clock.tick(.5)
+				# self.chess_game.board.evaluate_board()
+				# self.chess_game.test_run_chess_notation([self.move_set[i]])
+				# x = input()
+				success = self.chess_game.best_step()
+				self.chess_game.board.evaluate_board()
 
 				# print(success)
 				if success == False:
@@ -176,6 +204,7 @@ class Chess_GUI(object):
 				i += 1
 			if self.done == True:
 				pygame.quit()
+
 	def display_frame(self, screen):
 		""" Display everything to the screen for the game. """
 		screen.fill([255, 255, 255])

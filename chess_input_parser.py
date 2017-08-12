@@ -70,14 +70,14 @@ def generate_from_indexes(to_indexes):
 	to_indexes_cleaned = []
 
 	for i in range(len(to_indexes)):
-		print("Move: ", i)
+		# print("Move: ", i)
 		to_index = to_indexes[i]
 
 		# print("given to index: ", to_index)
 
 
 		if to_index[0] in pieces: 		# if it is a king queen rook bishop knight move
-			print("not pawn", i)
+			# print("not pawn", i)
 			# print(i, pairs, len(pairs))
 			id = piece_dict[to_index[0]]
 			id = id * turn_mult
@@ -196,7 +196,7 @@ def generate_from_indexes(to_indexes):
 		# else:
 		# 	print("CASTLINGGG", to_index)
 		elif to_index == "O-O":
-			print('king castle')
+			# print('king castle')
 			if turn == 0:
 				from_index = 'e1'
 				to_index = 'g1'
@@ -205,7 +205,7 @@ def generate_from_indexes(to_indexes):
 				to_index = 'g8'
 			pairs.append([from_index, to_index])
 			Chess.test_run_chess_notation([[from_index, to_index]])  # should work when its all there
-			print("kingside Castle: ", from_index, to_index)
+			# print("kingside Castle: ", from_index, to_index)
 
 		elif to_index == "O-O-O":
 			print('kqueencastle')
@@ -257,5 +257,5 @@ def convert(set):
 	to_indexes = algebraic_notation_input(set)
 	# print(to_indexes)
 	move_set = generate_from_indexes(to_indexes)
-	print(move_set)
+	# print(move_set)
 	return move_set

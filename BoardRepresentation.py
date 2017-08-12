@@ -154,7 +154,7 @@ class WhitePawn(Piece):
 	def get_passive_moves(self, board):
 		passive_moves = []
 		row_in_front = self.row - 1
-		if row_in_front > 0:
+		if row_in_front >= 0:
 			tile_in_front = board.tiles[row_in_front, self.column]
 		else:
 			return
@@ -781,7 +781,6 @@ class BlackKing(Piece):
 		upper_left = (self.row+1, self.column+1)
 		lower_left = (self.row-1, self.column+1)
 
-
 		if self.test_square_for_check(board, front) and board.validate_index(front) and board.tiles[front].get_piece_ID() >= 0:
 			possible_moves.append(front)
 		if self.test_square_for_check(board, back) and board.validate_index(back) and board.tiles[back].get_piece_ID() >= 0:
@@ -844,8 +843,9 @@ class BlackKing(Piece):
 			return True
 		for i in range(index[0]-1, -1, -1): # from tile in front of me 'index[0]-1' to the 0 tile
 			# print(i)
+			id = board.tiles[i, index[1]].get_piece_ID()
 			if board.validate_index((i, index[1])): # makes sure the first index isn't off the board
-				if board.tiles[i, index[1]].get_piece_color() == -1:
+				if board.tiles[i, index[1]].get_piece_color() == -1 and id is not -1:
 					return True # true meaning we are clear because we are being blocked by a piece of our own color
 				if board.tiles[i, index[1]].get_piece_ID() >= 4:  # opponent is blocking themselves with horse, bishop, pawn
 					return True
@@ -857,7 +857,8 @@ class BlackKing(Piece):
 		for i in range(index[0]+1, 8):
 			# if board.validate_index((i, index[i])) == False:
 			# 	return False
-			if board.tiles[i, index[1]].get_piece_color() == -1:
+			id = board.tiles[i, index[1]].get_piece_ID()
+			if board.tiles[i, index[1]].get_piece_color() == -1 and id is not -1:
 				return True  # true meaning we are clear because we are being blocked by a piece of our own color
 			if board.tiles[i, index[1]].get_piece_ID() >= 4: # opponent is blocking themselves with horse, bishop, pawn
 				return  True
@@ -872,7 +873,8 @@ class BlackKing(Piece):
 		# 	return False
 		while test_col >= 0:
 			# if board.validate_index()
-			if board.tiles[test_row, test_col].get_piece_color() == -1:
+			id = board.tiles[test_row, test_col].get_piece_ID()
+			if board.tiles[test_row, test_col].get_piece_color() == -1 and id is not -1:
 				return True
 			if board.tiles[test_row, index[1]].get_piece_ID() >= 4: # opponent is blocking themselves with horse, bishop, pawn
 				return  True
@@ -889,10 +891,11 @@ class BlackKing(Piece):
 		# if board.tiles[test_row, test_col].get_piece_ID() == 6:  # OR PAWN!!!
 		# 	return False
 		while test_col <= 7:
-			if board.tiles[test_row, test_col].get_piece_color() == -1:
+			id = board.tiles[test_row, test_col].get_piece_ID()
+			if board.tiles[test_row, test_col].get_piece_color() == -1 and id is not -1:
 				return True
-			if board.tiles[test_row, index[1]].get_piece_ID() >= 4: # opponent is blocking themselves with horse, bishop, pawn
-				return  True
+			if board.tiles[test_row, test_col].get_piece_ID() >= 4: # opponent is blocking themselves with horse, bishop, pawn
+				return True
 			if board.tiles[test_row, test_col].get_piece_ID() == 3 or board.tiles[test_row, test_col].get_piece_ID() == 2:  # rook or queen
 				return False
 			test_col += 1
@@ -905,7 +908,7 @@ class BlackKing(Piece):
 		while test_row >= 0 and test_col <= 7:
 			# if board.validate_index()
 			id = board.tiles[test_row, test_col].get_piece_ID()
-			if board.tiles[test_row, test_col].get_piece_color() == -1:
+			if board.tiles[test_row, test_col].get_piece_color() == -1 and id is not -1:
 				return True
 			if id == 3 or id == 5 or id == 6: # diagnol is blocked
 				return True
@@ -928,7 +931,7 @@ class BlackKing(Piece):
 		while test_row <= 7 and test_col >= 0:
 			# if board.validate_index()
 			id = board.tiles[test_row, test_col].get_piece_ID()
-			if board.tiles[test_row, test_col].get_piece_color() == -1:
+			if board.tiles[test_row, test_col].get_piece_color() == -1 and id is not -1:
 
 				return True
 			if id == 3 or id == 5 or id == 6:  # diagonal is blocked
@@ -949,7 +952,7 @@ class BlackKing(Piece):
 		while test_row <= 7 and test_col <= 7:
 			id = board.tiles[test_row, test_col].get_piece_ID()
 			# if board.validate_index()
-			if board.tiles[test_row, test_col].get_piece_color() == -1: # black : -1
+			if board.tiles[test_row, test_col].get_piece_color() == -1 and id is not -1:  # black : -1
 				return True
 			if id == 3 or id == 5 or id == 6:  # diagonal is blocked, rook, horse pawn
 				# print("white black it with a horse / rook / ..")
@@ -970,7 +973,7 @@ class BlackKing(Piece):
 		test_col = index[1]-1
 		while test_row >= 0 and test_col >= 0:
 			id = board.tiles[test_row, test_col].get_piece_ID()
-			if board.tiles[test_row, test_col].get_piece_color() == -1:
+			if board.tiles[test_row, test_col].get_piece_color() == -1 and id is not -1:
 				return True
 			if id == 3 or id == 5 or id == 6:  # diagonal is blocked
 				return True
@@ -1021,11 +1024,11 @@ class BlackKing(Piece):
 		if self.has_moved == False:
 			if board.tiles[0,7].get_piece_ID() == -3:
 				if board.tiles[0,7].get_piece().has_moved == False:
-					print("rook has not moved")
+					# print("rook has not moved")
 					if board.tiles[0,5].get_piece_ID() == 0 and board.tiles[0,6].get_piece_ID() == 0: # path is clear
-						print("path for castling is clear")
+						# print("path for castling is clear")
 						if self.check_king_side_castle_check_clear(board):
-							print("king is not passing through check and will not be in check")
+							# print("king is not passing through check and will not be in check")
 							return True
 		else:
 			return False
@@ -1050,14 +1053,14 @@ class BlackKing(Piece):
 
 	def queen_side_castle_check(self, board):
 		if self.has_moved == False:
-			print("King has not moved")
+			# print("King has not moved")
 			if board.tiles[0,0].get_piece_ID() == -3:
 				if board.tiles[0,0].get_piece().has_moved == False:
-					print("rook has not moved")
+					# print("rook has not moved")
 					if board.tiles[0,1].get_piece_ID() == 0 and board.tiles[0,2].get_piece_ID() == 0 and board.tiles[0,3].get_piece_ID() == 0:  # path is clear
-						print("path for queen side castling is clear")
+						# print("path for queen side castling is clear")
 						if self.check_queen_side_castle_check_clear(board):
-							print("king is not passing through check and will not be in check")
+							# print("king is not passing through check and will not be in check")
 							return True
 		else:
 			return False
@@ -1168,7 +1171,7 @@ class WhiteKing(Piece):
 
 		# print("testing : ", index, "front:", front_clear, " back:", back_clear, " upper_right:", upper_right, "upper left: ", upper_left,  "lower_right:", lower_right, "lower_left: ", lower_left, "knights: ", knights)
 
-		if front_clear == True and back_clear == True and left_clear == True and right_clear == True and upper_right == True and lower_right == True and upper_left == True and lower_left == True and knights == True: # and board.tiles[index].get_piece_ID() >= 0:
+		if front_clear and back_clear and left_clear and right_clear and upper_right and lower_right == True and upper_left == True and lower_left and knights:  # and board.tiles[index].get_piece_ID() >= 0:
 			return True
 		return False
 
@@ -1177,8 +1180,9 @@ class WhiteKing(Piece):
 		for i in range(index[0]-1, -1, -1): # from tile in front of me 'index[0]-1' to the 0 tile
 			# print("Current test index: ", index)
 			# print("Check Front: ", (i, index[1]))
+			id = board.tiles[i, index[1]].get_piece_ID()
 			if board.validate_index((i, index[1])): # makes sure the first index isn't off the board
-				if board.tiles[i, index[1]].get_piece_color() == 0:
+				if board.tiles[i, index[1]].get_piece_color() == 0 and id is not 1:
 					return True # true meaning we are clear because we are being blocked by a piece of our own color
 				if board.tiles[i, index[1]].get_piece_ID() <= -4:  # opponent is blocking themselves with horse, bishop, pawn
 					return True
@@ -1190,7 +1194,8 @@ class WhiteKing(Piece):
 		for i in range(index[0]+1, 8):
 			# if board.validate_index((i, index[i])) == False:
 			# 	return True
-			if board.tiles[i, index[1]].get_piece_color() == 0:
+			id = board.tiles[i, index[1]].get_piece_ID()
+			if board.tiles[i, index[1]].get_piece_color() == 0 and id is not 1:
 				return True  # true meaning we are clear because we are being blocked by a piece of our own color
 			if board.tiles[i, index[1]].get_piece_ID() <= -4:  # opponent is blocking themselves with horse, bishop, pawn
 				return True
@@ -1208,7 +1213,8 @@ class WhiteKing(Piece):
 		while test_row >= 0 and test_col <= 7:
 			# if board.validate_index()
 			# print("check_upper_right of ", index, " is : ", test_row, test_col)
-			if board.tiles[test_row, test_col].get_piece_color() == 0:
+			id = board.tiles[test_row, test_col].get_piece_ID()
+			if board.tiles[test_row, test_col].get_piece_color() == 0 and id is not 1:
 				return True
 			if board.tiles[test_row, test_col].get_piece_ID() == -4 or board.tiles[test_row, test_col].get_piece_ID() == -2: # white bishop or queen
 				# print("im at: ", self.row, self.column, " i am a : ", self.get_piece_ID(), "sniper location: ", test_row, test_col, "sniper id:  ", board.tiles[test_row, test_col])
@@ -1224,7 +1230,8 @@ class WhiteKing(Piece):
 		while test_col  >= 0:
 			# if board.validate_index()
 			# print("check_upper_right of ", index, " is : ", test_row, test_col)
-			if board.tiles[test_row, test_col].get_piece_color() == 0:
+			id = board.tiles[test_row, test_col].get_piece_ID()
+			if board.tiles[test_row, test_col].get_piece_color() == 0 and id is not 1:
 				return True
 			if board.tiles[test_row, test_col].get_piece_ID() == -4 or board.tiles[test_row, test_col].get_piece_ID() == -2: # white bishop or queen
 				# print("im at: ", self.row, self.column, " i am a : ", self.get_piece_ID(), "sniper location: ", test_row, test_col, "sniper id:  ", board.tiles[test_row, test_col])
@@ -1243,7 +1250,7 @@ class WhiteKing(Piece):
 			# if board.validate_index()
 			# print("check_upper_right of ", index, " is : ", test_row, test_col)
 			id = board.tiles[test_row, test_col].get_piece_ID()
-			if board.tiles[test_row, test_col].get_piece_color() == 0:
+			if board.tiles[test_row, test_col].get_piece_color() == 0 and id is not 1:
 				return True
 			if  id == -3 or id == -5 or id == -6:  # diagonal is blocked
 				return True
@@ -1261,7 +1268,7 @@ class WhiteKing(Piece):
 			id = board.tiles[test_row, test_col].get_piece_ID()
 			print("lower left :", test_row, test_col)
 			# if board.validate_index()
-			if board.tiles[test_row, test_col].get_piece_color() == 0:
+			if board.tiles[test_row, test_col].get_piece_color() == 0 and id is not 1:
 				return True
 			if id == -3 or id ==-5 or id == -6:  # diagonal is blocked
 				return True
@@ -1277,7 +1284,7 @@ class WhiteKing(Piece):
 		while test_row <= 7 and test_col <= 7:
 			# if board.validate_index()
 			id = board.tiles[test_row, test_col].get_piece_ID()
-			if board.tiles[test_row, test_col].get_piece_color() == 0:
+			if board.tiles[test_row, test_col].get_piece_color() == 0 and id is not 1:
 				return True
 			if id == -3 or id == -5 or id == -6:  # diagonal is blocked
 				return True
@@ -1296,7 +1303,7 @@ class WhiteKing(Piece):
 			return False
 		while test_row >= 0 and test_col >= 0:
 			id = board.tiles[test_row, test_col].get_piece_ID()
-			if board.tiles[test_row, test_col].get_piece_color() == 0:
+			if board.tiles[test_row, test_col].get_piece_color() == 0 and id is not 1:
 				# print("protected by white®", test_row, test_col)
 				return True
 			if id == -3 or id == -5 or id == -6:  # diagonal is blocked
@@ -1350,14 +1357,14 @@ class WhiteKing(Piece):
 
 	def king_side_castle_check(self, board):
 		if self.has_moved == False:
-			print("King has not moved")
+			# print("King has not moved")
 			if board.tiles[7,7].get_piece_ID() == 3:
 				if board.tiles[7,7].get_piece().has_moved == False:
-					print("rook has not moved")
+					# print("rook has not moved")
 					if board.tiles[7,5].get_piece_ID() == 0 and board.tiles[7,5].get_piece_ID() == 0: # path is clear
-						print("path for castling is clear")
+						# print("path for castling is clear")
 						if self.check_king_side_castle_check_clear(board):
-							print("king is not passing through check and will not be in check")
+							# print("king is not passing through check and will not be in check")
 							return True
 		else:
 			return False
@@ -1382,14 +1389,14 @@ class WhiteKing(Piece):
 
 	def queen_side_castle_check(self, board):
 		if self.has_moved == False:
-			print("King has not moved")
+			# print("King has not moved")
 			if board.tiles[7,0].get_piece_ID() == 3:
 				if board.tiles[7,0].get_piece().has_moved == False:
-					print("rook has not moved")
+					# print("rook has not moved")
 					if board.tiles[7,1].get_piece_ID() == 0 and board.tiles[7,2].get_piece_ID() == 0 and board.tiles[7,3].get_piece_ID() == 0:  # path is clear
-						print("path for queen side castling is clear")
+						# print("path for queen side castling is clear")
 						if self.check_queen_side_castle_check_clear(board):
-							print("king is not passing through check and will not be in check")
+							# print("king is not passing through check and will not be in check")
 							return True
 		else:
 			return False
@@ -1638,7 +1645,7 @@ class Board:
 		self.get_all_possible_moves()
 
 		if turn_color != self.turn:
-			print("idk how tf this would happen")
+			# print("idk how tf this would happen")
 			return False
 		elif not self.validate_index(from_index) or not self.validate_index(to_index):
 			print("out of index")
@@ -1651,15 +1658,10 @@ class Board:
 			return False
 
 		all_moves = self.get_all_possible_moves()
-		print("ALL MOVES: ", all_moves)
+		# print("ALL MOVES: ", all_moves)
 
 		move_me = self.tiles[from_index].get_piece()
 		possible_moves = move_me.get_possible_moves(self)
-		arman_bitch = []
-		for i in range(len(possible_moves)):
-			arman_bitch.append(self.index_to_chess_notation(possible_moves[i]))
-		print("possible moves for ", self.index_to_chess_notation(from_index), "is : ", arman_bitch)
-
 		"""deal with check"""
 		# get king index
 		# # test if he is in check
@@ -1741,17 +1743,25 @@ class Board:
 		possible_moves = []
 		king_moves = []
 		passant = []
+		king_index = ()
 		for index, tile in self.tiles.items():
 			id = tile.get_piece_ID()
 			if self.turn == 0:
 				if id > 0:
 					piece = tile.get_piece()
 					if id == 1:
+						king_index = piece.get_index()
 						king_set = piece.get_possible_moves(self)
+						king_castle_clear = piece.king_side_castle_check(self)
+						queen_castle_clear = piece.queen_side_castle_check(self)
+						if king_castle_clear:
+							# print("king side castle availible")
+							possible_moves.append([(0, 4), (0, 6)])
+						if queen_castle_clear:
+							# print("queen side castle availible")
+							possible_moves.append([(0, 4), (0, 2)])
 						for i in range(len(king_set)):
 							king_moves.append([piece.get_index(), king_set[i]])
-						# king_moves.append(piece.get_possible_moves(self))
-					# else:
 					possible_moves = piece.get_possible_moves(self)
 					if id == 6:
 						possible_moves += piece.get_en_passant(self)
@@ -1763,25 +1773,31 @@ class Board:
 				if id < 0:
 					piece = tile.get_piece()
 					if id == -1:
+						king_index = piece.get_index()
 						king_set = piece.get_possible_moves(self)
+						king_castle_clear = piece.king_side_castle_check(self)
+						queen_castle_clear = piece.queen_side_castle_check(self)
+						if king_castle_clear:
+							# print("king side castle availible")
+							possible_moves.append([(0,4), (0,6)])
+						if queen_castle_clear:
+							# print("queen side castle availible")
+							possible_moves.append([(0,4), (0, 2)])
 						for i in range(len(king_set)):
 							king_moves.append([piece.get_index(), king_set[i]])
-					# else:
 					possible_moves = piece.get_possible_moves(self)
 					if id == -6:
 						possible_moves += piece.get_en_passant(self)
 					# print("id: ", tile.get_piece_ID(), "location: ", index, "moves: ", possible_moves)
 					for i in range(len(possible_moves)):
 						all_moves.append([piece.get_index(), possible_moves[i]])
-			# print(index)
-		# if self.check_king() == False:
-		# 	return king_moves
-		# print("KING MOVES", king_moves)
-		# for i in range(len(king_moves)-1):
-		# 	print("kings moves: ", self.index_to_chess_notation(king_moves[i]))
 
+
+		legal_moves = list(all_moves)
+		# print("legal:", legal_moves)
+
+		## king in check
 		for index, tile in self.tiles.items():
-			# print("FUCK")
 			piece = tile.get_piece()
 			if tile.get_piece_ID() == 1 and self.turn == 0:
 				king_index = piece.get_index()
@@ -1793,26 +1809,15 @@ class Board:
 					# 3 take or block with other piece
 					print("white king in check")
 					temp_board = copy.deepcopy(self)  # make a deep copy of y
-					# temp_board.show_board()
-					# print("deep copy: ", temp_board)
-					for index, tile in temp_board.tiles.items():
-						print("index: ", index, "tile: ", tile.get_piece())
-					# print("king index", king_index)
-					# temp_board = Game()
-					# temp_board.tiles = self.tiles
 					for i in range(len(all_moves)):
-						# print("testing  move: ", all_moves[i][0], all_moves[i][1])
 						temp_king = temp_board.tiles[king_index].get_piece()
-						# for index, piece range(len(temp_board.b))
-						# print("tiles", temp_board.tiles)
 						temp_board.just_move(all_moves[i][0], all_moves[i][1])
-						if temp_king == None:
+						if temp_king is None:
 							print("temp king is None")
 						elif temp_king.test_square_for_check(temp_board, king_index):  # kinlear
 							king_moves.append(all_moves[i])
-
-
-
+						else:  # king would be in check if the move was taken so removes the move
+							legal_moves.remove(all_moves[i])
 						temp_board = copy.deepcopy(self)  # make a deep copy of y
 					# king_moves = piece.get_possible_moves()
 					# for i in range(len(king_moves)-1):
@@ -1826,16 +1831,15 @@ class Board:
 					print("black king in check")
 
 					temp_board = copy.deepcopy(self)  # make a deep copy of y
-					# temp_board.show_board()
-					# temp_board = Board()
-					# temp_board.tiles = dict(self.tiles)
 					for i in range(len(all_moves)):
 						temp_board.just_move(all_moves[i][0], all_moves[i][1])
 						temp_king = temp_board.tiles[king_index].get_piece()
-						if temp_king == None:
+						if temp_king is None:
 							print("temp king is None")
 						elif temp_king.test_square_for_check(temp_board, king_index):  # king is now clear
 							king_moves.append(all_moves[i])
+						else:  # king would be in check if the move was taken so removes the move
+							legal_moves.remove(all_moves[i])
 						temp_board = copy.deepcopy(self)  # make a deep copy of y
 					# for i in range(len(king_moves)-1):
 					# 	print("kings moves: ", self.index_to_chess_notation(king_moves[i]))
@@ -1843,7 +1847,10 @@ class Board:
 					return king_moves
 		# for i in range(len(all_moves)):
 		# 	print("All move: ", self.index_to_chess_notation(all_moves[i][0]), self.index_to_chess_notation(all_moves[i][1]))
-		return all_moves
+		# check if moves put me in check
+
+
+		return legal_moves
 
 	def clear_en_passants(self):
 		for index, tile in self.tiles.items():
@@ -1865,17 +1872,32 @@ class Board:
 
 	def evaluate_board(self):
 		id_weights = []
-		id_to_weight = {1: 900, 2: 9, 3: 5, 4: 3, 5: 3, 6: 1}
+		# KQRBNP K'Q'R'B'N'P'
+		id_reset = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, -1: 0, -2: 0 , -3: 0, -4: 0, -5: 0, -6: 0}
+		id_count = dict(id_reset)
+
+		id_to_weight = {1: 200, 2: 9, 3: 5, 4: 3, 5: 3, 6: 1}
 		for index, tile in self.tiles.items():
 			id = tile.get_piece_ID()
 			if id != 0:
-				weight = id_to_weight[abs(id)]
-				id_weights.append([abs(id), weight])
-
-
+				id_count[id] += 1
+				# weight = id_to_weight[abs(id)]
+				# id_weights.append([abs(id), weight])
 			# print("piece weight", weight)
 		# print("ID WEIGHTS!: ", id_weights)
+		# print(id_count)
 
+		value = 200*(id_count[1]-id_count[-1]) + 9*(id_count[2]-id_count[-2]) \
+				+ 5*(id_count[3]-id_count[-3]) + 3*(id_count[4]-id_count[-4]+id_count[5]-id_count[-5]) \
+				+ 1*(id_count[6] - id_count[-6])
+
+		# print("VALUE: ", value) # negative vlaue means balck is wi
+		if self.turn == 1:
+			print("BLAAAACK")
+		else:
+			print("WHIIETE")
+			value *= -1
+		return value
 
 class Player:
 	def __init__(self, color, board):
@@ -1892,6 +1914,7 @@ class Game:
 		self.board = Board()
 		self.player1 = Player(0, self.board)
 		self.player2 = Player(1, self.board)
+
 	def run(self):
 		self.board.show_board()
 		while True:
@@ -1906,6 +1929,7 @@ class Game:
 				self.board.show_board()
 				success = self.player_two_move()
 			self.board.show_board()
+
 	def test_run_list(self, indexes):
 		i = 0
 		j = 1
@@ -1918,6 +1942,7 @@ class Game:
 			# print(indexes[j][0], indexes[j][1])
 			i += 2
 			j += 2
+
 	def test_run_chess_notation(self, indexes):
 		for i in range(len(indexes)):
 			# row = self.chess_notation_to_index(indexes[i][0])
@@ -1925,34 +1950,24 @@ class Game:
 			# self.board.move(row, col)
 			if self.board.turn == 0:
 				self.board.show_board()
-				print("indexes: ", indexes)
+				# print("indexes: ", indexes)
 				self.player1.make_move(self.chess_notation_to_index(indexes[i][0]), self.chess_notation_to_index(indexes[i][1]))
 			else:
 				self.board.show_board()
 				self.player2.make_move(self.chess_notation_to_index(indexes[i][0]), self.chess_notation_to_index(indexes[i][1]))
-			print("Move Number: ", i+1, " ", indexes[i])
-			print(indexes[i])
+			# print("Move Number: ", i+1, " ", indexes[i])
+			# print(indexes[i])
 		# input()
 		# self.board.show_board()
 		# print(indexes[i])
+
 	def random_step(self):
 		all_moves = self.board.get_all_possible_moves()
-		# if self.board.check_king() == False:
-		# 	print("CHECK")
-		# if all_moves == None or len(all_moves) == 0:
-		# 	# if self.board.turn == 0:
-		# 	if self.board.check_king() == False:
-		# 		print("MATE")
-		# 		print("NO MOVES!")
-		# 		return False
-		# print("all moves", all_moves)
-
 		if len(all_moves) == 0:
+			print("NO MOVES")
 			time.sleep(100)
-			# while True:
-			# 	print("NO FUCKING MOVES")
 		random_int = randint(0, len(all_moves) - 1)
-		print(random_int, len(all_moves))
+		# print(random_int, len(all_moves))
 		move = all_moves[random_int]
 		print("move: ", self.index_to_chess_notation(move[0]), self.index_to_chess_notation(move[1]))
 		if self.board.turn == 0:
@@ -1961,30 +1976,79 @@ class Game:
 		else:
 			success = self.player2.make_move(move[0], move[1])
 			self.board.turn = 0
+		return success
+
+	def best_step(self):
+		all_moves = self.board.get_all_possible_moves()
+		if len(all_moves) == 0:
+			print("NO MOVES - CHECKMATE")
+			time.sleep(100)
+			# while True:
+		# print("current value: ", self.board.evaluate_board())
+
+		values = []
+		test_game = copy.deepcopy(self)
+		for i in range(len(all_moves)):
+			# if self.board.turn == 0:
+			test_game.board.just_move(all_moves[i][0], all_moves[i][1])
+			values.append(test_game.board.evaluate_board())
+			test_game = copy.deepcopy(self)
+		# print("values by taking all_moves[i]: ", values)
+		list_max = max(values)
+		# print(list_max)
+		indexes_of_max_value_moves = []
+		[indexes_of_max_value_moves.append(index) for index, value in enumerate(values) if value == list_max]
+		random_int = randint(0, len(indexes_of_max_value_moves) - 1)
+		# print(random_int, len(indexes_of_max_value_moves))
+		rand_index = indexes_of_max_value_moves[random_int]
+		move = all_moves[rand_index]
+		# print("move: ", self.index_to_chess_notation(move[0]), self.index_to_chess_notation(move[1]))
+		if self.board.turn == 0:
+			success = self.player1.make_move(move[0], move[1])
+			self.board.turn = 1
+		else:
+			success = self.player2.make_move(move[0], move[1])
+			self.board.turn = 0
 
 		return success
-	def step(self, index):
-		if self.board.turn == 0:
-			self.board.show_board()
-			self.player1.make_move(self.chess_notation_to_index(index[0]), self.chess_notation_to_index(index[1]))
-		else:
-			self.board.show_board()
-			self.player2.make_move(self.chess_notation_to_index(index[0]), self.chess_notation_to_index(index[1]))
-			# print("Move Number: ", i+1, " ", indexes[i])
+	# def step(self, index):
+	# 	# if len(all_moves) == 0:
+	# 	# 	time.sleep(100)
+	# 		# while True:
+	# 		# 	print("MOVES")
+	# 	# random_int = randint(0, len(all_moves) - 1)
+	# 	# move = all_moves[random_int]
+	# 	# if self.board.turn == 0:
+	# 	# 	success = self.player1.make_move(move[0], move[1])
+	# 	# 	self.board.turn = 1
+	# 	# else:
+	# 	# 	success = self.player2.make_move(move[0], move[1])
+	# 	# 	self.board.turn = 0
+	# 	if self.board.turn == 0:
+	# 		self.board.show_board()
+	# 		self.player1.make_move(self.chess_notation_to_index(index[0]), self.chess_notation_to_index(index[1]))
+	# 	else:
+	# 		self.board.show_board()
+	# 		self.player2.make_move(self.chess_notation_to_index(index[0]), self.chess_notation_to_index(index[1]))
+	# 		# print("Move Number: ", i+1, " ", indexes[i])
+
 	def player_one_move(self):
 		start_index = self.chess_notation_to_index(input("Player 1 Enter start index:  "))
 		end_index = self.chess_notation_to_index(input("Player 1 Enter end index:  "))
 		success = self.player1.make_move(start_index, end_index)
 		return  success
+
 	def player_two_move(self):
 		start_index = self.chess_notation_to_index(input("Player 2 Enter start index:  "))
 		end_index = self.chess_notation_to_index(input("Player 2 Enter end index:  "))
 		success = self.player2.make_move(start_index, end_index)
 		return success
+
 	def index_to_chess_notation(self, index):
 		letters = "ABCDEFGH"
 		numbers = "87654321"
 		return (letters[index[1]], numbers[index[0]])
+
 	def chess_notation_to_index(self, index):
 		letters = "ABCDEFGH"
 		index = index.upper()
