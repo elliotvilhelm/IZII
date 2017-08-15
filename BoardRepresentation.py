@@ -20,6 +20,9 @@ class Piece:
 		self.row, self.column = index
 		self.color = color
 
+	# def __copy__(self):
+	# 	copy_piece = Piece(self.ID, (self.row, self.column), self.color)
+	# 	return copy_piece
 	def get_weight(self):
 		if self.ID == 1 or -1:
 			return 1000
@@ -49,6 +52,11 @@ class BlackPawn(Piece):
 		Piece.__init__(self, -6, index, -1)
 		self.first_move = True
 		self.en_passant_vulnerable = False
+
+	# def __copy__(self):
+	# 	print("copy pawn")
+	# 	copy_piece = BlackPawn(self.get_index())
+	# 	return copy_piece
 
 	def get_possible_moves(self, board):
 		possible_moves = []
@@ -144,6 +152,11 @@ class WhitePawn(Piece):
 	def __init__(self, index):
 		Piece.__init__(self, 6, index, 0)
 		self.first_move = True
+
+	# def __copy__(self):
+	# 	print("copy pawn")
+	# 	copy_piece = BlackPawn(self.get_index())
+	# 	return copy_piece
 	def get_possible_moves(self, board):
 		possible_moves = []
 		if self.get_passive_moves(board):
@@ -227,6 +240,10 @@ class WhitePawn(Piece):
 class WhiteBishop(Piece):
 	def __init__(self, index):
 		Piece.__init__(self, 4, index, 0)
+	# def __copy__(self):
+	# 	Bishop_Copy = WhiteBishop(self.get_index())
+	# 	return Bishop_Copy
+
 	def get_possible_moves(self, board):
 		possible_moves = []
 		upper_right_delta = (-1, 1)
@@ -1107,7 +1124,7 @@ class WhiteKing(Piece):
 		upper_left = (self.row-1, self.column-1)
 		lower_left = (self.row+1, self.column-1)
 		index  = self.get_index()
-# check is square in front puts you in check
+
 		if self.test_square_for_check(board, front) and board.validate_index(front) and board.tiles[front].get_piece_ID() <= 0:
 			possible_moves.append(front)
 
@@ -1134,14 +1151,14 @@ class WhiteKing(Piece):
 
 
 
-		if self.test_square_for_check(board, self.get_index()) == False:
-			self.in_check = True
-			print("White King in Check!", self.get_index())
-			self.test_square_for_check(board, self.get_index())
-			if len(possible_moves) == 0:
-				print("Check Mate! Black Wins!")
-		else:
-			self.in_check = False
+		# if self.test_square_for_check(board, self.get_index()) == False:
+		# 	self.in_check = True
+		# 	print("White King in Check!", self.get_index())
+		# 	self.test_square_for_check(board, self.get_index())
+		# 	if len(possible_moves) == 0:
+		# 		# print("Check Mate! Black BlackWins!")
+		# else:
+		# 	self.in_check = False
 		# print("possible moves white king: ",possible_moves)
 		return possible_moves
 
@@ -1270,9 +1287,9 @@ class WhiteKing(Piece):
 			# if board.validate_index()
 			if board.tiles[test_row, test_col].get_piece_color() == 0 and id is not 1:
 				return True
-			if id == -3 or id ==-5 or id == -6:  # diagonal is blocked
+			if id == -3 or id == -5 or id == -6:  # diagonal is blocked
 				return True
-			if id == -4 or id == -2: # white bishop or queen
+			if id == -4 or id == -2:  # white bishop or queen
 				return False
 			test_row += 1
 			test_col -= 1
@@ -1511,6 +1528,12 @@ class Tile:
 		self.row = row
 		self.column = column
 		self.piece = piece
+	def __copy__(self):
+		copy_tile = Tile()
+		copy_tile.row = self.row
+		copy_tile.column = self.column
+		copy_tile.piece = copy.copy(self.piece)
+		return copy_tile
 	def add_piece(self, piece):
 		self.piece = piece
 	def remove_piece(self):
@@ -1524,12 +1547,13 @@ class Tile:
 		if self.empty() != True:
 			return self.piece
 		else:
+			# print("no piece at ", self.row, self.column)
 			return None
 	def get_piece_ID(self):
-		if self.piece == None:
-			return 0
-		else:
+		if self.piece != None:
 			return self.piece.ID
+		else:
+			return 0
 	def get_index(self):
 		return (self.row, self.column)
 	def get_info(self):
@@ -1578,14 +1602,25 @@ class Tile:
 class Board:
 
 	def __init__(self):
+		self.moves = []
+		# self.last_move = []
 		self.tiles = {}
-		self.initialize_board()
+		# self.initialize_board()
 		self.turn = 0 # white first
-
-	def initialize_board(self):
+		self.gameover = False
 		for i in range(8):
 			for j in range(8):
 				self.tiles.update({(i,j): Tile(i,j)})
+	def __copy__(self):
+		# print("copy called")
+		new_board = Board()
+		for index, tile in self.tiles.items():
+			new_board.tiles[index].piece = copy.copy(tile.piece)
+		new_board.turn = self.turn
+		new_board.gameover = self.gameover
+		return new_board
+	def initialize_board(self):
+
 		for i in range(8):
 			self.tiles[1,i].add_piece(BlackPawn(self.tiles[1,i].get_index()))
 		for i in range(8):
@@ -1607,6 +1642,35 @@ class Board:
 		self.tiles[0, 1].add_piece(BlackKnight(self.tiles[0, 1].get_index()))
 		self.tiles[0, 6].add_piece(BlackKnight(self.tiles[0, 6].get_index()))
 
+	def game_over(self):
+
+		# print("fuckr")
+		availible_moves = self.get_all_possible_moves()
+		if len(availible_moves) == 0:
+			if self.turn == 0:
+				white_king = self.get_white_king()
+				if white_king.in_check:
+					print("game-over - black wins! - check mate")
+				else:
+					print("no where to go and not in check? what do you call this again ..")
+			if self.turn == 1:
+				black_king = self.get_black_king()
+				if black_king.in_check:
+					print("game-over - white wins! - check mate")
+			return True
+		return False
+
+	def get_white_king(self):
+		for index, tile in self.tiles.items():
+			piece = tile.get_piece()
+			if tile.get_piece_ID() == 1:
+				return piece
+	def get_black_king(self):
+		for index, tile in self.tiles.items():
+			piece = tile.get_piece()
+			if tile.get_piece_ID() == -1:
+				return piece
+
 	def show_board(self):
 		row = []
 		for i in range(8):
@@ -1627,118 +1691,152 @@ class Board:
 		letters = "ABCDEFGH"
 		numbers = "87654321"
 		return (letters[index[1]], numbers[index[0]])
+	def just_undo(self):
+		# print("past moves: ", len(self.moves), self.moves)
+		if len(self.moves) == 0:
+			print("your undoing an empty set")
+			return False
+		last_set = self.moves.pop()
+		last_move = last_set[0]
+		last_piece = last_set[1]
 
+		# print("just undo move: ", last_move)
+		move_me = self.tiles[last_move[1]].get_piece()
+		if move_me is None:
+			self.moves.append([last_move, last_piece])
+			return False
+
+		# self.clear_en_passants()  # ehh en passant is a bitch
+		move_me.move(last_move[0])  # updates piece's row and column
+		# if last_id != 0:
+			# if last_id is -1:
+		self.tiles[last_move[1]].add_piece(last_piece)
+		self.tiles[last_move[0]].add_piece(move_me)  # updates tile's piece
+		# self.tiles[last_move[1]].remove_piece()  # remove piece from to tile
+		self.turn = 1 if self.turn == 0 else 0  # switch player turn
+		# self.last_move = [last_move[1], last_move[0]]
+		return True
 	def just_move(self, from_index, to_index):
 		move_me = self.tiles[from_index].get_piece()
-		if move_me == None:
-			print("move me: ", move_me, "from index :", from_index)
+		if move_me is None:
+			# print("move me: ", move_me, "from index :", from_index)
 			return False
+		# id = self.tiles[to_index].get_piece_ID()
+		# print("just move: ", from_index, to_index)
 		self.clear_en_passants()  # ehh en passant is a bitch
 		move_me.move(to_index)  # updates piece's row and column
+		old_piece = self.tiles[to_index].get_piece()
+		# print("old peice", old_piece, id)
 		self.tiles[to_index].add_piece(self.tiles[from_index].get_piece())  # updates tile's piece
 		self.tiles[from_index].remove_piece()  # remove piece from to tile
 		self.turn = 1 if self.turn == 0 else 0  # switch player turn
+		# self.last_move = [from_index, to_index]
+		self.moves.append([[from_index, to_index], copy.deepcopy(old_piece)])
+		# self.game_over()
+
 		return True
 
-	def move(self, turn_color, from_index, to_index):
-		## testing :
-		self.get_all_possible_moves()
-
-		if turn_color != self.turn:
-			# print("idk how tf this would happen")
-			return False
-		elif not self.validate_index(from_index) or not self.validate_index(to_index):
-			print("out of index")
-			return False
-		elif self.tiles[from_index].get_piece_ID() == 0:
-			print("from index is an empty square")
-			return False
-		elif self.tiles[from_index].get_piece().color != -1*self.turn:
-			print("wrong color piece")
-			return False
-
-		all_moves = self.get_all_possible_moves()
-		# print("ALL MOVES: ", all_moves)
-
-		move_me = self.tiles[from_index].get_piece()
-		possible_moves = move_me.get_possible_moves(self)
-		"""deal with check"""
-		# get king index
-		# # test if he is in check
-		# for index, tile in self.tiles.items():
-		# 	piece = tile.get_piece()
-		# 	if tile.get_piece_ID() == 1 and self.turn == 0:
-		# 		clear = piece.test_square_for_check(self, index)
-		# 		if not clear:
-		# 			# THREE OPTIONS
-		# 			# 1 move king out of check
-		# 			# king_moves = piece.get_possible_moves()
-		#
-		# 			print("white king in check")
-		# 	elif tile.get_piece_ID() == -1 and self.turn == -1:
-		# 		clear = piece.test_square_for_check(self, index)
-		# 		if not clear:
-		# 			print("black king in check")
-
-
-		"""deal with en passant"""
-		passant = []
-		if move_me.get_piece_ID() == 6 or move_me.get_piece_ID() == -6:
-			passant = move_me.get_en_passant(self)
-		if to_index in passant:
-			if self.turn == 0:
-				self.tiles[to_index[0]+1, to_index[1]].remove_piece()
-				move_me.move(to_index)
-				self.tiles[to_index].add_piece(self.tiles[from_index].get_piece())
-				self.tiles[from_index].remove_piece()
-				self.turn = 1
-			else:
-				self.tiles[to_index[0] - 1, to_index[1]].remove_piece()
-				move_me.move(to_index)
-				self.tiles[to_index].add_piece(self.tiles[from_index].get_piece())
-				self.tiles[from_index].remove_piece()
-				self.turn = 0
-			return True
-		"""castling"""
-		if move_me.get_piece_ID() == 1: # white king
-			if to_index == (7,6): # king side Castle for white
-				possible_castle = move_me.king_side_castle_check(self)
-				if possible_castle:
-					move_me.king_side_castle(self)
-					self.turn = 1 if self.turn == 0 else 0  # switch player turn
-					return True
-			if to_index == (7, 2): # queen side castle for king
-				possible_castle = move_me.queen_side_castle_check(self)
-				if possible_castle:
-					move_me.queen_side_castle(self)
-					self.turn = 1 if self.turn == 0 else 0  # switch player turn
-					return True
-		if move_me.get_piece_ID() == -1:
-			if to_index == (0,6): # king side Castle for white
-				possible_castle = move_me.king_side_castle_check(self)
-				if possible_castle:
-					move_me.king_side_castle(self)
-					self.turn = 1 if self.turn == 0 else 0  # switch player turn
-					return True
-			if to_index == (0, 2): # queen side castle for king
-				possible_castle = move_me.queen_side_castle_check(self)
-				if possible_castle:
-					move_me.queen_side_castle(self)
-					self.turn = 1 if self.turn == 0 else 0  # switch player turn
-					return True
-		"""regular move"""
-		if to_index not in possible_moves:
-			print("Not a valid to_index")
-			return False
-		else:
-			self.clear_en_passants() # ehh en passant is a bitch
-			move_me.move(to_index) # updates piece's row and column
-			self.tiles[to_index].add_piece(self.tiles[from_index].get_piece()) # updates tile's piece
-			self.tiles[from_index].remove_piece() # remove piece from to tile
-			self.turn = 1 if self.turn == 0 else 0 # switch player turn
-			return True
+	# def move(self, turn_color, from_index, to_index):
+	# 	print("why you call this move?")
+	# 	## testing :
+	# 	# self.get_all_possible_moves()
+	#
+	# 	if turn_color != self.turn:
+	# 		# print("idk how tf this would happen")
+	# 		return False
+	# 	elif not self.validate_index(from_index) or not self.validate_index(to_index):
+	# 		print("out of index")
+	# 		return False
+	# 	elif self.tiles[from_index].get_piece_ID() == 0:
+	# 		print("from index is an empty square")
+	# 		return False
+	# 	elif self.tiles[from_index].get_piece().color != -1*self.turn:
+	# 		print("wrong color piece")
+	# 		return False
+	#
+	# 	# all_moves = self.get_all_possible_moves()
+	# 	# print("ALL MOVES: ", all_moves)
+	#
+	# 	move_me = self.tiles[from_index].get_piece()
+	# 	possible_moves = move_me.get_possible_moves(self)
+	# 	"""deal with check"""
+	# 	# get king index
+	# 	# # test if he is in check
+	# 	# for index, tile in self.tiles.items():
+	# 	# 	piece = tile.get_piece()
+	# 	# 	if tile.get_piece_ID() == 1 and self.turn == 0:
+	# 	# 		clear = piece.test_square_for_check(self, index)
+	# 	# 		if not clear:
+	# 	# 			# THREE OPTIONS
+	# 	# 			# 1 move king out of check
+	# 	# 			# king_moves = piece.get_possible_moves()
+	# 	#
+	# 	# 			print("white king in check")
+	# 	# 	elif tile.get_piece_ID() == -1 and self.turn == -1:
+	# 	# 		clear = piece.test_square_for_check(self, index)
+	# 	# 		if not clear:
+	# 	# 			print("black king in check")
+	#
+	#
+	# 	"""deal with en passant"""
+	# 	passant = []
+	# 	if move_me.get_piece_ID() == 6 or move_me.get_piece_ID() == -6:
+	# 		passant = move_me.get_en_passant(self)
+	# 	if to_index in passant:
+	# 		if self.turn == 0:
+	# 			self.tiles[to_index[0]+1, to_index[1]].remove_piece()
+	# 			move_me.move(to_index)
+	# 			self.tiles[to_index].add_piece(self.tiles[from_index].get_piece())
+	# 			self.tiles[from_index].remove_piece()
+	# 			self.turn = 1
+	# 		else:
+	# 			self.tiles[to_index[0] - 1, to_index[1]].remove_piece()
+	# 			move_me.move(to_index)
+	# 			self.tiles[to_index].add_piece(self.tiles[from_index].get_piece())
+	# 			self.tiles[from_index].remove_piece()
+	# 			self.turn = 0
+	# 		return True
+	# 	"""castling"""
+	# 	if move_me.get_piece_ID() == 1: # white king
+	# 		if to_index == (7,6): # king side Castle for white
+	# 			possible_castle = move_me.king_side_castle_check(self)
+	# 			if possible_castle:
+	# 				move_me.king_side_castle(self)
+	# 				self.turn = 1 if self.turn == 0 else 0  # switch player turn
+	# 				return True
+	# 		if to_index == (7, 2): # queen side castle for king
+	# 			possible_castle = move_me.queen_side_castle_check(self)
+	# 			if possible_castle:
+	# 				move_me.queen_side_castle(self)
+	# 				self.turn = 1 if self.turn == 0 else 0  # switch player turn
+	# 				return True
+	# 	if move_me.get_piece_ID() == -1:
+	# 		if to_index == (0,6): # king side Castle for white
+	# 			possible_castle = move_me.king_side_castle_check(self)
+	# 			if possible_castle:
+	# 				move_me.king_side_castle(self)
+	# 				self.turn = 1 if self.turn == 0 else 0  # switch player turn
+	# 				return True
+	# 		if to_index == (0, 2): # queen side castle for king
+	# 			possible_castle = move_me.queen_side_castle_check(self)
+	# 			if possible_castle:
+	# 				move_me.queen_side_castle(self)
+	# 				self.turn = 1 if self.turn == 0 else 0  # switch player turn
+	# 				return True
+	# 	"""regular move"""
+	# 	if to_index not in possible_moves:
+	# 		print("Not a valid to_index")
+	# 		return False
+	# 	else:
+	# 		self.clear_en_passants() # ehh en passant is a bitch
+	# 		move_me.move(to_index) # updates piece's row and column
+	# 		self.tiles[to_index].add_piece(self.tiles[from_index].get_piece()) # updates tile's piece
+	# 		self.tiles[from_index].remove_piece() # remove piece from to tile
+	# 		self.turn = 1 if self.turn == 0 else 0 # switch player turn
+	# 		return True
 
 	def get_all_possible_moves(self):
+		# print("getting all moves")
 		all_moves = []
 		possible_moves = []
 		king_moves = []
@@ -1794,7 +1892,6 @@ class Board:
 
 
 		legal_moves = list(all_moves)
-		# print("legal:", legal_moves)
 
 		## king in check
 		for index, tile in self.tiles.items():
@@ -1802,23 +1899,30 @@ class Board:
 			if tile.get_piece_ID() == 1 and self.turn == 0:
 				king_index = piece.get_index()
 				clear = piece.test_square_for_check(self, index)
+				if clear:
+					piece.in_check = False
 				if not clear:
+					piece.in_check = True
 					# THREE OPTIONS
 					# 1 move king out of check
 					# 2 take
 					# 3 take or block with other piece
 					print("white king in check")
-					temp_board = copy.deepcopy(self)  # make a deep copy of y
+					# temp_board = copy.deepcopy(self)  # make a deep copy of y **
 					for i in range(len(all_moves)):
-						temp_king = temp_board.tiles[king_index].get_piece()
-						temp_board.just_move(all_moves[i][0], all_moves[i][1])
+						# temp_king = temp_board.tiles[king_index].get_piece()  **
+						# temp_board.just_move(all_moves[i][0], all_moves[i][1])
+						temp_king = self.tiles[king_index].get_piece()
+						self.just_move(all_moves[i][0], all_moves[i][1])
 						if temp_king is None:
 							print("temp king is None")
-						elif temp_king.test_square_for_check(temp_board, king_index):  # kinlear
+						# elif temp_king.test_square_for_check(temp_board, king_index):  # kinlear
+						elif temp_king.test_square_for_check(self, king_index):  # kinlear
 							king_moves.append(all_moves[i])
 						else:  # king would be in check if the move was taken so removes the move
 							legal_moves.remove(all_moves[i])
-						temp_board = copy.deepcopy(self)  # make a deep copy of y
+						self.just_undo()
+						# temp_board = copy.deepcopy(self)  # make a deep copy of y
 					# king_moves = piece.get_possible_moves()
 					# for i in range(len(king_moves)-1):
 					# 	print("kings moves: ", self.index_to_chess_notation(king_moves[i]))
@@ -1827,28 +1931,30 @@ class Board:
 			elif tile.get_piece_ID() == -1 and self.turn == 1:
 				king_index = piece.get_index()
 				clear = piece.test_square_for_check(self, index)
+				if clear:
+					piece.in_check = False
 				if not clear:
+					piece.in_check = True
 					print("black king in check")
 
-					temp_board = copy.deepcopy(self)  # make a deep copy of y
+					# temp_board = copy.deepcopy(self)  # make a deep copy of y
 					for i in range(len(all_moves)):
-						temp_board.just_move(all_moves[i][0], all_moves[i][1])
-						temp_king = temp_board.tiles[king_index].get_piece()
+						# temp_board.just_move(all_moves[i][0], all_moves[i][1])
+						# temp_king = temp_board.tiles[king_index].get_piece()
+						temp_king = self.tiles[king_index].get_piece()
+						self.just_move(all_moves[i][0], all_moves[i][1])
 						if temp_king is None:
 							print("temp king is None")
-						elif temp_king.test_square_for_check(temp_board, king_index):  # king is now clear
+						elif temp_king.test_square_for_check(self, king_index):  # king is now clear
 							king_moves.append(all_moves[i])
 						else:  # king would be in check if the move was taken so removes the move
 							legal_moves.remove(all_moves[i])
-						temp_board = copy.deepcopy(self)  # make a deep copy of y
+						self.just_undo()
+						# temp_board = copy.deepcopy(self)  # make a deep copy of y
 					# for i in range(len(king_moves)-1):
 					# 	print("kings moves: ", self.index_to_chess_notation(king_moves[i]))
 					print("KING MOVES", king_moves)
 					return king_moves
-		# for i in range(len(all_moves)):
-		# 	print("All move: ", self.index_to_chess_notation(all_moves[i][0]), self.index_to_chess_notation(all_moves[i][1]))
-		# check if moves put me in check
-
 
 		return legal_moves
 
@@ -1877,8 +1983,21 @@ class Board:
 		id_count = dict(id_reset)
 
 		id_to_weight = {1: 200, 2: 9, 3: 5, 4: 3, 5: 3, 6: 1}
+		black_check = 0
+		white_check = 0
 		for index, tile in self.tiles.items():
 			id = tile.get_piece_ID()
+			if id == 1:
+				if tile.piece.in_check:
+					black_check = 1
+				else:
+					black_check = 0
+			elif id == -1:
+				if tile.piece.in_check:
+					white_check = 1
+				else:
+					white_check = 0
+
 			if id != 0:
 				id_count[id] += 1
 				# weight = id_to_weight[abs(id)]
@@ -1889,29 +2008,98 @@ class Board:
 
 		value = 200*(id_count[1]-id_count[-1]) + 9*(id_count[2]-id_count[-2]) \
 				+ 5*(id_count[3]-id_count[-3]) + 3*(id_count[4]-id_count[-4]+id_count[5]-id_count[-5]) \
-				+ 1*(id_count[6] - id_count[-6])
+				+ 1*(id_count[6] - id_count[-6]) + 2*(white_check - black_check)
 
 		# print("VALUE: ", value) # negative vlaue means balck is wi
 		if self.turn == 1:
-			print("BLAAAACK")
+			pass
+			# print("Blacks Turn")
 		else:
-			print("WHIIETE")
+			# print("Whites Turn")
 			value *= -1
 		return value
+
+	def minimaxroot(self, depth):
+		new_moves = self.get_all_possible_moves()
+		bestMove = -999
+		bestMoveFound = None
+		# temp_board = copy.copy(self)  # make a deep copy of y
+		for i in range(len(new_moves)):
+			# temp_board.just_move(new_moves[i][0], new_moves[i][1])
+
+			self.just_move(new_moves[i][0], new_moves[i][1])
+			value = self.minimax(2)
+			# temp_board = copy.copy(self)  # make a deep copy of y
+			self.just_undo()
+			if value > bestMove:
+				bestMove = value
+				bestMoveFound = new_moves[i]
+			elif value == bestMove:
+				if randint(1,5) == 3:
+					bestMoveFound = new_moves[i]
+		return bestMoveFound
+
+	def minimax(self, depth):
+		if depth == 0:
+			# self.just_undo()
+			return self.evaluate_board()
+		possible_moves = self.get_all_possible_moves()
+		# print("possile moves!: ", possible_moves)
+		if self.turn == 0:
+			# print("max")
+			bestMove = -9999
+			# temp_board = copy.copy(self)  # make a deep copy of y
+			for move in possible_moves:
+				# print("\ttesting white", possible_moves[i])
+				# temp_board.just_move(possible_moves[i][0], possible_moves[i][1])
+
+				self.just_move(move[0], move[1])
+				# print(temp_board.turn)
+				bestMove = max(bestMove, self.minimax(depth - 1))
+				# temp_board = copy.copy(self)
+				self.just_undo()
+				# self.show_board()
+			return bestMove
+		elif self.turn == 1:
+			# print("min")
+			bestMove = 9999
+			# temp_board = copy.copy(self)  # make a deep copy of y
+			for move in possible_moves:
+				# print("testing black", possible_moves[i])
+				self.just_move(move[0], move[1])
+				# print(temp_board.turn)
+				bestMove = min(bestMove, self.minimax(depth - 1))
+				# temp_board = copy.copy(self)
+				self.just_undo()
+				# self.show_board()
+			return bestMove
 
 class Player:
 	def __init__(self, color, board):
 		self.color = color
 		self.board = board
 
+	def try_move(self, start_index, end_index):
+		possible_moves = self.board.get_all_possible_moves()
+		test_index = [start_index, end_index]
+		# print("possible moves: ", possible_moves, "attempted move; ", test_index)
+		if test_index in possible_moves:
+			self.board.just_move(start_index, end_index)
+			# return True
+		else:
+			print("not one of my moves")
+			# return False
+		self.board.game_over()
+		# print("past moves: ", len(self.board.moves), self.board.moves)
 	def make_move(self, start_index, end_index):
-		success = self.board.move(self.color, start_index, end_index)
+		success = self.board.just_move(start_index, end_index)
 		return success
 
 
 class Game:
 	def __init__(self):
 		self.board = Board()
+		self.board.initialize_board()
 		self.player1 = Player(0, self.board)
 		self.player2 = Player(1, self.board)
 
@@ -1948,13 +2136,16 @@ class Game:
 			# row = self.chess_notation_to_index(indexes[i][0])
 			# col = self.chess_notation_to_index(indexes[i][1])
 			# self.board.move(row, col)
+			print("running move ", indexes)
 			if self.board.turn == 0:
 				self.board.show_board()
 				# print("indexes: ", indexes)
-				self.player1.make_move(self.chess_notation_to_index(indexes[i][0]), self.chess_notation_to_index(indexes[i][1]))
+				self.player1.try_move(self.chess_notation_to_index(indexes[i][0]), self.chess_notation_to_index(indexes[i][1]))
 			else:
 				self.board.show_board()
-				self.player2.make_move(self.chess_notation_to_index(indexes[i][0]), self.chess_notation_to_index(indexes[i][1]))
+				self.player2.try_move(self.chess_notation_to_index(indexes[i][0]), self.chess_notation_to_index(indexes[i][1]))
+
+
 			# print("Move Number: ", i+1, " ", indexes[i])
 			# print(indexes[i])
 		# input()
@@ -1979,6 +2170,7 @@ class Game:
 		return success
 
 	def best_step(self):
+
 		all_moves = self.board.get_all_possible_moves()
 		if len(all_moves) == 0:
 			print("NO MOVES - CHECKMATE")
@@ -2010,7 +2202,10 @@ class Game:
 			success = self.player2.make_move(move[0], move[1])
 			self.board.turn = 0
 
-		return success
+		self.board.game_over()
+		# return success
+
+
 	# def step(self, index):
 	# 	# if len(all_moves) == 0:
 	# 	# 	time.sleep(100)
@@ -2031,7 +2226,20 @@ class Game:
 	# 		self.board.show_board()
 	# 		self.player2.make_move(self.chess_notation_to_index(index[0]), self.chess_notation_to_index(index[1]))
 	# 		# print("Move Number: ", i+1, " ", indexes[i])
-
+	def best_step_minimax(self):
+		if self.board.turn == 0:
+			print("finding root")
+			move = self.board.minimaxroot(2)
+			# print("move: ", self.index_to_chess_notation(move[0]), self.index_to_chess_notation(move[1]))
+			if self.board.turn == 0:
+				success = self.player1.try_move(move[0], move[1])
+				self.board.turn = 1
+			else:
+				success = self.player2.try_move(move[0], move[1])
+				self.board.turn = 0
+		else:
+			self.best_step()
+		# return success
 	def player_one_move(self):
 		start_index = self.chess_notation_to_index(input("Player 1 Enter start index:  "))
 		end_index = self.chess_notation_to_index(input("Player 1 Enter end index:  "))

@@ -42,6 +42,7 @@ class Chess_GUI(object):
 		self.tiles = self.chess_game.board.tiles
 		self.initialize_images()
 		self.Move = 0
+		self.i = 0
 
 		self.move_set = move_set
 		pygame.display.set_caption("Chess")
@@ -103,14 +104,27 @@ class Chess_GUI(object):
 		# self.player = Player()
 		# self.all_sprites_list.add(self.player)
 	def process_events(self):
-		""" Process all of the events. Return a "True" if we need
-			to close the window. """
+		""" Process all of the events. Return a "True" if we need to close the window. """
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				return True
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if self.game_over:
 					self.__init__()
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_RETURN:
+					if self.i < len(self.move_set):
+						self.chess_game.test_run_chess_notation([self.move_set[self.i]])
+						self.i += 1
+					else:
+						return True
+				if event.key == pygame.K_SPACE:
+					print("*"*30)
+					self.chess_game.best_step_minimax()
+					print("*"*30)
+				if event.key == pygame.K_u:
+					self.chess_game.board.just_undo()
+
 
 		return False
 
@@ -119,91 +133,83 @@ class Chess_GUI(object):
 
 	def step(self):
 		if not self.game_over:
-			# i = 0
-			# while True:
-				# while i <  len(self.move_set):
-
-				# print([self.move_set[i]])
 				self.done = self.process_events()
 				self.display_frame(self.screen)
 				self.clock.tick(10)
-				input()
-
-				# self.display_frame(self.screen)
-				# self.clock.tick(10)
-			# while i > len(self.move_set):
-			# 	self.display_frame(self.screen)
-			# 	self.clock.tick(10)
-		if self.done == True:
+		if self.done is True:
 			pygame.quit()
 
 	def run_steps(self):
 		i = 0
 		while True:
 			self.step()
-			if i < len(self.move_set):
-				self.chess_game.step(self.move_set[i])
-				i += 1
+			self.chess_game.best_step_minimax()
+			# input()
+			# if i < len(self.move_set):
+			# 	self.chess_game.test_run_chess_notation([self.move_set[i-1]])
+			# 	i += 1
 
-	def run_random_step(self):
-		if not self.game_over:
-			i = 0
-			x = ""
-			while x != "x":
 
-				# print([self.move_set[i]])
-				self.done = self.process_events()
-				self.display_frame(self.screen)
-				self.clock.tick(1)
-				# self.chess_game.board.evaluate_board()
-				# self.chess_game.test_run_chess_notation([self.move_set[i]])
-				# x = input()
-				success = self.chess_game.random_step()
-				self.chess_game.board.evaluate_board()
 
-				# print(success)
-				if success == False:
-					time.sleep(100)
-				i += 1
-			if self.done == True:
-				pygame.quit()
-	def run_best_step(self):
-		if not self.game_over:
-			i = 0
-			x = ""
-			while x != "x":
-
-				# print([self.move_set[i]])
-				self.done = self.process_events()
-				self.display_frame(self.screen)
-				self.clock.tick(.5)
-				# self.chess_game.board.evaluate_board()
-				# self.chess_game.test_run_chess_notation([self.move_set[i]])
-				# x = input()
-				success = self.chess_game.best_step()
-				self.chess_game.board.evaluate_board()
-
-				# print(success)
-				if success == False:
-					time.sleep(100)
-				i += 1
-			if self.done == True:
-				pygame.quit()
-	def run_best_move(self):
-		if not self.game_over:
-			i = 0
-			x = ""
-			while x != "x":
-				x = input()
-				# print([self.move_set[i]])
-				self.done = self.process_events()
-				self.display_frame(self.screen)
-				self.clock.tick(5)
-				# self.chess_game.test_run_chess_notation([self.move_set[i]])
-				self.chess_game.random_step()
-				i += 1
-			if self.done == True:
-				pygame.quit()
+	# def run_random_step(self):
+	# 	if not self.game_over:
+	# 		i = 0
+	# 		x = ""
+	# 		while x != "x":
+	#
+	# 			# print([self.move_set[i]])
+	# 			self.done = self.process_events()
+	# 			self.display_frame(self.screen)
+	# 			self.clock.tick(1)
+	# 			# self.chess_game.board.evaluate_board()
+	# 			# self.chess_game.test_run_chess_notation([self.move_set[i]])
+	# 			# x = input()
+	# 			success = self.chess_game.random_step()
+	# 			self.chess_game.board.evaluate_board()
+	#
+	# 			# print(success)
+	# 			if success == False:
+	# 				time.sleep(100)
+	# 			i += 1
+	# 		if self.done == True:
+	# 			pygame.quit()
+	# def run_best_step(self):
+	# 	# if not self.game_over:
+	# 		i = 0
+	# 		x = ""
+	# 		while x != "x":
+	#
+	# 			# print([self.move_set[i]])
+	# 			self.done = self.process_events()
+	# 			self.display_frame(self.screen)
+	# 			self.clock.tick(.5)
+	# 			# self.chess_game.board.evaluate_board()
+	# 			# self.chess_game.test_run_chess_notation([self.move_set[i]])
+	# 			# x = input()
+	# 			self.chess_game.best_step()
+	# 			# self.chess_game.board.evaluate_board()
+	#
+	# 			# print(success)
+	# 			if success == False:
+	# 				time.sleep(100)
+	# 			i += 1
+	# 		if self.done == True:
+	# 			pygame.quit()
+	# def run_best_move(self):
+	# 	if not self.game_over:
+	# 		i = 0
+	# 		x = ""
+	# 		while x != "x":
+	# 			x = input()
+	# 			# print([self.move_set[i]])
+	# 			self.done = self.process_events()
+	# 			self.display_frame(self.screen)
+	# 			self.clock.tick(5)
+	# 			# self.chess_game.test_run_chess_notation([self.move_set[i]])
+	# 			self.chess_game.random_step()
+	# 			i += 1
+	# 		if self.done == True:
+	# 			pygame.quit()
 
 	def display_frame(self, screen):
 		""" Display everything to the screen for the game. """
