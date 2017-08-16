@@ -391,7 +391,7 @@ class WhiteRook(Piece):
 		while board.validate_index((self.row + forward_delta[0]*i, self.column + forward_delta[1]*i)):
 			temp_index = (self.row + forward_delta[0]*i, self.column + forward_delta[1]*i)
 			id = board.tiles[temp_index].get_piece_ID()
-			if id > 0: # blocked by my own color
+			if id > 0 or id == -1: # blocked by my own color
 				break
 			elif id < -1: # enemy hit
 				possible_moves.append(temp_index)
@@ -403,7 +403,7 @@ class WhiteRook(Piece):
 		while board.validate_index((self.row + backward_delta[0]*i, self.column + backward_delta[1]*i)):
 			temp_index = (self.row + backward_delta[0]*i, self.column + backward_delta[1]*i)
 			id = board.tiles[temp_index].get_piece_ID()
-			if id > 0: # blocked by my own color
+			if id > 0 or id == -1: # blocked by my own color
 				break
 			elif id < -1: # enemy hit
 				possible_moves.append(temp_index)
@@ -415,7 +415,7 @@ class WhiteRook(Piece):
 		while board.validate_index((self.row + right_delta[0]*i, self.column + right_delta[1]*i)):
 			temp_index = (self.row + right_delta[0]*i, self.column + right_delta[1]*i)
 			id = board.tiles[temp_index].get_piece_ID()
-			if id > 0: # blocked by my own color
+			if id > 0 or id == -1: # blocked by my own color
 				break
 			elif id < -1: # enemy hit
 				possible_moves.append(temp_index)
@@ -427,7 +427,7 @@ class WhiteRook(Piece):
 		while board.validate_index((self.row + left_delta[0]*i, self.column + left_delta[1]*i)):
 			temp_index = (self.row + left_delta[0]*i, self.column + left_delta[1]*i)
 			id = board.tiles[temp_index].get_piece_ID()
-			if id > 0: # blocked by my own color
+			if id > 0 or id == -1: # blocked by my own color
 				break
 			elif id < -1: # enemy hit
 				possible_moves.append(temp_index)
@@ -461,7 +461,7 @@ class BlackRook(Piece):
 		while board.validate_index((self.row + forward_delta[0] * i, self.column + forward_delta[1] * i)):
 			temp_index = (self.row + forward_delta[0] * i, self.column + forward_delta[1] * i)
 			id = board.tiles[temp_index].get_piece_ID()
-			if id < 0:  # blocked by my own color
+			if id < 0 or id == 1:  # blocked by my own color
 				break
 			elif id > 1:  # enemy hit
 				possible_moves.append(temp_index)
@@ -473,7 +473,7 @@ class BlackRook(Piece):
 		while board.validate_index((self.row + backward_delta[0] * i, self.column + backward_delta[1] * i)):
 			temp_index = (self.row + backward_delta[0] * i, self.column + backward_delta[1] * i)
 			id = board.tiles[temp_index].get_piece_ID()
-			if id < 0:  # blocked by my own color
+			if id < 0 or id ==1:  # blocked by my own color
 				break
 			elif id > 1:  # enemy hit
 				possible_moves.append(temp_index)
@@ -485,7 +485,7 @@ class BlackRook(Piece):
 		while board.validate_index((self.row + right_delta[0] * i, self.column + right_delta[1] * i)):
 			temp_index = (self.row + right_delta[0] * i, self.column + right_delta[1] * i)
 			id = board.tiles[temp_index].get_piece_ID()
-			if id < 0:  # blocked by my own color
+			if id < 0 or id ==1:  # blocked by my own color
 				break
 			elif id > 1:  # enemy hit
 				possible_moves.append(temp_index)
@@ -497,7 +497,7 @@ class BlackRook(Piece):
 		while board.validate_index((self.row + left_delta[0] * i, self.column + left_delta[1] * i)):
 			temp_index = (self.row + left_delta[0] * i, self.column + left_delta[1] * i)
 			id = board.tiles[temp_index].get_piece_ID()
-			if id < 0:  # blocked by my own color
+			if id < 0 or id == 1:  # blocked by my own color
 				break
 			elif id > 1:  # enemy hit
 				possible_moves.append(temp_index)
@@ -1043,12 +1043,12 @@ class BlackKing(Piece):
 				if board.tiles[0,7].get_piece().has_moved == False:
 					# print("rook has not moved")
 					if board.tiles[0,5].get_piece_ID() == 0 and board.tiles[0,6].get_piece_ID() == 0: # path is clear
-						# print("path for castling is clear")
+						print("path for castling is clear")
 						if self.check_king_side_castle_check_clear(board):
-							# print("king is not passing through check and will not be in check")
+							print("king is not passing through check and will not be in check")
 							return True
-		else:
-			return False
+
+		return False
 
 					# check if king will pass through a checked square
 				# check if king will be in check
@@ -1608,6 +1608,8 @@ class Board:
 		# self.initialize_board()
 		self.turn = 0 # white first
 		self.gameover = False
+		self.white_n_moves = 0
+		self.blacks_n_moves = 0
 		for i in range(8):
 			for j in range(8):
 				self.tiles.update({(i,j): Tile(i,j)})
@@ -1705,11 +1707,16 @@ class Board:
 		if move_me is None:
 			self.moves.append([last_move, last_piece])
 			return False
+		id = move_me.ID
+
 
 		# self.clear_en_passants()  # ehh en passant is a bitch
 		move_me.move(last_move[0])  # updates piece's row and column
 		# if last_id != 0:
 			# if last_id is -1:
+		if id == 1 or id == -1 or id == 6 or id == -6 or id == 3 or id == -3 and move_me.has_moved == True:
+			# print("changing has moved")
+			move_me.has_moved = False
 		self.tiles[last_move[1]].add_piece(last_piece)
 		self.tiles[last_move[0]].add_piece(move_me)  # updates tile's piece
 		# self.tiles[last_move[1]].remove_piece()  # remove piece from to tile
@@ -1874,12 +1881,13 @@ class Board:
 						king_index = piece.get_index()
 						king_set = piece.get_possible_moves(self)
 						king_castle_clear = piece.king_side_castle_check(self)
+						# print("king castle clear", king_castle_clear)
 						queen_castle_clear = piece.queen_side_castle_check(self)
 						if king_castle_clear:
-							# print("king side castle availible")
+							print("king side castle availible")
 							possible_moves.append([(0,4), (0,6)])
 						if queen_castle_clear:
-							# print("queen side castle availible")
+							print("queen side castle availible")
 							possible_moves.append([(0,4), (0, 2)])
 						for i in range(len(king_set)):
 							king_moves.append([piece.get_index(), king_set[i]])
@@ -1927,6 +1935,7 @@ class Board:
 					# for i in range(len(king_moves)-1):
 					# 	print("kings moves: ", self.index_to_chess_notation(king_moves[i]))
 					print("KING MOVES", king_moves)
+					self.white_n_moves = len(king_moves)
 					return king_moves
 			elif tile.get_piece_ID() == -1 and self.turn == 1:
 				king_index = piece.get_index()
@@ -1954,8 +1963,13 @@ class Board:
 					# for i in range(len(king_moves)-1):
 					# 	print("kings moves: ", self.index_to_chess_notation(king_moves[i]))
 					print("KING MOVES", king_moves)
+					self.black_n_moves = len(king_moves)
 					return king_moves
 
+		if self.turn == 0:
+			self.white_n_moves = len(legal_moves)
+		else:
+			self.blacks_n_moves = len(legal_moves)
 		return legal_moves
 
 	def clear_en_passants(self):
@@ -1987,42 +2001,58 @@ class Board:
 		white_check = 0
 		for index, tile in self.tiles.items():
 			id = tile.get_piece_ID()
-			if id == 1:
-				if tile.piece.in_check:
-					black_check = 1
-				else:
-					black_check = 0
-			elif id == -1:
-				if tile.piece.in_check:
-					white_check = 1
-				else:
-					white_check = 0
+		# 	if id == 1:
+		# 		if tile.piece.in_check:
+		# 			black_check = 1
+		# 		else:
+		# 			black_check = 0
+		# 	elif id == -1:
+		# 		if tile.piece.in_check:
+		# 			white_check = 1
+		# 		else:
+		# 			white_check = 0
 
-			if id != 0:
+			if id != 0 and id != 1 and id != -1:
 				id_count[id] += 1
 				# weight = id_to_weight[abs(id)]
 				# id_weights.append([abs(id), weight])
 			# print("piece weight", weight)
 		# print("ID WEIGHTS!: ", id_weights)
 		# print(id_count)
+		if self.turn == 0 and self.gameover:
+			id_count[1] = 0
+		else:
+			id_count[1] = 1
+		if self.turn == 1 and self.gameover:
+			id_count[-1] = 0
+		else:
+			id_count[-1] = 1
 
 		value = 200*(id_count[1]-id_count[-1]) + 9*(id_count[2]-id_count[-2]) \
 				+ 5*(id_count[3]-id_count[-3]) + 3*(id_count[4]-id_count[-4]+id_count[5]-id_count[-5]) \
-				+ 1*(id_count[6] - id_count[-6]) + 2*(white_check - black_check)
+				+ 1*(id_count[6] - id_count[-6]) + 0.1*(self.white_n_moves-self.blacks_n_moves) # + 2*(white_check - black_check)
 
 		# print("VALUE: ", value) # negative vlaue means balck is wi
 		if self.turn == 1:
 			pass
 			# print("Blacks Turn")
 		else:
+			pass
 			# print("Whites Turn")
-			value *= -1
+			# value *= -1
 		return value
 
 	def minimaxroot(self, depth):
 		new_moves = self.get_all_possible_moves()
-		bestMove = -999
+		# print("new : ", new_moves)
+
+		testing_turn = self.turn
+		if self.turn == 0:
+			bestMove = -999
+		elif self.turn == 1:
+			bestMove = 999
 		bestMoveFound = None
+
 		# temp_board = copy.copy(self)  # make a deep copy of y
 		for i in range(len(new_moves)):
 			# temp_board.just_move(new_moves[i][0], new_moves[i][1])
@@ -2032,11 +2062,21 @@ class Board:
 			# temp_board = copy.copy(self)  # make a deep copy of y
 			self.just_undo()
 			if value > bestMove:
-				bestMove = value
-				bestMoveFound = new_moves[i]
-			elif value == bestMove:
-				if randint(1,5) == 3:
+				if testing_turn == 0:
+					print("white")
+					bestMove = value
 					bestMoveFound = new_moves[i]
+				elif value == bestMove:
+					if randint(1,5) == 3:
+						bestMoveFound = new_moves[i]
+			if testing_turn == 1:
+				print("black")
+				if value < bestMove:
+					bestMove = value
+					bestMoveFound = new_moves[i]
+				elif value == bestMove:
+					if randint(1, 5) == 3:
+						bestMoveFound = new_moves[i]
 		return bestMoveFound
 
 	def minimax(self, depth):
@@ -2081,13 +2121,15 @@ class Player:
 
 	def try_move(self, start_index, end_index):
 		possible_moves = self.board.get_all_possible_moves()
+		print("possible moves", possible_moves)
 		test_index = [start_index, end_index]
 		# print("possible moves: ", possible_moves, "attempted move; ", test_index)
 		if test_index in possible_moves:
 			self.board.just_move(start_index, end_index)
 			# return True
 		else:
-			print("not one of my moves")
+
+			print(test_index, "not one of my moves", "possible moves were ", possible_moves)
 			# return False
 		self.board.game_over()
 		# print("past moves: ", len(self.board.moves), self.board.moves)
@@ -2227,18 +2269,34 @@ class Game:
 	# 		self.player2.make_move(self.chess_notation_to_index(index[0]), self.chess_notation_to_index(index[1]))
 	# 		# print("Move Number: ", i+1, " ", indexes[i])
 	def best_step_minimax(self):
-		if self.board.turn == 0:
+		if self.board.turn == 1 or self.board.turn == 0:
 			print("finding root")
 			move = self.board.minimaxroot(2)
 			# print("move: ", self.index_to_chess_notation(move[0]), self.index_to_chess_notation(move[1]))
+			if move == None:
+				print("no moves")
+				return
 			if self.board.turn == 0:
 				success = self.player1.try_move(move[0], move[1])
 				self.board.turn = 1
 			else:
 				success = self.player2.try_move(move[0], move[1])
 				self.board.turn = 0
-		else:
-			self.best_step()
+		# else:
+		# 	from_index = input("enter from: ")
+		# 	to_index = input("enter to: ")
+		# 	from_index = self.chess_notation_to_index(from_index)
+		# 	to_index = self.chess_notation_to_index(to_index)
+		# 	# self.board.just_move(from_index, to_index)
+		# 	if self.board.turn == 0:
+		# 		success = self.player1.try_move(from_index, to_index)
+		# 		self.board.turn = 1
+		# 	else:
+		# 		success = self.player2.try_move(from_index, to_index)
+		# 		self.board.turn = 0
+			# self.board.turn = 0
+			# self.test_run_chess_notation([[from_index, to_index]])
+			# self.best_step()
 		# return success
 	def player_one_move(self):
 		start_index = self.chess_notation_to_index(input("Player 1 Enter start index:  "))
@@ -2258,8 +2316,8 @@ class Game:
 		return (letters[index[1]], numbers[index[0]])
 
 	def chess_notation_to_index(self, index):
-		letters = "ABCDEFGH"
-		index = index.upper()
+		letters = "abcdefgh"
+		# index = index.upper()
 		column_letter = index[0]
 		row_number = index[1]
 		row_index = 8 - int(row_number)
