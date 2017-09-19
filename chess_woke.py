@@ -13,8 +13,58 @@ init_board = "xxxxxxxxxx" \
 			"xxxxxxxxxx" \
 			"xxxxxxxxxx"
 init_board = list(init_board)
+init_state = [init_board, 0, -1, 0, 1, [1,1,1,1], init_board.index('K'), init_board.index('k')]
 
-# current state = board, en_passant, num_moves
+
+
+
+
+
+class Node:
+	# def __init__(self):
+	# 	self.board = []
+	# 	self.en_passant_sq = -1
+	# 	self.turn = -1
+	# 	self.half_move = -1
+	# 	self.full_move = -1
+	# 	self.castle_perm = []
+	# 	self.white_king_sq = -1
+	# 	self.black_king_sq = -1
+	# 	self.children = []
+
+	def __init__(self, state):
+		self.children = []
+		self.board = list(state[0])
+		self.turn = state[1]
+		self.en_passant_sq = state[2]
+		self.half_move = state[3]
+		self.full_move = state[4]
+		self.castle_perm = list(state[5])
+		self.white_king_sq = state[6]
+		self.black_king_sq = state[7]
+		self.value = None
+
+		self.state = [self.board, self.turn, self.en_passant_sq, self.half_move, self.full_move, self.castle_perm, self.white_king_sq, self.black_king_sq]
+
+	def get_state(self):
+		return self.state
+	# sets data to copy of state
+	def copy_from_state(self, state):
+		self.board = list(state[0])
+		self.turn = state[1]
+		self.en_passant_sq = state[2]
+		self.half_move = state[3]
+		self.full_move = state[4]
+		self.castle_perm = list(state[5])
+		self.white_king_sq = state[6]
+		self.black_king_sq = state[7]
+		self.state = [self.board, self.turn, self.en_passant_sq, self.half_move, self.full_move, self.castle_perm, self.white_king_sq, self.black_king_sq]
+
+	def create_children(self, states):
+		for i in range(len(states)):
+			self.children.append(Node(states[i]))
+	def add_child(self, node):
+		self.children.append(node)
 
 
 class IzzI:
@@ -30,172 +80,42 @@ class IzzI:
 		self.ranks = [8, 7, 6, 5, 4, 3, 2, 1]
 		self.current_state = []
 		self.history = []
+		self.white_checkmated = 0
+		self.black_checkmated = 0
 		# carries board, turn, enpassant, half_move, full_move, castle permission, whitekingsq, blackkingsq
 		self.current_state = [init_board, 0, -1, 0, 1, [1,1,1,1], init_board.index('K'), init_board.index('k')]
-
+		self.count = [1,1,2,2,2,8,1,1,2,2,2,8] # KQRBNP
+		self.all_pieces = "KQRBNPkqrbnp"
 		self.history.append(self.current_state)
+		self.minimax_move = [-1,-1]
+		self.game_over = False
 		if state is not None:
 			self.current_state = state
 
-	#######################
-	# RUN & UNDO
-	def run_chess(self):
-		# Save a COPY of the board to history
-		self.save_state_to_hist()
-		# Get All Pseudo Legal Moves
-		moves = self.get_pseudo_moves(self.current_state[0], self.current_state[1])
-		# if self.current_state[1] == 0:
-		moves = self.get_legal_moves(moves)
-		from_sq, to_sq = self.get_best_move_depth1(moves)
-		if from_sq == -1:
-			return self.current_state
-		self.move(from_sq, to_sq)
+	##############################################
 
-		# change turns
-		self.change_turns()
-		return self.current_state
+	def print_move(self, move):
+		print(self.sq64_to_RF(self.sq120_sq64(move[0])), self.sq64_to_RF(self.sq120_sq64(move[1])))
+	##################################################
+	##################################################
+	# in: state out: legal moves
+	def get_all_moves_at_state(self, state):
+		# print(state)
+		psuedo = self.get_pseudo_moves_beta(state)
+		# print(psuedo)
+		legal = self.get_legal_moves_beta(state, psuedo)
+		# print(legal)
+		return legal
+	# in: state out: moves
+	def run_move_at_state(self, state, move):
+		# self.save_state_to_hist()
+		# print(move)
+		# print(self.sq64_to_RF(self.sq120_sq64(move[0])))
+		# print(self.sq64_to_RF(self.sq120_sq64(move[0][1])))
+		return_state = self.move_at_state(state, move)
+		return return_state
 
-	def undo(self):
-		if len(self.history) == 1:
-			return self.history[0]
-		else:
-			self.current_state = self.history.pop()
-			return self.current_state
-
-	def run_move(self, from_sq, to_sq):
-		self.save_state_to_hist()
-		self.move(from_sq, to_sq)
-		return self.current_state
-
-	def save_state_to_hist(self):
-		board_save = list(self.current_state[0])
-		castle_perm = list(self.current_state[5])
-		self.history.append([board_save, self.current_state[1], self.current_state[2], self.current_state[3],
-							self.current_state[4], castle_perm, self.current_state[6], self.current_state[7]])
-
-	########################
-	# ALGORITHM
-	def get_best_move_depth1(self, moves):
-		values = []
-		indexes = []
-		for i in range(len(moves)):
-			move_set = moves[i]
-			from_sq = move_set[0]
-			to_sqs = move_set[1]
-			for j in range(len(to_sqs)):
-				self.current_state = self.run_move(from_sq, to_sqs[j])
-				value = self.evaluate(self.current_state[0])
-				# print("From: ", self.sq64_to_RF(self.sq120_sq64(from_sq)), "To: ", self.sq64_to_RF(self.sq120_sq64(to_sqs[j])), "Value: ", value)
-				values.append(value)
-				indexes.append((i, j))
-				self.undo()
-		k = 0
-		if len(moves) == 0:
-			print("CHECK MATE")
-			return -1, -1
-		# print("values: ", values)
-		best_value = max(values)
-		# print("best value", best_value)
-		best_indexes = []
-		for v in values:
-			if v == best_value:
-				# print(values[k])
-				best_indexes.append(k)
-			k += 1
-		# print("best indexes! :", best_indexes)
-		best_index = random.randint(0, len(best_indexes)-1)
-		# print(best_indexes[best_index])
-		n_index = best_indexes[best_index]
-		i, j = indexes[n_index]
-		return moves[i][0], moves[i][1][j]
-
-	# def make_random_move(self, b, moves):
-	# 	# make random move
-	# 	random_piece_n = random.randint(0, len(moves) - 1)
-	# 	from_sq = moves[random_piece_n][0]
-	# 	to_sq = moves[random_piece_n][1][random.randint(0, len(moves[random_piece_n][1]) - 1)]
-	# 	print("from: ", self.sq64_to_RF(self.sq120_sq64(from_sq)), "to: ", self.sq64_to_RF(self.sq120_sq64(to_sq)))
-	#
-	# 	b, en_passant = self.move(b, from_sq, to_sq)
-	# 	# self.print_board(b)
-	# 	return b, en_passant
-
-	########################
-	# BOARD
-	def move(self, from_tile_n, to_tile_n):
-		en_pass_sq = -1
-		board = self.current_state[0]
-		### En Passant case
-		if board[from_tile_n] == 'P':
-			if abs(to_tile_n-from_tile_n) == 20:
-				en_pass_sq = from_tile_n - 10
-			if board[to_tile_n - 10] == 'x':
-				board[from_tile_n] = 'Q'
-
-		elif board[from_tile_n] == 'p':
-			if abs(to_tile_n-from_tile_n) == 20:
-				en_pass_sq = from_tile_n + 10
-			if board[to_tile_n + 10] == 'x':
-				board[from_tile_n] = 'q'
-		### King move case
-		elif board[from_tile_n] == 'K':
-			self.current_state[6] = to_tile_n
-			# save white to tile
-		elif board[from_tile_n] == 'k':
-			self.current_state[7] = to_tile_n
-			# save black to tile
-		board[to_tile_n] = board[from_tile_n]
-		board[from_tile_n] = "o"
-		self.current_state[2] = en_pass_sq
-
-	def evaluate(self, board):
-		whites_moves = self.get_pseudo_moves(board, 0)
-		white_move_count = 0
-		blacks_moves = self.get_pseudo_moves(board, 1)
-		black_move_count = 0
-		for i in range(len(whites_moves)):
-			for j in range(len(whites_moves[i][1])):
-				white_move_count += 1
-		for i in range(len(blacks_moves)):
-			for j in range(len(blacks_moves[i][1])):
-				black_move_count += 1
-
-		# print("mobility diff: ", white_move_count-black_move_count)
-		count = {'K': 0, 'Q': 0, 'R': 0, 'B': 0, 'N': 0, 'P': 0, 'k': 0, 'q': 0, 'r': 0, 'b': 0, 'n': 0, 'p': 0}
-		for i in board:
-			if i == 'x':
-				pass
-			elif i == 'o':
-				pass
-			else:
-				count[i] += 1
-		value = (0 * (count['K'] - count['k'])) + (9 * (count['Q'] - count['q'])) + \
-				(5 * (count['R'] - count['r'])) + (3 * (count['B'] - count['b'])) + \
-				(3 * (count['N'] - count['n'])) + (1 * (count['P'] - count['p']))  + \
-				0 * (white_move_count - black_move_count)
-
-		if self.current_state[1] == 1:
-			value *= -1
-		return value
-
-	#########################
-	# MOVE GENERATION
-	def get_pseudo_moves(self, b, turn):
-		moves = []
-		for i in enumerate(b):
-			if turn == 0:
-				if i[1] in self.all_white:
-					piece_moves = self.get_piece_moves(b, i[0])
-					if len(piece_moves) > 0:
-						moves.append([i[0], piece_moves])
-			elif turn == 1:
-				if i[1] in self.all_black:
-					piece_moves = self.get_piece_moves(b, i[0])
-					if len(piece_moves) > 0:
-						moves.append([i[0], piece_moves])
-		return moves
-
-	def get_legal_moves(self, pseudo_moves):
+	def get_legal_moves_beta(self, state, pseudo_moves):
 		# take move
 		# check if in check
 		# valid/invalid move
@@ -206,32 +126,125 @@ class IzzI:
 		for i in range(len(pseudo_moves)):
 			move_set = pseudo_moves[i]
 			from_sq = move_set[0]
-			to_sqs = move_set[1]
-			for j in range(len(to_sqs)):
-				self.run_move(from_sq, to_sqs[j])
-				if self.current_state[1] == 0:
-					in_check = self.white_in_check(self.current_state[0], self.current_state[6])
-				elif self.current_state[1] == 1:
-					in_check = self.black_in_check(self.current_state[0], self.current_state[7])
-				if in_check is False:
-					legal_set.append(to_sqs[j])
+			to_sq = move_set[1]
+			# for j in range(len(to_sqs)):
+			s2 = self.run_move_at_state(state, (from_sq, to_sq))
+			if s2[1] == 1:
+				in_check = self.white_in_check(s2[0], s2[6])
+			elif s2[1] == 0:
+				in_check = self.black_in_check(s2[0], s2[7])
+			if in_check == False:
+				legal_moves.append(pseudo_moves[i])
+			# if in_check is False:
+			# 	legal_set.append(to_sq)
 				# else:
 					# print("check")
-				self.undo()
-			if len(legal_set) > 0:
-				legal_moves.append([from_sq, legal_set])
-			legal_set = []
+				# self.undo()
+			# if len(legal_set) > 0:
+			# 	legal_moves.append([from_sq, legal_set])
+			# legal_set = []
 		return legal_moves
 
+	def get_pseudo_moves_beta(self, state):
+		moves = []
+		b = state[0]
+		turn = state[1]
+		for i in range(len(b)):
+			if turn == 0:
+				if b[i] in self.all_white:
+					piece_moves = self.get_piece_moves(b, i)
+					for k in range(len(piece_moves)):
+						moves.append([i, piece_moves[k]])
+					# if len(piece_moves) > 0:
+					# 	moves.append([i, piece_moves])
+			elif turn == 1:
+				if b[i] in self.all_black:
+					piece_moves = self.get_piece_moves(b, i)
+					for k in range(len(piece_moves)):
+						moves.append([i, piece_moves[k]])
+					# if len(piece_moves) > 0:
+					# 	moves.append([i, piece_moves])
+		return moves
+	# Input S1 Output S2 *S1 remains unmodified
+
+	#############################
+	def unpack_state(self, state):
+		board = list(state[0])
+		turn = state[1]
+		en_pass_sq = state[2]
+		half_move = state[3]
+		full_move = state[4]
+		castle_perm = list(state[5])
+		white_king_sq = state[6]
+		black_king_sq = state[7]
+		return board, turn, en_pass_sq, half_move, full_move, castle_perm, white_king_sq, black_king_sq
+
+	def evaluate_state(self, state):
+
+	# print("mobility diff: ", white_move_count-black_move_count)
+		count = {'K': 0, 'Q': 0, 'R': 0, 'B': 0, 'N': 0, 'P': 0, 'k': 0, 'q': 0, 'r': 0, 'b': 0, 'n': 0, 'p': 0}
+		for i in state[0]:
+			if i in "KQRBNPkqrbnp":
+				count[i] += 1
+		value = ((1000.0 * (count['K'] - count['k'])) + (9.0 * (count['Q'] - count['q'])) +
+				(5.0 * (count['R'] - count['r'])) + (3.0 * (count['B'] - count['b'])) +
+				(3.25 * (count['N'] - count['n'])) + (1.0 * (count['P'] - count['p'])))
+					# +(.1 * (white_move_count - black_move_count)))
+		return value
+	# TO DO: Add full move half move and castle permission updates
+	def move_at_state(self, state, move):
+		board = list(state[0])
+		turn = state[1]
+		en_pass_sq = state[2]
+		half_move = state[3]
+		full_move = state[4]
+		castle_perm = list(state[5])
+		white_king_sq = state[6]
+		black_king_sq = state[7]
+		# board, turn, en_pass_sq, half_move, full_move, castle_perm, white_king_sq, black_king_sq = self.unpack_state(state)
+		from_tile_n = move[0]
+		to_tile_n = move[1]
+		# print(to_tile_n)
+		### En Passant case
+		if board[from_tile_n] == 'P':
+			if abs(to_tile_n-from_tile_n) == 20:
+				en_pass_sq = from_tile_n - 10
+			if board[to_tile_n - 10] == 'x':
+				board[from_tile_n] = 'Q'
+		elif board[from_tile_n] == 'p':
+			if abs(to_tile_n-from_tile_n) == 20:
+				en_pass_sq = from_tile_n + 10
+			if board[to_tile_n + 10] == 'x':
+				board[from_tile_n] = 'q'
+		### King move case
+		elif board[from_tile_n] == 'K':
+			white_king_sq = to_tile_n
+		elif board[from_tile_n] == 'k':
+				black_king_sq = to_tile_n
+		# Update Count
+		# if board[to_tile_n] in self.all_pieces:
+		# 	print(self.all_pieces.index(board[to_tile_n]))
+			# self.count[self.all_pieces.index(board[to_tile_n])] -= 1
+			# self.count[0] -= 1
+		# Actually Move
+		# print("moving:", board[from_tile_n])
+		board[to_tile_n] = board[from_tile_n]
+		board[from_tile_n] = "o"
+		# Change Turns
+		if turn == 0:
+			turn = 1
+		else:
+			turn = 0
+		# print(board[to_tile_n])
+		return board, turn, en_pass_sq, half_move, full_move, castle_perm, white_king_sq, black_king_sq
+
+	#############################################################
 
 
 	######################
-	## CHECK SYSTEM
-	# returns true if white is in check
-	# checks for sliders
-	# checks for knights
-	# checks for pawns
+	# CHECK SYSTEM returns true if white is in check
 	def white_in_check(self, board, tile_n):
+		# self.print_board(board)
 		if self.check_black_sliders(board, tile_n) is True:
 			return True
 		if self.check_black_knights(board, tile_n) is True:
@@ -275,6 +288,8 @@ class IzzI:
 
 			return True
 		return False
+
+
 	def check_black_king(self, board, tile_n):
 		directions = [11, 10, 9, 1, -11, -10, -9, -1]
 		for direction in directions:
@@ -885,12 +900,12 @@ class IzzI:
 			if board[i] == 'o':
 				result.append(i)
 			# attack
-			if board[i] in self.black_pieces:
+			if board[i] in self.white_pieces:
 				# print("ATTACK WITH ROOK")
 				result.append(i)
 				break
 			# self block
-			if board[i] in self.white_pieces or board[i] == "K" or board[i] == "k":
+			if board[i] in self.black_pieces or board[i] == "K" or board[i] == "k":
 				break
 
 		# DOWN RIGHT
@@ -901,12 +916,12 @@ class IzzI:
 			if board[i] == 'o':
 				result.append(i)
 			# attack
-			if board[i] in self.black_pieces:
+			if board[i] in self.white_pieces:
 				# print("ATTACK WITH ROOK")
 				result.append(i)
 				break
 			# self block
-			if board[i] in self.white_pieces or board[i] == "K" or board[i] == "k":
+			if board[i] in self.black_pieces or board[i] == "K" or board[i] == "k":
 				break
 		# UP LEFT
 		i = tile_n
@@ -916,12 +931,12 @@ class IzzI:
 			if board[i] == 'o':
 				result.append(i)
 			# attack
-			if board[i] in self.black_pieces:
+			if board[i] in self.white_pieces:
 				# print("ATTACK WITH ROOK")
 				result.append(i)
 				break
 			# self block
-			if board[i] in self.white_pieces or board[i] == "K" or board[i] == "k":
+			if board[i] in self.black_pieces or board[i] == "K" or board[i] == "k":
 				break
 
 		# UP RIGHT
@@ -932,12 +947,12 @@ class IzzI:
 			if board[i] == 'o':
 				result.append(i)
 			# attack
-			if board[i] in self.black_pieces:
+			if board[i] in self.white_pieces:
 				# print("ATTACK WITH ROOK")
 				result.append(i)
 				break
 			# self block
-			if board[i] in self.white_pieces or board[i] == "K" or board[i] == "k":
+			if board[i] in self.black_pieces or board[i] == "K" or board[i] == "k":
 				break
 		return result
 
@@ -1160,12 +1175,12 @@ class IzzI:
 			if board[i] == 'o':
 				result.append(i)
 			# attack
-			if board[i] in self.black_pieces:
+			if board[i] in self.white_pieces:
 				# print("ATTACK WITH ROOK")
 				result.append(i)
 				break
 			# self block
-			if board[i] in self.white_pieces or board[i] == "K" or board[i] == "k":
+			if board[i] in self.black_pieces or board[i] == "K" or board[i] == "k":
 				break
 
 		# DOWN RIGHT
@@ -1176,12 +1191,12 @@ class IzzI:
 			if board[i] == 'o':
 				result.append(i)
 			# attack
-			if board[i] in self.black_pieces:
+			if board[i] in self.white_pieces:
 				# print("ATTACK WITH ROOK")
 				result.append(i)
 				break
 			# self block
-			if board[i] in self.white_pieces or board[i] == "K" or board[i] == "k":
+			if board[i] in self.black_pieces or board[i] == "K" or board[i] == "k":
 				break
 		# UP LEFT
 		i = tile_n
@@ -1191,11 +1206,11 @@ class IzzI:
 			if board[i] == 'o':
 				result.append(i)
 			# attack
-			if board[i] in self.black_pieces:
+			if board[i] in self.white_pieces:
 				result.append(i)
 				break
 			# self block
-			if board[i] in self.white_pieces or board[i] == "K" or board[i] == "k":
+			if board[i] in self.black_pieces or board[i] == "K" or board[i] == "k":
 				break
 
 		# UP RIGHT
@@ -1206,12 +1221,12 @@ class IzzI:
 			if board[i] == 'o':
 				result.append(i)
 			# attack
-			if board[i] in self.black_pieces:
+			if board[i] in self.white_pieces:
 				# print("ATTACK WITH ROOK")
 				result.append(i)
 				break
 			# self block
-			if board[i] in self.white_pieces or board[i] == "K" or board[i] == "k":
+			if board[i] in self.black_pieces or board[i] == "K" or board[i] == "k":
 				break
 
 		return result
@@ -1284,6 +1299,7 @@ class IzzI:
 			file = 'H'
 		else:
 			print("eror", file)
+		# print(rank)
 		return file, rank
 
 	def change_turns(self):
@@ -1336,12 +1352,160 @@ class IzzI:
 				extra += 2
 		return sq + 20 + extra
 
+	# def evaluate_state(self, state):
+	# 	# print("mobility diff: ", white_move_count-black_move_count)
+	# 	count = {'K': 0, 'Q': 0, 'R': 0, 'B': 0, 'N': 0, 'P': 0, 'k': 0, 'q': 0, 'r': 0, 'b': 0, 'n': 0, 'p': 0}
+	# 	# count = [0,0,0,0,0,0,0,0,0,0,0,0]
+	# 	# board = state[0]
+	# 	# for i in range(len(board)):
+	# 	# 	if board[i] == 'P':
+	# 	# 		count[5] += 1
+	# 	# 	elif board[i] == 'p':
+	# 	# 		count[11] += 1
+	# 	# 	elif board[i] == 'N':
+	# 	# 		count[4] += 1
+	# 	# 	elif board[i] == 'n':
+	# 	# 		count[10] += 1
+	# 	# 	elif board[i] == 'B':
+	# 	# 		count[3] += 1
+	# 	# 	elif board[i] == 'b':
+	# 	# 		count[9] += 1
+	# 	# 	elif board[i] == 'R':
+	# 	# 		count[2] += 1
+	# 	# 	elif board[i] == 'r':
+	# 	# 		count[8] += 1
+	# 	# 	elif board[i] == 'Q':
+	# 	# 		count[1] += 1
+	# 	# 	elif board[i] == 'q':
+	# 	# 		count[7] += 1
+	# 	# 	elif board[i] == 'K':
+	# 	# 		count[0] += 1
+	# 	# 	elif board[i] == 'k':
+	# 	# 		count[6] += 1
+	# 	for i in state[0]:
+	# 		if i in "KQRBNPkqrbnp":
+	# 			count[i] += 1
+	# 	# value = ((1000.0 * (count[0] - count[6])) + (9.0 * (count[1] - count[7])) +
+	# 	# 			 (5.0 * (count[2] - count[8])) + (3.0 * (count[3] - count[9])) +
+	# 	# 			 (3.25 * (count[4] - count[10])) + (1.0 * (count[5] - count[11])))
+	# 	# print(count)
+	# 	# value = ((100.0 * (count['K'] - count['k'])) +
+	# 	# print(count['K']-count['k'])
+	# 	value = 1000.0 * (count['K'] - count['k']) + (9.0 * (count['Q'] - count['q'])) + (
+	# 	5.0 * (count['R'] - count['r'])) + (3.0 * (count['B'] - count['b'])) \
+	# 			+ (3.25 * (count['N'] - count['n'])) + (1.0 * (count['P'] - count['p']))
+	# 	# +(.1 * (white_move_count - black_move_count)))
+	# 	# if state[1] == 1:
+	# 	# 	return value*-1
+	# 	# print("value", value)#,"state", state[1])
+	# 	return value
+
+	def copy_state(self, state):
+		board = list(state[0])
+		turn = state[1]
+		en_pass_sq = state[2]
+		half_move = state[3]
+		full_move = state[4]
+		castle_perm = list(state[5])
+		white_king_sq = state[6]
+		black_king_sq = state[7]
+		return board, turn, en_pass_sq, half_move, full_move, castle_perm, white_king_sq, black_king_sq
+
+	def best_move(self, state):
+		moves = self.get_all_moves_at_state(state)
+		if state[1] == 0:
+			current_score = -9999.0
+		else:
+			current_score = 9999.0
+		i = -1
+		move_n = -1
+		turn = state[1]
+		for i in range(len(moves)):
+			new_state = self.move_at_state(state, moves[i])
+			score = self.minimaxed(2, Node(new_state), -999, 999)
+			if turn == 0:
+				if score > current_score:
+					move_n = i
+					current_score = score
+				elif score == current_score:
+					if random.randint(1, 5) == 3:
+						move_n = i
+						current_score = score
+			elif turn == 1:
+				if score < current_score:
+					move_n = i
+					current_score = score
+				elif score == current_score:
+					if random.randint(1, 5) == 3:
+						move_n = i
+						current_score = score
+		self.print_move(moves[move_n])
+		if move_n == -1:
+			print("FUCKK")
+		return move_n
+
+	def minimaxed(self, depth, node, alpha, beta):
+		state = node.get_state()
+		player_turn = state[1]
+		if depth == 0:
+			b_val = self.evaluate_state(state)
+			return b_val
+
+		legal_moves = self.get_all_moves_at_state(state)
+		if len(legal_moves) == 0:
+			print("CHECK MATE")
+			if player_turn == 0:
+				return -999
+			else:
+				return 999
+
+		if player_turn == 0:
+			best_value = -9999
+			history = []
+			for i in range(len(legal_moves)):
+				moveset = legal_moves[i]
+				history.append(self.copy_state(state))
+				state = self.run_move_at_state(state, moveset)
+				node = Node(state)
+				value = self.minimaxed(depth - 1, node, alpha, beta)
+				state = history.pop()
+				best_value = max(best_value, value)
+				alpha = max(alpha, best_value)
+				if beta <= alpha:
+					# print("get pruned")
+					break
+			return best_value
+		elif player_turn == 1:
+			history = []
+			best_value = 9999
+			for i in range(len(legal_moves)):
+				moveset = legal_moves[i]
+				history.append(state)
+				state = self.run_move_at_state(state, moveset)
+				node = Node(state)
+				value = self.minimaxed(depth - 1, node, alpha, beta)
+				state = history.pop()
+				best_value = min(best_value, value)
+				beta = min(beta, best_value)
+				if beta <= alpha:
+					# print("get pruned")
+					break
+			return best_value
+
+
 
 if __name__ == '__main__':
 	engine = IzzI()
 	i = 0
+	current_state = init_state
 	while i < 300:
-		engine.run_chess()
-		i += 11
+		all_moves = engine.get_all_moves_at_state(current_state)
+		random_int = random.randint(0, len(all_moves)-1)
+		next_state = engine.run_move_at_state(current_state, all_moves[random_int])
+
+
+		# engine.run_chess()
+		# engine.minimaxroot(2)
+		i += 1
 
 
