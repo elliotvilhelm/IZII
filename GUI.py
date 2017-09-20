@@ -1,4 +1,4 @@
-import chess_woke
+import Engine
 import pygame
 from Graphics_Constants import *
 import random
@@ -19,7 +19,7 @@ init_board = "xxxxxxxxxx" \
 			"xxxxxxxxxx"
 init_board = list(init_board)
 init_state = [init_board, 0, -1, 0, 1, [1,1,1,1], init_board.index('K'), init_board.index('k')]
-engine = chess_woke.IzzI()
+engine = Engine.IzzI()
 
 
 
@@ -37,7 +37,7 @@ class GUI:
 		# Create our objects and set the data
 		self.done = False
 		self.clock = pygame.time.Clock()
-		self.BackGround = Background('chess_board.jpg', [0, 0])
+		self.BackGround = Background('images/chess_board.jpg', [0, 0])
 		self.score = 0
 		self.game_over = False
 		self.initialize_images()
