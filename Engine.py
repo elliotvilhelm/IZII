@@ -21,17 +21,6 @@ init_state = [init_board, 0, -1, 0, 1, [1,1,1,1], init_board.index('K'), init_bo
 
 
 class Node:
-	# def __init__(self):
-	# 	self.board = []
-	# 	self.en_passant_sq = -1
-	# 	self.turn = -1
-	# 	self.half_move = -1
-	# 	self.full_move = -1
-	# 	self.castle_perm = []
-	# 	self.white_king_sq = -1
-	# 	self.black_king_sq = -1
-	# 	self.children = []
-
 	def __init__(self, state):
 		self.children = []
 		self.board = list(state[0])
@@ -67,7 +56,7 @@ class Node:
 		self.children.append(node)
 
 
-class IzzI:
+class IZII:
 
 	def __init__(self, state=None):
 
@@ -958,7 +947,7 @@ class IzzI:
 
 	def get_white_knight_moves(self, board, tile_n):
 		result = []
-		directions = [21, 19, 12, 8, -21, -19, -8]
+		directions = [21, 19, 12, 8, -21, -19, -8, -12]
 		for i in range(len(directions)):
 			if board[tile_n+directions[i]] == 'o' or board[tile_n+directions[i]] in self.black_pieces:
 				result.append(tile_n+directions[i])
@@ -966,7 +955,7 @@ class IzzI:
 
 	def get_black_knight_moves(self, board, tile_n):
 		result = []
-		directions = [21, 19, 12, 8, -21, -19, -8]
+		directions = [21, 19, 12, 8, -21, -19, -8, -12]
 		for i in range(len(directions)):
 			if board[tile_n+directions[i]] == 'o' or board[tile_n+directions[i]] in self.white_pieces:
 				result.append(tile_n+directions[i])
@@ -1238,6 +1227,7 @@ class IzzI:
 	# HELPER FUNCTIONS
 	def RF_sq64(self, file, rank):
 		sq = 0
+		file = file.upper()
 		if file == 'A':
 			file = 1
 		elif file == 'B':
@@ -1352,54 +1342,6 @@ class IzzI:
 				extra += 2
 		return sq + 20 + extra
 
-	# def evaluate_state(self, state):
-	# 	# print("mobility diff: ", white_move_count-black_move_count)
-	# 	count = {'K': 0, 'Q': 0, 'R': 0, 'B': 0, 'N': 0, 'P': 0, 'k': 0, 'q': 0, 'r': 0, 'b': 0, 'n': 0, 'p': 0}
-	# 	# count = [0,0,0,0,0,0,0,0,0,0,0,0]
-	# 	# board = state[0]
-	# 	# for i in range(len(board)):
-	# 	# 	if board[i] == 'P':
-	# 	# 		count[5] += 1
-	# 	# 	elif board[i] == 'p':
-	# 	# 		count[11] += 1
-	# 	# 	elif board[i] == 'N':
-	# 	# 		count[4] += 1
-	# 	# 	elif board[i] == 'n':
-	# 	# 		count[10] += 1
-	# 	# 	elif board[i] == 'B':
-	# 	# 		count[3] += 1
-	# 	# 	elif board[i] == 'b':
-	# 	# 		count[9] += 1
-	# 	# 	elif board[i] == 'R':
-	# 	# 		count[2] += 1
-	# 	# 	elif board[i] == 'r':
-	# 	# 		count[8] += 1
-	# 	# 	elif board[i] == 'Q':
-	# 	# 		count[1] += 1
-	# 	# 	elif board[i] == 'q':
-	# 	# 		count[7] += 1
-	# 	# 	elif board[i] == 'K':
-	# 	# 		count[0] += 1
-	# 	# 	elif board[i] == 'k':
-	# 	# 		count[6] += 1
-	# 	for i in state[0]:
-	# 		if i in "KQRBNPkqrbnp":
-	# 			count[i] += 1
-	# 	# value = ((1000.0 * (count[0] - count[6])) + (9.0 * (count[1] - count[7])) +
-	# 	# 			 (5.0 * (count[2] - count[8])) + (3.0 * (count[3] - count[9])) +
-	# 	# 			 (3.25 * (count[4] - count[10])) + (1.0 * (count[5] - count[11])))
-	# 	# print(count)
-	# 	# value = ((100.0 * (count['K'] - count['k'])) +
-	# 	# print(count['K']-count['k'])
-	# 	value = 1000.0 * (count['K'] - count['k']) + (9.0 * (count['Q'] - count['q'])) + (
-	# 	5.0 * (count['R'] - count['r'])) + (3.0 * (count['B'] - count['b'])) \
-	# 			+ (3.25 * (count['N'] - count['n'])) + (1.0 * (count['P'] - count['p']))
-	# 	# +(.1 * (white_move_count - black_move_count)))
-	# 	# if state[1] == 1:
-	# 	# 	return value*-1
-	# 	# print("value", value)#,"state", state[1])
-	# 	return value
-
 	def copy_state(self, state):
 		board = list(state[0])
 		turn = state[1]
@@ -1411,7 +1353,7 @@ class IzzI:
 		black_king_sq = state[7]
 		return board, turn, en_pass_sq, half_move, full_move, castle_perm, white_king_sq, black_king_sq
 
-	def best_move(self, state):
+	def best_move(self, state, depth=2):
 		moves = self.get_all_moves_at_state(state)
 		if state[1] == 0:
 			current_score = -9999.0
@@ -1422,7 +1364,7 @@ class IzzI:
 		turn = state[1]
 		for i in range(len(moves)):
 			new_state = self.move_at_state(state, moves[i])
-			score = self.minimaxed(2, Node(new_state), -999, 999)
+			score = self.minimaxed(depth, Node(new_state), -999, 999)
 			if turn == 0:
 				if score > current_score:
 					move_n = i
