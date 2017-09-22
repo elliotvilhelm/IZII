@@ -2,14 +2,14 @@ import Engine
 import pygame
 from Graphics_Constants import *
 import random
+import string
 
-# Initialize chess engine
-
+# Initialize chess board
 init_board = "xxxxxxxxxx" \
 			"xxxxxxxxxx" \
 			"xrnbqkbnrx" \
 			"xppppppppx" \
-			"xoooooooox" \
+			"xooooooopx" \
 			"xoooooooox" \
 			"xoooooooox" \
 			"xoooooooox" \
@@ -18,12 +18,9 @@ init_board = "xxxxxxxxxx" \
 			"xxxxxxxxxx" \
 			"xxxxxxxxxx"
 init_board = list(init_board)
-init_state = [init_board, 0, -1, 0, 1, [1,1,1,1], init_board.index('K'), init_board.index('k')]
+init_state = [init_board, 0, -1, 0, 1, [0, 0, 0, 0], init_board.index('K'), init_board.index('k')]
 engine = Engine.IZII()
 
-
-
-import string
 
 class GUI:
 	def __init__(self):
@@ -198,7 +195,7 @@ class GUI:
 			# self.done = self.process_events()
 			self.process_events()
 			self.display_frame(self.screen)
-			self.clock.tick(2)
+			self.clock.tick(1)
 		if self.done is True:
 			pygame.quit()
 
@@ -237,24 +234,35 @@ class GUI:
 
 	def display_frame(self, screen):
 		""" Display everything to the screen for the game. """
-
-
+		wk_move = [0, 0]
+		wq_move = [1, 0]
+		bk_move = [1, 1]
+		bq_move = [0, 1]
 
 		all_moves = engine.get_all_moves_at_state(self.current_state)
+		# print(all_moves)
 		if len(all_moves) == 0:
-			print("CHECK MATE")
+			print("CHECK MATE IN GUI")
 		else:
+
+			# sq120_move = []
 			self.history.append(self.current_state)
-			if self.current_state[1] == 1:
+			if self.current_state[1] == 1 or self.current_state[1] == 0:
+				# input()
+				# input()
+				# pygame.display.flip()
 				n = engine.best_move(self.current_state, 3)
 				self.current_state = engine.run_move_at_state(self.current_state, all_moves[n])
-
+				# print("currrr: ", self.current_state[5])
 			elif self.current_state[1] == 0:
+
+				print("all moves in gui: ", all_moves)
 				# all_moves = engine.get_all_moves_at_state(self.current_state)
 				from_sq = self.ask(screen, "Enter from sq: ")
 				to_sq = self.ask(screen, "Enter to sq: ")
 				if from_sq == -1 or to_sq == -1:
 					print("undo")
+
 				else:
 
 					while len(from_sq) != 2 or len(to_sq) != 2:
@@ -264,9 +272,21 @@ class GUI:
 						from_sq = self.ask(screen, "Enter from sq: ")
 						to_sq = self.ask(screen, "Enter to sq: ")
 
-					from_sq64 = engine.RF_sq64(from_sq[0], int(from_sq[1]))
-					to_sq64 = engine.RF_sq64(to_sq[0], int(to_sq[1]))
-					sq120_move = [engine.sq64_to_sq120(from_sq64), engine.sq64_to_sq120(to_sq64)]
+
+
+					if from_sq == "e1" and to_sq == "g1":  # white king side
+						sq120_move = wk_move
+					elif from_sq == "e1" and to_sq == "c1":  # wq
+						sq120_move = wq_move
+					elif from_sq == "e8" and to_sq == "g8":  # bk
+						sq120_move = bk_move
+					elif from_sq == "e8" and to_sq == "c8":  # bq
+						sq120_move = bq_move
+
+					else:
+						from_sq64 = engine.RF_sq64(from_sq[0], int(from_sq[1]))
+						to_sq64 = engine.RF_sq64(to_sq[0], int(to_sq[1]))
+						sq120_move = [engine.sq64_to_sq120(from_sq64), engine.sq64_to_sq120(to_sq64)]
 
 					while sq120_move not in all_moves:
 						from_sq = self.ask(screen, "Enter from sq: ")
@@ -277,9 +297,24 @@ class GUI:
 						while not from_sq[1].isdigit() or not to_sq[1].isdigit():
 							from_sq = self.ask(screen, "Enter from sq: ")
 							to_sq = self.ask(screen, "Enter to sq: ")
-						from_sq64 = engine.RF_sq64(from_sq[0], int(from_sq[1]))
-						to_sq64 = engine.RF_sq64(to_sq[0], int(to_sq[1]))
-						sq120_move = [engine.sq64_to_sq120(from_sq64), engine.sq64_to_sq120(to_sq64)]
+
+						if from_sq == "e1" and to_sq == "g1":  # wk
+							sq120_move = wk_move
+						elif from_sq == "e1" and to_sq == "c1":  # wq
+							sq120_move = wq_move
+						elif from_sq == "e8" and to_sq == "g8":  # bk
+							sq120_move = bk_move
+						elif from_sq == "e8" and to_sq == "c8":  # bq
+							sq120_move = bq_move
+						else:
+							from_sq64 = engine.RF_sq64(from_sq[0], int(from_sq[1]))
+							to_sq64 = engine.RF_sq64(to_sq[0], int(to_sq[1]))
+							sq120_move = [engine.sq64_to_sq120(from_sq64), engine.sq64_to_sq120(to_sq64)]
+						#
+						# from_sq64 = engine.RF_sq64(from_sq[0], int(from_sq[1]))
+						# to_sq64 = engine.RF_sq64(to_sq[0], int(to_sq[1]))
+						# sq120_move = [engine.sq64_to_sq120(from_sq64), engine.sq64_to_sq120(to_sq64)]
+					print("MOVEE:::", sq120_move)
 					self.current_state = engine.run_move_at_state(self.current_state, sq120_move)
 
 			self.board = self.current_state[0]
@@ -326,6 +361,27 @@ class GUI:
 		# 					[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
 		screen.fill([255, 255, 255])
 		screen.blit(self.BackGround.image, self.BackGround.rect)
+		turn = self.current_state[1]
+		if turn == 0:
+			turn = 'W'
+		else:
+			turn = 'B'
+		en_pass = self.current_state[2]
+		wc_k = str(self.current_state[5][0])
+		wc_q = str(self.current_state[5][1])
+		bc_k = str(self.current_state[5][2])
+		bc_q = str(self.current_state[5][3])
+		if en_pass == -1:
+			self.display_text(screen, 'en pass: -1', 200, 480)
+		else:
+			rank, file = engine.sq64_to_RF(engine.sq120_sq64(en_pass))
+			self.display_text(screen, 'en pass: ' + rank + file, 200, 480)
+
+		self.display_text(screen, 'turn: ' + turn, 200, 460)
+		self.display_text(screen, 'wc_k: ' + wc_k, 300, 460)
+		self.display_text(screen, 'wc_q: ' + wc_q, 300, 480)
+		self.display_text(screen, 'bc_k: ' + bc_k, 400, 460)
+		self.display_text(screen, 'bc_q: ' + bc_q, 400, 480)
 		for i in range(20, 120):
 			xbuffer = -35
 			ybuffer = -35
@@ -366,17 +422,27 @@ class GUI:
 			if self.board[i] == 'n':
 				screen.blit(self.black_knight,
 							[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
+
+		# print("castle permissions: ", self.current_state[5])
+
+		# pygame.display.flip()
+
 		pygame.display.flip()
 
 	def display_box(self, screen, name):
-		fontobject = pygame.font.Font(None, 30)
+		fontobject = pygame.font.Font(None, 20)
 		# NAME BOX
-		pygame.draw.rect(screen, (0, 0, 0), (0, 452, 300, 30), 0)
+		pygame.draw.rect(screen, (0, 0, 0), (0, 452, 200, 30), 0)
 		# pygame.draw.rect(screen, WHITE, (100, 450, 304, 34), 1)
 		if len(name) != 0:
 			screen.blit(fontobject.render(name, 1, (255, 255, 255)),
 						(2, 460))
 		pygame.display.flip()
+	def display_text(self, screen, text, location_x, location_y):
+		fontobject = pygame.font.Font(None, 20)
+		screen.blit(fontobject.render(text, 1, (0, 0, 0)), (location_x, location_y))
+		pygame.display.flip()
+
 
 	def ask(self, screen, question1):
 		pygame.font.init()
@@ -408,6 +474,8 @@ class GUI:
 				return event.key
 			else:
 				pass
+
+
 class Background(pygame.sprite.Sprite):
 	def __init__(self, image_file, location):
 		pygame.sprite.Sprite.__init__(self)  # call Sprite initializer
@@ -415,39 +483,6 @@ class Background(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.left, self.rect.top = location
 
-# b = "xxxxxxxxxx" \
-# 	"xxxxxxxxxx" \
-# 	"xrnbqkbnrx" \
-# 	"xppppppppx" \
-# 	"xoooooooox" \
-# 	"xoooooooox" \
-# 	"xoooooooox" \
-# 	"xoooooooox" \
-# 	"xPPPPPPPPx" \
-# 	"xRNBQKBNRx" \
-# 	"xxxxxxxxxx" \
-# 	"xxxxxxxxxx"
-# # 0 - 9
-# # 10 - 19
-# # 20 - 29  20, 1, 2, 3, 4, 5, 6, 7, 8, 29
-# # 30 - 39 .. 30, 9, 10, 11, 12, 13, 14, 15, 16, 39
-# # 120 - 129
-#
-# b = list(b)
-
-
 
 gui = GUI()
 gui.run_steps()
-
-# test_transforms()
-# test_RF_sq64()
-# test_sq64()
-# test_sq120()
-# print_full_board(b)
-# test_sq64_RF()
-
-# test_white_pawn()
-# run_chess()
-
-
