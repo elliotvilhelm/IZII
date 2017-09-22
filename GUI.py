@@ -9,7 +9,7 @@ init_board = "xxxxxxxxxx" \
 			"xxxxxxxxxx" \
 			"xrnbqkbnrx" \
 			"xppppppppx" \
-			"xooooooopx" \
+			"xoooooooox" \
 			"xoooooooox" \
 			"xoooooooox" \
 			"xoooooooox" \
