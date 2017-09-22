@@ -90,7 +90,6 @@ class IZII:
 				moveset = legal_moves[i]
 				history.append(self.copy_state(state))
 				state = self.run_move_at_state(state, moveset)
-				node = Node(state)
 				value = self.minimax(depth - 1, state, alpha, beta)
 				state = history.pop()
 				best_value = max(best_value, value)
@@ -114,7 +113,6 @@ class IZII:
 				moveset = legal_moves[i]
 				history.append(state)
 				state = self.run_move_at_state(state, moveset)
-				node = Node(state)
 				value = self.minimax(depth - 1, state, alpha, beta)
 				state = history.pop()
 				best_value = min(best_value, value)

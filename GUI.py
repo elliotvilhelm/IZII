@@ -20,7 +20,10 @@ init_board = "xxxxxxxxxx" \
 init_board = list(init_board)
 init_state = [init_board, 0, -1, 0, 1, [0, 0, 0, 0], init_board.index('K'), init_board.index('k')]
 engine = Engine.IZII()
-
+wk_move = [0, 0]
+wq_move = [1, 0]
+bk_move = [1, 1]
+bq_move = [0, 1]
 
 class GUI:
 	def __init__(self):
@@ -110,6 +113,7 @@ class GUI:
 				screen.blit(self.black_knight,
 							[self.coordinates[sq64 - 1][1] * 52 + xbuffer,
 							 self.coordinates[sq64 - 1][0] * 52 + ybuffer])
+
 	def initialize_images(self):
 		self.white_king = pygame.image.load("images/white_king.gif").convert_alpha()
 		self.white_king_rect = self.white_king.get_rect()
@@ -234,10 +238,7 @@ class GUI:
 
 	def display_frame(self, screen):
 		""" Display everything to the screen for the game. """
-		wk_move = [0, 0]
-		wq_move = [1, 0]
-		bk_move = [1, 1]
-		bq_move = [0, 1]
+
 
 		all_moves = engine.get_all_moves_at_state(self.current_state)
 		# print(all_moves)
@@ -247,7 +248,7 @@ class GUI:
 
 			# sq120_move = []
 			self.history.append(self.current_state)
-			if self.current_state[1] == 1 or self.current_state[1] == 0:
+			if self.current_state[1] == 1: # or self.current_state[1] == 0:
 				# input()
 				# input()
 				# pygame.display.flip()
@@ -256,7 +257,7 @@ class GUI:
 				# print("currrr: ", self.current_state[5])
 			elif self.current_state[1] == 0:
 
-				print("all moves in gui: ", all_moves)
+				# print("all moves in gui: ", all_moves)
 				# all_moves = engine.get_all_moves_at_state(self.current_state)
 				from_sq = self.ask(screen, "Enter from sq: ")
 				to_sq = self.ask(screen, "Enter to sq: ")
@@ -314,7 +315,7 @@ class GUI:
 						# from_sq64 = engine.RF_sq64(from_sq[0], int(from_sq[1]))
 						# to_sq64 = engine.RF_sq64(to_sq[0], int(to_sq[1]))
 						# sq120_move = [engine.sq64_to_sq120(from_sq64), engine.sq64_to_sq120(to_sq64)]
-					print("MOVEE:::", sq120_move)
+					# print("MOVEE:::", sq120_move)
 					self.current_state = engine.run_move_at_state(self.current_state, sq120_move)
 
 			self.board = self.current_state[0]
@@ -438,11 +439,11 @@ class GUI:
 			screen.blit(fontobject.render(name, 1, (255, 255, 255)),
 						(2, 460))
 		pygame.display.flip()
+
 	def display_text(self, screen, text, location_x, location_y):
 		fontobject = pygame.font.Font(None, 20)
 		screen.blit(fontobject.render(text, 1, (0, 0, 0)), (location_x, location_y))
 		pygame.display.flip()
-
 
 	def ask(self, screen, question1):
 		pygame.font.init()
@@ -467,6 +468,7 @@ class GUI:
 			self.display_box(screen, question1 + "-> " + "".join(name))
 
 		return "".join(name)
+
 	def get_key(self):
 		while 1:
 			event = pygame.event.poll()
