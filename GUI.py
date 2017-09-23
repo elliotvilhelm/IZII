@@ -7,13 +7,13 @@ import string
 # Initialize chess board
 init_board = "xxxxxxxxxx" \
 			"xxxxxxxxxx" \
-			"xrnbqkbnrx" \
-			"xppppppppx" \
+			"xoooqkooox" \
 			"xoooooooox" \
 			"xoooooooox" \
 			"xoooooooox" \
 			"xoooooooox" \
-			"xPPPPPPPPx" \
+			"xoooooooox" \
+			"xoooooooox" \
 			"xRNBQKBNRx" \
 			"xxxxxxxxxx" \
 			"xxxxxxxxxx"
@@ -248,7 +248,7 @@ class GUI:
 
 			# sq120_move = []
 			self.history.append(self.current_state)
-			if self.current_state[1] == 1: # or self.current_state[1] == 0:
+			if self.current_state[1] == 1 or self.current_state[1] == 0:
 				# input()
 				# input()
 				# pygame.display.flip()

@@ -104,7 +104,7 @@ class IZII:
 			if len(legal_moves) == 0:
 				# print("no moves for black")
 				# self.print_board(state[0])
-				if self.black_in_check(state[0], state[6]):
+				if self.black_in_check(state[0], state[7]):
 					print("real mate found for white")
 					return 9999
 				else:
