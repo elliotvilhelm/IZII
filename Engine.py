@@ -48,6 +48,7 @@ class IZII:
 		self.print_move(moves[move_n])
 		if move_n == -1:
 			print("FUCKK")
+		# self.print_move(moves[move_n])
 		return move_n
 
 	def minimax(self, depth, state, alpha, beta):
@@ -143,17 +144,18 @@ class IZII:
 		# 	if state[5][0] == 2 and state[5][1] == 2:
 		# 		value += 10
 		# if state[1] == 0:
+		castle_mod = .25
 		if state[5][0] == 2 or state[5][1] == 2:
 			# print("white castle")
-				value += 1
+				value += 1 * castle_mod
 		elif state[5][0] == -1 or state[5][1] == -1:
-				value -= 1
+				value -= 1*castle_mod
 
 		if state[5][2] == 2 or state[5][3] == 2:
 			# print("white castle")
-				value -= 1
+				value -= 1 * castle_mod
 		elif state[5][2] == -1 or state[5][3] == -1:
-				value += 1
+				value += 1 * castle_mod
 		# if state[5][2] == 2 or state[5][3] == 2:
 		# 	# print("white castle")
 		# 		value -= 1000
@@ -236,15 +238,16 @@ class IZII:
 			board[95] = "o"
 			board[96] = 'R'
 			board[97] = 'K'
+			white_king_sq = 97
 			board[98] = 'o'
 			castle_perm[0] = 2
 			castle_perm[1] = 2
-
 		elif from_tile_n == 1 and to_tile_n == 0:  # queen side castle
 			# print("I castled!")
 			board[91] = "o"
 			board[92] = 'o'
 			board[93] = 'K'
+			white_king_sq = 93
 			board[94] = 'R'
 			board[95] = 'o'
 			castle_perm[0] = 2
@@ -254,6 +257,7 @@ class IZII:
 			board[25] = "o"
 			board[26] = 'r'
 			board[27] = 'k'
+			black_king_sq = 27
 			board[28] = 'o'
 			castle_perm[2] = 2
 			castle_perm[3] = 2
@@ -262,6 +266,7 @@ class IZII:
 			board[21] = "o"
 			board[22] = 'r'
 			board[23] = 'k'
+			black_king_sq = 23
 			board[24] = 'o'
 			board[25] = 'o'
 			castle_perm[2] = 2
@@ -289,11 +294,16 @@ class IZII:
 		# check if the path is clear
 		castle_perm = state[5][0]
 		board = state[0]
-		if self.white_in_check(state[0], state[6]):
+		if castle_perm == -1:
 			return False
-		elif castle_perm == -1:
+		elif castle_perm == 2:
 			return False
-		elif board[96] == 'o' and board[97] == 'o' and castle_perm != -1 and castle_perm != 2:
+		elif self.white_in_check(state[0], state[6]):
+			return False
+		elif self.white_in_check(state[0], state[6] + 1):
+			return False
+
+		elif board[96] == 'o' and board[97] == 'o':# and castle_perm != -1 and castle_perm != 2:
 			# self.print_board(board)
 
 			# print("wk clear")
@@ -308,11 +318,16 @@ class IZII:
 		# check if the path is clear
 		board = state[0]
 		castle_perm = state[5][1]
-		if self.white_in_check(state[0], state[6]):
+		if castle_perm == -1:
 			return False
-		elif castle_perm == -1:
+		elif castle_perm == 2:
 			return False
-		elif board[92] == 'o' and board[93] == 'o' and board[94] == 'o' and castle_perm != -1 and castle_perm != 2:
+		elif self.white_in_check(state[0], state[6]):
+			return False
+		elif self.white_in_check(state[0], state[6]-1):
+			return False
+
+		elif board[92] == 'o' and board[93] == 'o' and board[94] == 'o':# and castle_perm != -1 and castle_perm != 2:
 			# self.print_board(board)
 			# print("wq clear")
 			return True
@@ -326,11 +341,16 @@ class IZII:
 		# check if the path is clear
 		board = state[0]
 		castle_perm = state[5][2]
-		if self.black_in_check(state[0], state[7]):
+		if state[5][0] == -1:
 			return False
-		elif state[5][0] == -1:
+		elif state[5][0] == 2:
 			return False
-		elif board[26] == 'o' and board[27] == 'o' and castle_perm != -1:
+		elif self.black_in_check(state[0], state[7]):
+			return False
+		elif self.black_in_check(state[0], state[7]+1):
+			return False
+
+		elif board[26] == 'o' and board[27] == 'o': # and castle_perm != -1:
 			# self.print_board(board)
 			# print("bk clear")
 			return True
@@ -344,10 +364,16 @@ class IZII:
 		# check if the path is clear
 		board = state[0]
 		castle_perm = state[5][3]
-		if self.black_in_check(state[0], state[7]):
+
+		if castle_perm == -1:
 			return False
-		elif castle_perm == -1:
+		elif castle_perm == 2:
 			return False
+		elif self.black_in_check(state[0], state[7]):
+			return False
+		elif self.black_in_check(state[0], state[7] - 1):
+			return False
+
 		elif board[22] == 'o' and board[23] == 'o' and board[24] == 'o' and castle_perm != -1:
 			# self.print_board(board)
 			# print("bq clear")
@@ -420,6 +446,7 @@ class IZII:
 	def check_black_knights(self, board, tile_n):
 		directions = [21, 19, 12, 8, -21, -19, -8, -12]
 		for direction in directions:
+			# print(tile_n+direction)
 			if board[tile_n+direction] == 'n':
 				return True
 		return False

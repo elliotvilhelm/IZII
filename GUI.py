@@ -7,16 +7,17 @@ import string
 # Initialize chess board
 init_board = "xxxxxxxxxx" \
 			"xxxxxxxxxx" \
-			"xoooqkooox" \
+			"xrnbqkbnrx" \
+			"xppppppppx" \
 			"xoooooooox" \
 			"xoooooooox" \
 			"xoooooooox" \
 			"xoooooooox" \
-			"xoooooooox" \
-			"xoooooooox" \
+			"xPPPPPPPPx" \
 			"xRNBQKBNRx" \
 			"xxxxxxxxxx" \
 			"xxxxxxxxxx"
+
 init_board = list(init_board)
 init_state = [init_board, 0, -1, 0, 1, [0, 0, 0, 0], init_board.index('K'), init_board.index('k')]
 engine = Engine.IZII()
@@ -247,6 +248,9 @@ class GUI:
 		else:
 
 			# sq120_move = []
+			for i in range(len(all_moves)):
+				print(i)
+				engine.print_move(all_moves[i])
 			self.history.append(self.current_state)
 			if self.current_state[1] == 1 or self.current_state[1] == 0:
 				# input()
