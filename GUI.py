@@ -252,7 +252,7 @@ class GUI:
 				print(i)
 				engine.print_move(all_moves[i])
 			self.history.append(self.current_state)
-			if self.current_state[1] == 1 or self.current_state[1] == 0:
+			if self.current_state[1] == 1:  #or self.current_state[1] == 0:
 				# input()
 				# input()
 				# pygame.display.flip()
