@@ -1,6 +1,7 @@
 # TO DO : fix castling through checked squares, also castle perm seems to stay 1 once it is 1
 # TO DO: Add full move half move and castle permission updates
 import random
+from positional_board_values import *
 
 
 class IZII:
@@ -13,11 +14,15 @@ class IZII:
 		self.black_sliders = "qrb"
 		self.white_sliders = "QRB"
 		self.all_pieces = "KQRBNPkqrbnp"
-
+		self.ranks = "87654321"
+		self.sq120 = []
+		self.init_sq120_sq64()
 	# Algorithm
 	def best_move(self, state, depth=2):
 		# print("finding the best move")
 		moves = self.get_all_moves_at_state(state)
+		if moves is None:
+			return None
 		# print(state[5], moves)
 		if state[1] == 0:
 			current_score = -9999.0
@@ -45,11 +50,8 @@ class IZII:
 					if random.randint(1, 5) == 3:
 						move_n = i
 						current_score = score
-		self.print_move(moves[move_n])
-		if move_n == -1:
-			print("FUCKK")
-		# self.print_move(moves[move_n])
-		return move_n
+		print(moves, move_n)
+		return moves[move_n]
 
 	def minimax(self, depth, state, alpha, beta):
 		# state = node.get_state()
@@ -57,37 +59,23 @@ class IZII:
 
 		if depth == 0:
 			b_val = self.evaluate_state(state)
-			# print("board value: ", b_val)
-			# self.print_board(state[0])
 			return b_val
 		legal_moves = self.get_all_moves_at_state(state)
-		# if len(legal_moves) == 0:
-		# 	# print("MATE FOUND IN MINIMAX")
-		# 	# self.print_board(state[0])
-		# 	if player_turn == 0:
-		# 		print("BLACK WINS")
-		# 		return -9999
-		# 	else:
-		# 		print("WHOTE WINS")
-		# 		return 9999
 
-		# else:
 		if player_turn == 0:
 			best_value = -999
 			history = []
-
-
-			if len(legal_moves) == 0:
-				# print("no moves for white")
-				# self.print_board(state[0])
+			if len(legal_moves) is 0:
 				if self.white_in_check(state[0], state[6]):
-					print("real mate found for black")
+					# print("real mate found for black")
+					# self.print_board(state[0])
 					return -9999
 				else:
-					return 999
-				# best_value = -999999
-			for i in range(len(legal_moves)):
+					print("stale mate for white")
+					self.print_board(state[0])
 
+					return 9999
+			for i in range(len(legal_moves)):
 				moveset = legal_moves[i]
 				history.append(self.copy_state(state))
 				state = self.run_move_at_state(state, moveset)
@@ -103,12 +91,12 @@ class IZII:
 			history = []
 			best_value = 999
 			if len(legal_moves) == 0:
-				# print("no moves for black")
-				# self.print_board(state[0])
 				if self.black_in_check(state[0], state[7]):
-					print("real mate found for white")
+					# print("real mate found for white")
+					# self.print_board(state[0])
 					return 9999
 				else:
+					print("stale mate for black")
 					return -999
 			for i in range(len(legal_moves)):
 				moveset = legal_moves[i]
@@ -119,22 +107,21 @@ class IZII:
 				best_value = min(best_value, value)
 				beta = min(beta, best_value)
 				if beta <= alpha:
-					# print("get pruned")
 					break
 			return best_value
 
 	def evaluate_state(self, state):
-
+	# P = 100
+	# N = 320
+	# B = 330
+	# R = 500
+	# Q = 900
+	# K = 20000
 	# print("mobility diff: ", white_move_count-black_move_count)
 		count = {'K': 0, 'Q': 0, 'R': 0, 'B': 0, 'N': 0, 'P': 0, 'k': 0, 'q': 0, 'r': 0, 'b': 0, 'n': 0, 'p': 0}
-		for i in state[0]:
-			if i in "KQRBNPkqrbnp":
-				count[i] += 1
-		value = ((1000.0 * (count['K'] - count['k'])) + (9.0 * (count['Q'] - count['q'])) +
-				(5.0 * (count['R'] - count['r'])) + (3.0 * (count['B'] - count['b'])) +
-				(3.25 * (count['N'] - count['n'])) + (1.0 * (count['P'] - count['p'])))
-				# +(.1 * (white_move_count - black_move_count)))
 
+		board = state[0][20:100]
+		# print("board", board)
 		# value = 0
 		# white_castle = 0
 		# black_castle = 0
@@ -143,7 +130,59 @@ class IZII:
 		# 		value -= 1
 		# 	if state[5][0] == 2 and state[5][1] == 2:
 		# 		value += 10
-		# if state[1] == 0:
+		# if state[1] == 0:or i in board:
+		white_pawn_pos = 0.0
+		black_pawn_pos = 0.0
+		white_knight_pos = 0.0
+		black_knight_pos = 0.0
+
+		white_bishop_pos = 0.0
+		black_bishop_pos = 0.0
+
+		white_rook_pos = 0.0
+		black_rook_pos = 0.0
+
+		white_queen_pos = 0.0
+		black_queen_pos = 0.0
+		for i in range(len(board)):
+			if board[i] == 'x' or board[i] == 'o':
+				pass
+			else:
+				count[board[i]] += 1
+				safe_i = self.sq120_sq64(i + 20) - 1
+				if board[i] == 'P':
+					white_pawn_pos += white_pawn_pos_table[safe_i]
+				elif board[i] == 'p':
+					black_pawn_pos += black_pawn_pos_table[safe_i]
+				elif board[i] == 'N':
+					white_knight_pos += white_knight_pos_table[safe_i]
+				elif board[i] == 'n':
+					black_knight_pos += black_knight_pos_table[safe_i]
+				elif board[i] == 'B':
+					white_bishop_pos += white_bishop_pos_table[safe_i]
+				elif board[i] == 'b':
+					black_bishop_pos += black_bishop_pos_table[safe_i]
+				elif board[i] == 'R':
+					white_rook_pos += white_rook_pos_table[safe_i]
+				elif board[i] == 'r':
+					black_rook_pos += black_rook_pos_table[safe_i]
+				elif board[i] == 'Q':
+					white_queen_pos += white_queen_pos_table[safe_i]
+				elif board[i] == 'q':
+					black_queen_pos += black_queen_pos_table[safe_i]
+
+
+
+
+		value = ((2000.0 * (count['K'] - count['k'])) + (900.0 * (count['Q'] - count['q'])) +
+				(500.0 * (count['R'] - count['r'])) + (330.0 * (count['B'] - count['b'])) +
+				(320.0 * (count['N'] - count['n'])) + (100.0 * (count['P'] - count['p']))) \
+				+ (0.2 * ((white_pawn_pos - black_pawn_pos) + (white_knight_pos - black_knight_pos) \
+				+ (white_bishop_pos - black_bishop_pos) + (white_rook_pos - black_rook_pos) \
+				+ (white_queen_pos - black_queen_pos)))
+
+				# +(.1 * (white_move_count - black_move_count)))
+
 		castle_mod = .25
 		if state[5][0] == 2 or state[5][1] == 2:
 			# print("white castle")
@@ -169,6 +208,7 @@ class IZII:
 		# print("value post: ", value)
 		# value += 1000*(white_castle - black_castle)
 		# value += 2 * (state[5][0]-state[5][2]) + 2 * (state[5][1]-state[5][3])
+
 
 		return value
 
@@ -1575,6 +1615,7 @@ class IZII:
 				print(i, row_str)
 
 	def print_board(self, board):
+		print("printing board: ", board)
 		k = 0
 		for i in range(20, 100):
 			if i % 10 == 0:
@@ -1586,22 +1627,19 @@ class IZII:
 				k += 1
 		print('  A B C D E F G H')
 
-	def sq120_sq64(self, sq):
-		sq120 = []
+	def init_sq120_sq64(self):
+
 		for i in range(120):
-			# if i < 21:
-			# 	sq120.append(-1)
-			# if i > 100:
-			# 	sq120.append(-1)
-			# else:
-			sq120.append(-1)
+			self.sq120.append(-1)
 		skip = 0
 		for i in range(20, 100):
 			if i % 10 != 0 and (i -9) % 10 != 0:
-				sq120[i] = i - 20 - skip
+				self.sq120[i] = i - 20 - skip
 			if i % 10 == 0 and i != 20:
 				skip += 2
-		return sq120[sq]
+
+	def sq120_sq64(self, sq):
+		return self.sq120[sq]
 
 	def sq64_to_sq120(self, sq):
 		extra = 0

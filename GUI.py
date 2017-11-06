@@ -5,19 +5,7 @@ import random
 import string
 
 # Initialize chess board
-init_board = "xxxxxxxxxx" \
-			"xxxxxxxxxx" \
-			"xrnbqkbnrx" \
-			"xppppppppx" \
-			"xoooooooox" \
-			"xoooooooox" \
-			"xoooooooox" \
-			"xoooooooox" \
-			"xPPPPPPPPx" \
-			"xRNBQKBNRx" \
-			"xxxxxxxxxx" \
-			"xxxxxxxxxx"
-
+init_board = "x"*20 + "xrnbqkbnrx" + "xppppppppx"  + "xoooooooox" * 4 + "xPPPPPPPPx" + "xRNBQKBNRx" + "x"*20
 init_board = list(init_board)
 init_state = [init_board, 0, -1, 0, 1, [0, 0, 0, 0], init_board.index('K'), init_board.index('k')]
 engine = Engine.IZII()
@@ -158,34 +146,8 @@ class GUI:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				return True
-			# if event.type == pygame.MOUSEBUTTONDOWN:
-			# if self.game_over:
-			# self.__init__()
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_RETURN:
-					# all_moves = engine.get_all_moves_at_state(self.current_state)
-					# if len(all_moves) == 0:
-					# 	print("CHECK MATE")
-					# else:
-					# 	self.history.append(self.current_state)
-					# 	if self.current_state[1] == 0:
-					# 		n = engine.best_move(self.current_state, 3)
-					# 		self.current_state = engine.run_move_at_state(self.current_state, all_moves[n])
-						# else:
-						#
-						# 	from_sq = input("Enter from sq: ")
-						# 	to_sq = input("Enter to sq: ")
-						# 	from_sq64 = engine.RF_sq64(from_sq[0], int(from_sq[1]))
-						# 	to_sq64 = engine.RF_sq64(to_sq[0], int(to_sq[1]))
-						# 	sq120_move = [engine.sq64_to_sq120(from_sq64), engine.sq64_to_sq120(to_sq64)]
-						# 	while sq120_move not in all_moves:
-						# 		from_sq = input("Enter from sq: ")
-						# 		to_sq = input("Enter to sq: ")
-						# 		from_sq64 = engine.RF_sq64(from_sq[0], int(from_sq[1]))
-						# 		to_sq64 = engine.RF_sq64(to_sq[0], int(to_sq[1]))
-						# 		sq120_move = [engine.sq64_to_sq120(from_sq64), engine.sq64_to_sq120(to_sq64)]
-						# 	self.current_state = engine.run_move_at_state(self.current_state, sq120_move)
-						# self.board = self.current_state[0]
 					return False
 				if event.key == pygame.K_SPACE:
 					if len(self.history) > 0:
@@ -207,27 +169,10 @@ class GUI:
 	def run_steps(self):
 		while True:
 			self.step()
-			# all_moves = engine.get_all_moves_at_state(self.current_state)
-			# if len(all_moves) == 0:
-			# 	print("CHECK MATE")
-			# else:
-				# n = engine.best_move(self.current_state)
-				# self.current_state = engine.run_move_at_state(self.current_state, all_moves[n])
-
-		# print(root.children)
-		# print("wtf: ", wtf)
-		# 		self.board = self.current_state[0]
-			# myisabel.run_chess()
-			# self.board = myisabel.get_board()
 
 	def sq120_sq64(self, sq):
 		sq120 = []
 		for i in range(120):
-			# if i < 21:
-			# 	sq120.append(-1)
-			# if i > 100:
-			# 	sq120.append(-1)
-			# else:
 			sq120.append(-1)
 		skip = 0
 		for i in range(20, 100):
@@ -239,131 +184,12 @@ class GUI:
 
 	def display_frame(self, screen):
 		""" Display everything to the screen for the game. """
-
-
-		all_moves = engine.get_all_moves_at_state(self.current_state)
-		# print(all_moves)
-		if len(all_moves) == 0:
-			print("CHECK MATE IN GUI")
-		else:
-
-			# sq120_move = []
-			for i in range(len(all_moves)):
-				print(i)
-				engine.print_move(all_moves[i])
-			self.history.append(self.current_state)
-			if self.current_state[1] == 1:  #or self.current_state[1] == 0:
-				# input()
-				# input()
-				# pygame.display.flip()
-				n = engine.best_move(self.current_state, 3)
-				self.current_state = engine.run_move_at_state(self.current_state, all_moves[n])
-				# print("currrr: ", self.current_state[5])
-			elif self.current_state[1] == 0:
-
-				# print("all moves in gui: ", all_moves)
-				# all_moves = engine.get_all_moves_at_state(self.current_state)
-				from_sq = self.ask(screen, "Enter from sq: ")
-				to_sq = self.ask(screen, "Enter to sq: ")
-				if from_sq == -1 or to_sq == -1:
-					print("undo")
-
-				else:
-
-					while len(from_sq) != 2 or len(to_sq) != 2:
-						from_sq = self.ask(screen, "Enter from sq: ")
-						to_sq = self.ask(screen, "Enter to sq: ")
-					while not from_sq[1].isdigit() or not to_sq[1].isdigit():
-						from_sq = self.ask(screen, "Enter from sq: ")
-						to_sq = self.ask(screen, "Enter to sq: ")
-
-
-
-					if from_sq == "e1" and to_sq == "g1":  # white king side
-						sq120_move = wk_move
-					elif from_sq == "e1" and to_sq == "c1":  # wq
-						sq120_move = wq_move
-					elif from_sq == "e8" and to_sq == "g8":  # bk
-						sq120_move = bk_move
-					elif from_sq == "e8" and to_sq == "c8":  # bq
-						sq120_move = bq_move
-
-					else:
-						from_sq64 = engine.RF_sq64(from_sq[0], int(from_sq[1]))
-						to_sq64 = engine.RF_sq64(to_sq[0], int(to_sq[1]))
-						sq120_move = [engine.sq64_to_sq120(from_sq64), engine.sq64_to_sq120(to_sq64)]
-
-					while sq120_move not in all_moves:
-						from_sq = self.ask(screen, "Enter from sq: ")
-						to_sq = self.ask(screen, "Enter to sq: ")
-						while len(from_sq) != 2 or len(to_sq) != 2:
-							from_sq = self.ask(screen, "Enter valid from sq: ")
-							to_sq = self.ask(screen, "Enter to sq: ")
-						while not from_sq[1].isdigit() or not to_sq[1].isdigit():
-							from_sq = self.ask(screen, "Enter from sq: ")
-							to_sq = self.ask(screen, "Enter to sq: ")
-
-						if from_sq == "e1" and to_sq == "g1":  # wk
-							sq120_move = wk_move
-						elif from_sq == "e1" and to_sq == "c1":  # wq
-							sq120_move = wq_move
-						elif from_sq == "e8" and to_sq == "g8":  # bk
-							sq120_move = bk_move
-						elif from_sq == "e8" and to_sq == "c8":  # bq
-							sq120_move = bq_move
-						else:
-							from_sq64 = engine.RF_sq64(from_sq[0], int(from_sq[1]))
-							to_sq64 = engine.RF_sq64(to_sq[0], int(to_sq[1]))
-							sq120_move = [engine.sq64_to_sq120(from_sq64), engine.sq64_to_sq120(to_sq64)]
-						#
-						# from_sq64 = engine.RF_sq64(from_sq[0], int(from_sq[1]))
-						# to_sq64 = engine.RF_sq64(to_sq[0], int(to_sq[1]))
-						# sq120_move = [engine.sq64_to_sq120(from_sq64), engine.sq64_to_sq120(to_sq64)]
-					# print("MOVEE:::", sq120_move)
-					self.current_state = engine.run_move_at_state(self.current_state, sq120_move)
-
-			self.board = self.current_state[0]
-		#
-		# for i in range(20, 120):
-		# 	xbuffer = -35
-		# 	ybuffer = -35
-		# 	sq64 = self.sq120_sq64(i)
-		# 	if self.board[i] == 'P':
-		# 		screen.blit(self.white_pawn,
-		# 					[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
-		# 	if self.board[i] == 'p':
-		# 		screen.blit(self.black_pawn,
-		# 					[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
-		# 	if self.board[i] == 'K':
-		# 		screen.blit(self.white_king,
-		# 					[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
-		# 	if self.board[i] == 'k':
-		# 		screen.blit(self.black_king,
-		# 					[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
-		# 	if self.board[i] == 'Q':
-		# 		screen.blit(self.white_queen,
-		# 					[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
-		# 	if self.board[i] == 'q':
-		# 		screen.blit(self.black_queen,
-		# 					[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
-		# 	if self.board[i] == 'R':
-		# 		screen.blit(self.white_rook,
-		# 					[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
-		# 	if self.board[i] == 'r':
-		# 		screen.blit(self.black_rook,
-		# 					[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
-		# 	if self.board[i] == 'B':
-		# 		screen.blit(self.white_bishop,
-		# 					[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
-		# 	if self.board[i] == 'b':
-		# 		screen.blit(self.black_bishop,
-		# 					[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
-		# 	if self.board[i] == 'N':
-		# 		screen.blit(self.white_knight,
-		# 					[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
-		# 	if self.board[i] == 'n':
-		# 		screen.blit(self.black_knight,
-		# 					[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
+		# self.self_play()
+		self.single_player(screen)
+		self.display_board(screen)
+		pygame.display.flip()
+	def display_board(self, screen):
+		# GUI
 		screen.fill([255, 255, 255])
 		screen.blit(self.BackGround.image, self.BackGround.rect)
 		turn = self.current_state[1]
@@ -393,46 +219,136 @@ class GUI:
 			sq64 = self.sq120_sq64(i)
 			if self.board[i] == 'P':
 				screen.blit(self.white_pawn,
-							[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
+							[self.coordinates[sq64 - 1][1] * 52 + xbuffer,
+							 self.coordinates[sq64 - 1][0] * 52 + ybuffer])
 			if self.board[i] == 'p':
 				screen.blit(self.black_pawn,
-							[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
+							[self.coordinates[sq64 - 1][1] * 52 + xbuffer,
+							 self.coordinates[sq64 - 1][0] * 52 + ybuffer])
 			if self.board[i] == 'K':
 				screen.blit(self.white_king,
-							[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
+							[self.coordinates[sq64 - 1][1] * 52 + xbuffer,
+							 self.coordinates[sq64 - 1][0] * 52 + ybuffer])
 			if self.board[i] == 'k':
 				screen.blit(self.black_king,
-							[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
+							[self.coordinates[sq64 - 1][1] * 52 + xbuffer,
+							 self.coordinates[sq64 - 1][0] * 52 + ybuffer])
 			if self.board[i] == 'Q':
 				screen.blit(self.white_queen,
-							[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
+							[self.coordinates[sq64 - 1][1] * 52 + xbuffer,
+							 self.coordinates[sq64 - 1][0] * 52 + ybuffer])
 			if self.board[i] == 'q':
 				screen.blit(self.black_queen,
-							[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
+							[self.coordinates[sq64 - 1][1] * 52 + xbuffer,
+							 self.coordinates[sq64 - 1][0] * 52 + ybuffer])
 			if self.board[i] == 'R':
 				screen.blit(self.white_rook,
-							[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
+							[self.coordinates[sq64 - 1][1] * 52 + xbuffer,
+							 self.coordinates[sq64 - 1][0] * 52 + ybuffer])
 			if self.board[i] == 'r':
 				screen.blit(self.black_rook,
-							[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
+							[self.coordinates[sq64 - 1][1] * 52 + xbuffer,
+							 self.coordinates[sq64 - 1][0] * 52 + ybuffer])
 			if self.board[i] == 'B':
 				screen.blit(self.white_bishop,
-							[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
+							[self.coordinates[sq64 - 1][1] * 52 + xbuffer,
+							 self.coordinates[sq64 - 1][0] * 52 + ybuffer])
 			if self.board[i] == 'b':
 				screen.blit(self.black_bishop,
-							[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
+							[self.coordinates[sq64 - 1][1] * 52 + xbuffer,
+							 self.coordinates[sq64 - 1][0] * 52 + ybuffer])
 			if self.board[i] == 'N':
 				screen.blit(self.white_knight,
-							[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
+							[self.coordinates[sq64 - 1][1] * 52 + xbuffer,
+							 self.coordinates[sq64 - 1][0] * 52 + ybuffer])
 			if self.board[i] == 'n':
 				screen.blit(self.black_knight,
-							[self.coordinates[sq64 - 1][1] * 52 + xbuffer, self.coordinates[sq64 - 1][0] * 52 + ybuffer])
+							[self.coordinates[sq64 - 1][1] * 52 + xbuffer,
+							 self.coordinates[sq64 - 1][0] * 52 + ybuffer])
 
-		# print("castle permissions: ", self.current_state[5])
+	def self_play(self):
+		self.history.append(self.current_state)
+		if self.current_state[1] == 1 or self.current_state[1] == 0:
+			best_move = engine.best_move(self.current_state, 3)
+			if best_move is None:
+				print("CheckMate")
+			else:
+				self.current_state = engine.run_move_at_state(self.current_state, best_move)
+			self.board = self.current_state[0]
 
-		# pygame.display.flip()
+	def single_player(self, screen):
+			all_moves = engine.get_all_moves_at_state(self.current_state)
+			# print(all_moves)
+			if len(all_moves) == 0:
+				print("CHECK MATE IN GUI")
+			else:
+				self.history.append(self.current_state)
+				if self.current_state[1] == 1:
+					best_move = engine.best_move(self.current_state, 3)
+					if best_move is None:
+						print("CheckMate")
+					else:
+						self.current_state = engine.run_move_at_state(self.current_state, best_move)
+				elif self.current_state[1] == 0:
+					# print("all moves in gui: ", all_moves)
+					# all_moves = engine.get_all_moves_at_state(self.current_state)
+					from_sq = self.ask(screen, "Enter from sq: ")
+					to_sq = self.ask(screen, "Enter to sq: ")
+					if from_sq == -1 or to_sq == -1:
+						print("undo")
+					else:
 
-		pygame.display.flip()
+						while len(from_sq) != 2 or len(to_sq) != 2:
+							from_sq = self.ask(screen, "Enter from sq: ")
+							to_sq = self.ask(screen, "Enter to sq: ")
+						while not from_sq[1].isdigit() or not to_sq[1].isdigit():
+							from_sq = self.ask(screen, "Enter from sq: ")
+							to_sq = self.ask(screen, "Enter to sq: ")
+
+						if from_sq == "e1" and to_sq == "g1":  # white king side
+							sq120_move = wk_move
+						elif from_sq == "e1" and to_sq == "c1":  # wq
+							sq120_move = wq_move
+						elif from_sq == "e8" and to_sq == "g8":  # bk
+							sq120_move = bk_move
+						elif from_sq == "e8" and to_sq == "c8":  # bq
+							sq120_move = bq_move
+
+						else:
+							from_sq64 = engine.RF_sq64(from_sq[0], int(from_sq[1]))
+							to_sq64 = engine.RF_sq64(to_sq[0], int(to_sq[1]))
+							sq120_move = [engine.sq64_to_sq120(from_sq64), engine.sq64_to_sq120(to_sq64)]
+
+						while sq120_move not in all_moves:
+							from_sq = self.ask(screen, "Enter from sq: ")
+							to_sq = self.ask(screen, "Enter to sq: ")
+							while len(from_sq) != 2 or len(to_sq) != 2:
+								from_sq = self.ask(screen, "Enter valid from sq: ")
+								to_sq = self.ask(screen, "Enter to sq: ")
+							while not from_sq[1].isdigit() or not to_sq[1].isdigit():
+								from_sq = self.ask(screen, "Enter from sq: ")
+								to_sq = self.ask(screen, "Enter to sq: ")
+
+							if from_sq == "e1" and to_sq == "g1":  # wk
+								sq120_move = wk_move
+							elif from_sq == "e1" and to_sq == "c1":  # wq
+								sq120_move = wq_move
+							elif from_sq == "e8" and to_sq == "g8":  # bk
+								sq120_move = bk_move
+							elif from_sq == "e8" and to_sq == "c8":  # bq
+								sq120_move = bq_move
+							else:
+								from_sq64 = engine.RF_sq64(from_sq[0], int(from_sq[1]))
+								to_sq64 = engine.RF_sq64(to_sq[0], int(to_sq[1]))
+								sq120_move = [engine.sq64_to_sq120(from_sq64), engine.sq64_to_sq120(to_sq64)]
+							#
+							# from_sq64 = engine.RF_sq64(from_sq[0], int(from_sq[1]))
+							# to_sq64 = engine.RF_sq64(to_sq[0], int(to_sq[1]))
+							# sq120_move = [engine.sq64_to_sq120(from_sq64), engine.sq64_to_sq120(to_sq64)]
+						# print("MOVEE:::", sq120_move)
+						self.current_state = engine.run_move_at_state(self.current_state, sq120_move)
+
+				self.board = self.current_state[0]
 
 	def display_box(self, screen, name):
 		fontobject = pygame.font.Font(None, 20)
