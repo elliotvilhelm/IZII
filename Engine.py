@@ -3,7 +3,6 @@
 import random
 from positional_board_values import *
 
-
 class IZII:
 
 	def __init__(self):
@@ -15,14 +14,12 @@ class IZII:
 		self.white_sliders = "QRB"
 		self.all_pieces = "KQRBNPkqrbnp"
 		self.ranks = "87654321"
-		self.sq120 = []
-		self.init_sq120_sq64()
+		self.sq120 = self.int_sq120_sq64()
+
 	# Algorithm
 	def best_move(self, state, depth=2):
 		# print("finding the best move")
 		moves = self.get_all_moves_at_state(state)
-		if moves is None:
-			return None
 		# print(state[5], moves)
 		if state[1] == 0:
 			current_score = -9999.0
@@ -50,7 +47,10 @@ class IZII:
 					if random.randint(1, 5) == 3:
 						move_n = i
 						current_score = score
-		print(moves, move_n)
+		# self.print_move(moves[move_n])
+		# if move_n == -1:
+			# print("FUCKK")
+		# self.print_move(moves[move_n])
 		return moves[move_n]
 
 	def minimax(self, depth, state, alpha, beta):
@@ -59,23 +59,39 @@ class IZII:
 
 		if depth == 0:
 			b_val = self.evaluate_state(state)
+			# print("board value: ", b_val)
+			# self.print_board(state[0])
 			return b_val
 		legal_moves = self.get_all_moves_at_state(state)
+		# if len(legal_moves) == 0:
+		# 	# print("MATE FOUND IN MINIMAX")
+		# 	# self.print_board(state[0])
+		# 	if player_turn == 0:
+		# 		print("BLACK WINS")
+		# 		return -9999
+		# 	else:
+		# 		print("WHOTE WINS")
+		# 		return 9999
 
+		# else:
 		if player_turn == 0:
 			best_value = -999
 			history = []
 			if len(legal_moves) is 0:
+				# print("no moves for white")
+				# self.print_board(state[0])
 				if self.white_in_check(state[0], state[6]):
-					# print("real mate found for black")
-					# self.print_board(state[0])
+					print("real mate found for black")
+					self.print_board(state[0])
 					return -9999
 				else:
-					print("stale mate for white")
+					print("real mate found for white")
 					self.print_board(state[0])
 
 					return 9999
+				# best_value = -999999
 			for i in range(len(legal_moves)):
+
 				moveset = legal_moves[i]
 				history.append(self.copy_state(state))
 				state = self.run_move_at_state(state, moveset)
@@ -91,12 +107,12 @@ class IZII:
 			history = []
 			best_value = 999
 			if len(legal_moves) == 0:
+				# print("no moves for black")
+				# self.print_board(state[0])
 				if self.black_in_check(state[0], state[7]):
-					# print("real mate found for white")
-					# self.print_board(state[0])
+					print("real mate found for white")
 					return 9999
 				else:
-					print("stale mate for black")
 					return -999
 			for i in range(len(legal_moves)):
 				moveset = legal_moves[i]
@@ -107,17 +123,17 @@ class IZII:
 				best_value = min(best_value, value)
 				beta = min(beta, best_value)
 				if beta <= alpha:
+					# print("get pruned")
 					break
 			return best_value
-
 	def evaluate_state(self, state):
-	# P = 100
-	# N = 320
-	# B = 330
-	# R = 500
-	# Q = 900
-	# K = 20000
-	# print("mobility diff: ", white_move_count-black_move_count)
+		# P = 100
+		# N = 320
+		# B = 330
+		# R = 500
+		# Q = 900
+		# K = 20000
+		# print("mobility diff: ", white_move_count-black_move_count)
 		count = {'K': 0, 'Q': 0, 'R': 0, 'B': 0, 'N': 0, 'P': 0, 'k': 0, 'q': 0, 'r': 0, 'b': 0, 'n': 0, 'p': 0}
 
 		board = state[0][20:100]
@@ -230,7 +246,10 @@ class IZII:
 		white_king_sq = state[6]
 		black_king_sq = state[7]
 		# board, turn, en_pass_sq, half_move, full_move, castle_perm, white_king_sq, black_king_sq = self.unpack_state(state)
+
+		# print("move: " , move)
 		from_tile_n = move[0]
+		# print(from_tile_n)
 		to_tile_n = move[1]
 		# print(to_tile_n)
 		### En Passant case
@@ -247,6 +266,7 @@ class IZII:
 		### King move case
 
 		elif board[from_tile_n] == 'K':
+
 			white_king_sq = to_tile_n
 			castle_perm[0] = -1
 			castle_perm[1] = -1
@@ -273,8 +293,51 @@ class IZII:
 			# self.count[0] -= 1
 		# Actually Move
 		# print("moving:", board[from_tile_n])
-		if from_tile_n == 0 and to_tile_n == 0:  # king side castle
+		# if from_tile_n == 0 and to_tile_n == 0:  # king side castle
+		# 	# print("I castled!")
+		# 	board[95] = "o"
+		# 	board[96] = 'R'
+		# 	board[97] = 'K'
+		# 	white_king_sq = 97
+		# 	board[98] = 'o'
+		# 	castle_perm[0] = 2
+		# 	castle_perm[1] = 2
+		# elif from_tile_n == 1 and to_tile_n == 0:  # queen side castle
 			# print("I castled!")
+			# board[91] = "o"
+			# board[92] = 'o'
+			# board[93] = 'K'
+			# white_king_sq = 93
+			# board[94] = 'R'
+			# board[95] = 'o'
+			# castle_perm[0] = 2
+			# castle_perm[1] = 2
+		# elif from_tile_n == 1 and to_tile_n == 1:  # king side castle
+			# # print("I castled!")
+			# board[25] = "o"
+			# board[26] = 'r'
+			# board[27] = 'k'
+			# black_king_sq = 27
+			# board[28] = 'o'
+			# castle_perm[2] = 2
+			# castle_perm[3] = 2
+		# elif from_tile_n == 0 and to_tile_n == 1:  # queen side castle
+			# # print("I castled!")
+			# board[21] = "o"
+			# board[22] = 'r'
+			# board[23] = 'k'
+			# black_king_sq = 23
+			# board[24] = 'o'
+			# board[25] = 'o'
+			# castle_perm[2] = 2
+			# castle_perm[3] = 2
+
+
+		# what the fuck is this
+		# else:
+			# board[to_tile_n] = board[from_tile_n]
+			# board[from_tile_n] = "o"
+		if from_tile_n == 95 and to_tile_n == 97 and board[from_tile_n] == 'K': # and castle_perm[0] == 1:
 			board[95] = "o"
 			board[96] = 'R'
 			board[97] = 'K'
@@ -282,7 +345,8 @@ class IZII:
 			board[98] = 'o'
 			castle_perm[0] = 2
 			castle_perm[1] = 2
-		elif from_tile_n == 1 and to_tile_n == 0:  # queen side castle
+		
+		elif from_tile_n == 95 and to_tile_n == 93 and board[from_tile_n] == 'K':  # queen side castle
 			# print("I castled!")
 			board[91] = "o"
 			board[92] = 'o'
@@ -292,7 +356,7 @@ class IZII:
 			board[95] = 'o'
 			castle_perm[0] = 2
 			castle_perm[1] = 2
-		elif from_tile_n == 1 and to_tile_n == 1:  # king side castle
+		elif from_tile_n == 25 and to_tile_n == 27 and board[from_tile_n] == 'k':  # king side castle
 			# print("I castled!")
 			board[25] = "o"
 			board[26] = 'r'
@@ -301,8 +365,8 @@ class IZII:
 			board[28] = 'o'
 			castle_perm[2] = 2
 			castle_perm[3] = 2
-		elif from_tile_n == 0 and to_tile_n == 1:  # queen side castle
-			# print("I castled!")
+		elif from_tile_n == 25 and to_tile_n == 23 and board[from_tile_n] == 'k':  # queen side castle
+			# # print("I castled!")
 			board[21] = "o"
 			board[22] = 'r'
 			board[23] = 'k'
@@ -311,7 +375,7 @@ class IZII:
 			board[25] = 'o'
 			castle_perm[2] = 2
 			castle_perm[3] = 2
-
+		# actually move??
 		else:
 			board[to_tile_n] = board[from_tile_n]
 			board[from_tile_n] = "o"
@@ -766,17 +830,17 @@ class IZII:
 			if self.check_wc_k(state):  # if im not in check and i have not fucked up my castle perm add the move
 				state[5][0] = 1
 				# print("WK GOOOD")
-				moves.append([0, 0])
+				moves.append([95,97])
 			if self.check_wc_q(state):
 				state[5][1] = 1
-				moves.append([1, 0])
+				moves.append([95, 93])
 		if state[1] == 1:
 			if self.check_bc_k(state):
 				state[5][2] = 1
-				moves.append([1, 1])
+				moves.append([25, 27])
 			if self.check_bc_q(state):
 				state[5][3] = 1
-				moves.append([0, 1])
+				moves.append([25, 23])
 		return moves
 
 	def get_legal_moves_beta(self, state, pseudo_moves):
@@ -793,19 +857,19 @@ class IZII:
 			from_sq = move_set[0]
 			to_sq = move_set[1]
 			# for j in range(len(to_sqs)):
-			if pseudo_moves[i] == [0, 0]:
+			if pseudo_moves[i] == [95, 97]:
 				# print("ITS wk CASTLE TIME")
 				s2 = self.run_move_at_state(state, (95, 97))  # move king
 				s2 = self.run_move_at_state(state, (98, 96))  # move queen
-			elif pseudo_moves[i] == [1, 0]:
+			elif pseudo_moves[i] == [95, 93]:
 				# print("ITS wq CASTLE TIME")
 				s2 = self.run_move_at_state(state, (95, 93))  # move king
 				s2 = self.run_move_at_state(state, (91, 94))  # move queen
-			elif pseudo_moves[i] == [1, 1]:
+			elif pseudo_moves[i] == [25, 27]:
 				# print("ITS bk CASTLE TIME")
 				s2 = self.run_move_at_state(state, (25, 27))  # move king
 				s2 = self.run_move_at_state(state, (28, 26))  # move queen
-			elif pseudo_moves[i] == [0, 1]:
+			elif pseudo_moves[i] == [25, 23]:
 				# print("ITS bq CASTLE TIME")
 				s2 = self.run_move_at_state(state, (25, 23))  # move king
 				s2 = self.run_move_at_state(state, (21, 24))  # move queen
@@ -1555,7 +1619,8 @@ class IZII:
 		else:
 			file = -1
 			# print("error unkown file")
-		sq = abs(rank-9)*8-8 + file
+		print("rank", rank)
+		sq = abs(int(rank)-9)*8-8 + file
 		return sq
 
 	def sq64_to_RF(self, sq64):
@@ -1598,6 +1663,7 @@ class IZII:
 		else:
 			print("eror", file)
 		# print(rank)
+		# print(sq64, file, rank)
 		return file, rank
 
 	def change_turns(self):
@@ -1615,7 +1681,7 @@ class IZII:
 				print(i, row_str)
 
 	def print_board(self, board):
-		print("printing board: ", board)
+		# print("printing board: ", board)
 		k = 0
 		for i in range(20, 100):
 			if i % 10 == 0:
@@ -1626,10 +1692,31 @@ class IZII:
 				print(self.ranks[k], row_str)
 				k += 1
 		print('  A B C D E F G H')
+	def get_board(self, board):
+		# print("printing board: ", board)
+		board_str = "\n"
+		k = 0
+		for i in range(20, 100):
+			if i % 10 == 0:
+				# print(board)
+				# print(i)
+				row = board[i + 1:i + 9]
+				row_str = ' '.join(row)
+				board_str += self.ranks[k] + row_str + "\n"
+				# print(self.ranks[k], row_str)
+				k += 1
+		board_str += ' A B C D E F G H\n'
+		return board_str
+		# print('  A B C D E F G H')
 
-	def init_sq120_sq64(self):
-
+	def int_sq120_sq64(self):
+		self.sq120 = []
 		for i in range(120):
+			# if i < 21:
+			# 	sq120.append(-1)
+			# if i > 100:
+			# 	sq120.append(-1)
+			# else:
 			self.sq120.append(-1)
 		skip = 0
 		for i in range(20, 100):
@@ -1637,7 +1724,7 @@ class IZII:
 				self.sq120[i] = i - 20 - skip
 			if i % 10 == 0 and i != 20:
 				skip += 2
-
+		return self.sq120
 	def sq120_sq64(self, sq):
 		return self.sq120[sq]
 
