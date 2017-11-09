@@ -188,9 +188,9 @@ class IZII:
 					black_queen_pos += black_queen_pos_table[safe_i]
 
 
+###(2000.0 * (count['K'] - count['k'])) + 
 
-
-		value = ((2000.0 * (count['K'] - count['k'])) + (900.0 * (count['Q'] - count['q'])) +
+		value = ((900.0 * (count['Q'] - count['q'])) +
 				(500.0 * (count['R'] - count['r'])) + (330.0 * (count['B'] - count['b'])) +
 				(320.0 * (count['N'] - count['n'])) + (100.0 * (count['P'] - count['p']))) \
 				+ (0.2 * ((white_pawn_pos - black_pawn_pos) + (white_knight_pos - black_knight_pos) \
