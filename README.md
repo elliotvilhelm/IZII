@@ -19,7 +19,14 @@ To play the engine, cd into the source directory and run:
 ```python3
 xboard -cp -fcp "python3 xboard.py"
 ```
+Furthermore, to watch IZII play itself you can run, 
+```python3
+xboard -cp -fcp "python3 xboard.py" -scp "python3 xboard.py"
+```
+then press CTRL-t on the xboard GUI to run a two machine game.
 
 ## Development
-To implement IZZI I used a 120 square chess board as used by cray-1, one of the first chess playing ocmputers.
+To implement IZZI I used a 120 square chess board as used by cray-1, one of the first chess playing computers.
 ![120sqboard](/images/cray.png?raw=true "120 square board") ![120sqboard](/images/120sqboard.png?raw=true "120 square board")
+
+Enjoy!
