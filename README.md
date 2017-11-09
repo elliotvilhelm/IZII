@@ -12,6 +12,4 @@ run_move_at_state -> inputs: state, move | outputs: next state
 
 To implement IZZI I use
 
-![120sqboard](/images/cray.png?raw=true "120 square board")
-
-![120sqboard](/images/120sqboard.png?raw=true "120 square board")
+![120sqboard](/images/cray.png?raw=true "120 square board") ![120sqboard](/images/120sqboard.png?raw=true "120 square board")
