@@ -1,6 +1,8 @@
-# IZII
+#### IZII
+## Overview:
+IZII is a Python based Chess Engine
 
-IZII is a Python based Chess Engine providing move generation, board evaluation, and a minimax search algorithm.
+Decisions are made using the minimax search algorithm with alpha-beta pruning to optimize search time. The engine is compatible with xboard and uses the xboard protocol. 
 
 IZII makes its decisions in two steps 
 1. Move Generation -> Pseudo legal moves filtered to legal moves
@@ -10,6 +12,14 @@ IZII provides two key functions:
 get_all_moves_at_state -> inputs: state | outputs: all possible moves
 run_move_at_state -> inputs: state, move | outputs: next state
 
-To implement IZZI I use
+## Execution
+To run IZII, download all files to your local system. You also must have [xboard](https://www.gnu.org/software/xboard/) or any other GUI with xboard protocol compatibility. 
 
+To play the engine, cd into the source directory and run: 
+```python3
+xboard -cp -fcp "python3 xboard.py"
+```
+
+## Development
+To implement IZZI I used a 120 square chess board as used by cray-1, one of the first chess playing ocmputers.
 ![120sqboard](/images/cray.png?raw=true "120 square board") ![120sqboard](/images/120sqboard.png?raw=true "120 square board")
