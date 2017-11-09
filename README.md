@@ -5,8 +5,8 @@ IZII is a Python based Chess Engine
 Decisions are made using the minimax search algorithm with alpha-beta pruning to optimize search time. The engine is compatible with xboard and uses the xboard protocol. 
 
 IZII makes its decisions in two steps 
-1. #Move Generation -> Pseudo legal moves filtered to legal moves
-2. #Move Search -> Using a board evaluation function IZII runs minimax search with Alpha-Beta pruning to discover the optimal move
+1. Move Generation -> Pseudo legal moves filtered to legal moves
+2. Move Search -> Using a board evaluation function IZII runs minimax search with Alpha-Beta pruning to discover the optimal move
 
 IZII provides two key functions for playing chess:
 #get_all_moves_at_state -> inputs: state | outputs: all possible moves
