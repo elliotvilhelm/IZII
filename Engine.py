@@ -193,7 +193,7 @@ class IZII:
 		value = ((900.0 * (count['Q'] - count['q'])) +
 				(500.0 * (count['R'] - count['r'])) + (330.0 * (count['B'] - count['b'])) +
 				(320.0 * (count['N'] - count['n'])) + (100.0 * (count['P'] - count['p']))) \
-				+ (0.2 * ((white_pawn_pos - black_pawn_pos) + (white_knight_pos - black_knight_pos) \
+				+ (0.01 * ((white_pawn_pos - black_pawn_pos) + (white_knight_pos - black_knight_pos) \
 				+ (white_bishop_pos - black_bishop_pos) + (white_rook_pos - black_rook_pos) \
 				+ (white_queen_pos - black_queen_pos)))
 
