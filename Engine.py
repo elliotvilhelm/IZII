@@ -2,7 +2,6 @@
 # TO DO: Add full move half move and castle permission updates
 import random
 from positional_board_values import *
-
 class IZII:
 
 	def __init__(self):
@@ -20,6 +19,8 @@ class IZII:
 	def best_move(self, state, depth=2):
 		# print("finding the best move")
 		moves = self.get_all_moves_at_state(state)
+		print("in engine move: ", state[1])
+		print(moves)
 		# print(state[5], moves)
 		if state[1] == 0:
 			current_score = -9999.0
@@ -193,7 +194,7 @@ class IZII:
 		value = ((900.0 * (count['Q'] - count['q'])) +
 				(500.0 * (count['R'] - count['r'])) + (330.0 * (count['B'] - count['b'])) +
 				(320.0 * (count['N'] - count['n'])) + (100.0 * (count['P'] - count['p']))) \
-				+ (0.01 * ((white_pawn_pos - black_pawn_pos) + (white_knight_pos - black_knight_pos) \
+				+ (0.1 *  ((white_pawn_pos - black_pawn_pos) + (white_knight_pos - black_knight_pos) \
 				+ (white_bishop_pos - black_bishop_pos) + (white_rook_pos - black_rook_pos) \
 				+ (white_queen_pos - black_queen_pos)))
 
@@ -368,10 +369,10 @@ class IZII:
 		elif from_tile_n == 25 and to_tile_n == 23 and board[from_tile_n] == 'k':  # queen side castle
 			# # print("I castled!")
 			board[21] = "o"
-			board[22] = 'r'
+			board[22] = 'o'
 			board[23] = 'k'
 			black_king_sq = 23
-			board[24] = 'o'
+			board[24] = 'r'
 			board[25] = 'o'
 			castle_perm[2] = 2
 			castle_perm[3] = 2
@@ -1749,19 +1750,49 @@ class IZII:
 		black_king_sq = state[7]
 		return board, turn, en_pass_sq, half_move, full_move, castle_perm, white_king_sq, black_king_sq
 
+	def set_state_from_fen(self, fen):
+
+		ranks = fen.split(" ")[0].split("/")
+		print("fen:  ", fen, "ranks:  ", ranks)
+		board = ""
+		board += 'x' * 21
+		print(len(board))
+		counter = 0
+		for rank in ranks:
+			counter += 1
+			for ch in rank:
+				if ch in "12345678":
+					board += 'o' * int(ch)
+				else:
+					board += ch
+			if counter % 8:
+				board += 'x' * 2
+				
+				# board[counter - 8
+		board += 'x' * 20
+
+		state = []
+		state.append(board)
+		try:
+			index = fen.index("w")
+			state.append(0)
+		except:
+			index = fen.index("b")
+			state.append(1)
+		print("found turn: ", fen[index])
+		print(board)
+		print(self.print_board(board))
+		state.append(-1)
+		state.append(0)
+		state.append(0)
+		state.append([0,0,0,0])
+		state.append(board.index('K'))
+		state.append(board.index('k'))
+		return state
+
 
 if __name__ == '__main__':
-	engine = IzzI()
-	i = 0
-	current_state = init_state
-	while i < 300:
-		all_moves = engine.get_all_moves_at_state(current_state)
-		random_int = random.randint(0, len(all_moves)-1)
-		next_state = engine.run_move_at_state(current_state, all_moves[random_int])
-
-
-		# engine.run_chess()
-		# engine.minimaxroot(2)
-		i += 1
-
-
+	engine = IZII()
+	fen = "2bqkbn1/2pppp2/np2N3/r3P1p1/p2N2B1/5Q2/PPPPKPP1/RNB2r2 w KQkq - 0 1" 
+	fen = engine.set_state_from_fen(fen)
+	print(fen)

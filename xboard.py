@@ -1,4 +1,4 @@
-import sys
+
 import Engine
 import re
 import logging
@@ -19,6 +19,7 @@ init_board = "xxxxxxxxxx" \
              "xxxxxxxxxx"
 
 init_board = list(init_board)
+# board, en pas, healf move, full move, castle perm, white king sq, black king sq
 init_state = [init_board, 0, -1, 0, 1, [0, 0, 0, 0], init_board.index('K'), init_board.index('k')]
 
 WHITE = 0
@@ -66,7 +67,9 @@ def run_xboard():
             force_mode = True
         elif cmd == 'go':  # start playing
             force_mode = False
+            print("turn: ", state[1])
             move = engine.best_move(state, 2)
+            print(move)
             fromsq = engine.sq120_sq64(move[0])
             tosq = engine.sq120_sq64(move[1])
             fromsq = engine.sq64_to_RF(fromsq)
@@ -86,6 +89,10 @@ def run_xboard():
             reply('#Changed to black')
         elif cmd == 'quit':
             return
+        elif cmd.startswith('set board'):
+            fen = cmd[9:].strip()
+            state = engine.set_state_from_fen(fen)
+            print("turn: ", state[1])
         else:
             if re.match('^[a-h][1-8][a-h][1-8].?$', cmd):
                 # Update my board
