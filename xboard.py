@@ -1,9 +1,6 @@
-
 import Engine
 import re
 import logging
-
-
 engine = Engine.IZII()
 init_board = "xxxxxxxxxx" \
              "xxxxxxxxxx" \
@@ -19,15 +16,18 @@ init_board = "xxxxxxxxxx" \
              "xxxxxxxxxx"
 
 init_board = list(init_board)
-# board, en pas, healf move, full move, castle perm, white king sq, black king sq
+# board, turn, en pas, healf move, full move, castle perm, white king sq, black king sq
 init_state = [init_board, 0, -1, 0, 1, [0, 0, 0, 0], init_board.index('K'), init_board.index('k')]
 
 WHITE = 0
 BLACK = 1
+
+
 def reply(command):
-    logging.debug('<<'+command)
+    logging.debug('<<' + command)
     sys.stdout.write(command + '\n')
     sys.stdout.flush()
+
 
 def run_xboard():
     state = init_state
@@ -54,7 +54,7 @@ def run_xboard():
             history = []
             force_mode = False
         elif cmd == 'protover 2':
-            reply('feature myname="Elliots\'s IZZI"')
+            reply('feature myname="Elliots\'s IZII"')
             reply('feature ping=1')
             reply('feature san=0')
             reply('feature sigint=0')
@@ -69,6 +69,10 @@ def run_xboard():
             force_mode = False
             print("turn: ", state[1])
             move = engine.best_move(state, 2)
+            logging.debug(engine.get_all_moves_at_state(state))
+            logging.debug(state[5])
+            logging.debug(state[2])
+
             print(move)
             fromsq = engine.sq120_sq64(move[0])
             tosq = engine.sq120_sq64(move[1])
@@ -82,10 +86,10 @@ def run_xboard():
             n = cmd.split(' ')[-1]
             reply('pong ' + n)
         elif cmd == 'white':
-            my_team = WHITE
+            # my_team = WHITE
             reply('#Changed to  white')
         elif cmd == 'black':
-            my_team = BLACK
+            # my_team = BLACK
             reply('#Changed to black')
         elif cmd == 'quit':
             return
@@ -105,6 +109,9 @@ def run_xboard():
                 logging.debug("state after re.match")
                 logging.debug(engine.get_board(state[0]))
                 if not force_mode:
+                    logging.debug(engine.get_all_moves_at_state(state))
+                    logging.debug(state[5])
+                    logging.debug(state[2])
                     move = engine.best_move(state, 2)
                     fromsq = engine.sq120_sq64(move[0])
                     tosq = engine.sq120_sq64(move[1])
@@ -118,8 +125,8 @@ def run_xboard():
             else:
                 reply("#non registered command : '" + cmd + "'")
 
+
 if __name__ == '__main__':
     import sys
-    logging.basicConfig(filename='test.log',level=logging.DEBUG)
+    logging.basicConfig(filename='test.log', level=logging.DEBUG)
     run_xboard()
-
