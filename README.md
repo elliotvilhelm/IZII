@@ -5,6 +5,7 @@ Decisions are made using the minimax search algorithm with alpha-beta pruning to
 
 ## Execution
 To run IZII, download all files to your local system. You also must have [xboard](https://www.gnu.org/software/xboard/) or any other GUI with xboard protocol compatibility. 
+* For OSX users, brew supposrts xboard so simply 'brew install xboard'
 
 To play the engine, cd into the source directory and run: 
 ```python3
