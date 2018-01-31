@@ -1,7 +1,7 @@
 # TO DO : fix castling through checked squares, also castle perm seems to stay 1 once it is 1
 # TO DO: Add full move half move and castle permission updates
 import random
-from positional_board_values import *
+import positional_board_values
 
 
 class IZII:
@@ -18,12 +18,8 @@ class IZII:
 
     # Algorithm
     def best_move(self, state, depth=2):
-        # print("finding the best move")
         moves = self.get_all_moves_at_state(state)
 
-        print("in engine move: ", state[1])
-        print(moves)
-        # print(state[5], moves)
         if state[1] == 0:
             current_score = -9999.0
         else:
@@ -42,7 +38,6 @@ class IZII:
                         move_n = i
                         current_score = score
             elif turn == 1:
-                # print(score, self.sq64_to_RF(self.sq120_sq64(moves[i][0])), self.sq64_to_RF(self.sq120_sq64(moves[i][1])))
                 if score < current_score:
                     move_n = i
                     current_score = score
@@ -50,39 +45,20 @@ class IZII:
                     if random.randint(1, 5) == 3:
                         move_n = i
                         current_score = score
-                        # self.print_move(moves[move_n])
-                        # if move_n == -1:
-                        # print("FUCKK")
-        # self.print_move(moves[move_n])
         return moves[move_n]
 
     def minimax(self, depth, state, alpha, beta):
-        # state = node.get_state()
         player_turn = state[1]
 
         if depth == 0:
             b_val = self.evaluate_state(state)
-            # print("board value: ", b_val)
-            # self.print_board(state[0])
             return b_val
         legal_moves = self.get_all_moves_at_state(state)
-        # if len(legal_moves) == 0:
-        # 	# print("MATE FOUND IN MINIMAX")
-        # 	# self.print_board(state[0])
-        # 	if player_turn == 0:
-        # 		print("BLACK WINS")
-        # 		return -9999
-        # 	else:
-        # 		print("WHOTE WINS")
-        # 		return 9999
 
-        # else:
         if player_turn == 0:
             best_value = -999
             history = []
             if len(legal_moves) is 0:
-                # print("no moves for white")
-                # self.print_board(state[0])
                 if self.white_in_check(state[0], state[6]):
                     print("real mate found for black")
                     self.print_board(state[0])
@@ -92,7 +68,6 @@ class IZII:
                     self.print_board(state[0])
 
                     return 9999
-                    # best_value = -999999
             for i in range(len(legal_moves)):
 
                 moveset = legal_moves[i]
@@ -102,16 +77,13 @@ class IZII:
                 state = history.pop()
                 best_value = max(best_value, value)
                 alpha = max(alpha, best_value)
-                if beta <= alpha:
-                    # print("get pruned")
+                if beta <= alpha:   # prune
                     break
             return best_value
         elif player_turn == 1:
             history = []
             best_value = 999
             if len(legal_moves) == 0:
-                # print("no moves for black")
-                # self.print_board(state[0])
                 if self.black_in_check(state[0], state[7]):
                     print("real mate found for white")
                     return 9999
@@ -126,7 +98,6 @@ class IZII:
                 best_value = min(best_value, value)
                 beta = min(beta, best_value)
                 if beta <= alpha:
-                    # print("get pruned")
                     break
             return best_value
 
@@ -171,29 +142,27 @@ class IZII:
                 count[board[i]] += 1
                 safe_i = self.sq120_sq64(i + 20) - 1
                 if board[i] == 'P':
-                    white_pawn_pos += white_pawn_pos_table[safe_i]
+                    white_pawn_pos += positional_board_values.white_pawn_pos_table[safe_i]
                 elif board[i] == 'p':
-                    black_pawn_pos += black_pawn_pos_table[safe_i]
+                    black_pawn_pos += positional_board_values.black_pawn_pos_table[safe_i]
                 elif board[i] == 'N':
-                    white_knight_pos += white_knight_pos_table[safe_i]
+                    white_knight_pos += positional_board_values.white_knight_pos_table[safe_i]
                 elif board[i] == 'n':
-                    black_knight_pos += black_knight_pos_table[safe_i]
+                    black_knight_pos += positional_board_values.black_knight_pos_table[safe_i]
                 elif board[i] == 'B':
-                    white_bishop_pos += white_bishop_pos_table[safe_i]
+                    white_bishop_pos += positional_board_values.white_bishop_pos_table[safe_i]
                 elif board[i] == 'b':
-                    black_bishop_pos += black_bishop_pos_table[safe_i]
+                    black_bishop_pos += positional_board_values.black_bishop_pos_table[safe_i]
                 elif board[i] == 'R':
-                    white_rook_pos += white_rook_pos_table[safe_i]
+                    white_rook_pos += positional_board_values.white_rook_pos_table[safe_i]
                 elif board[i] == 'r':
-                    black_rook_pos += black_rook_pos_table[safe_i]
+                    black_rook_pos += positional_board_values.black_rook_pos_table[safe_i]
                 elif board[i] == 'Q':
-                    white_queen_pos += white_queen_pos_table[safe_i]
+                    white_queen_pos += positional_board_values.white_queen_pos_table[safe_i]
                 elif board[i] == 'q':
-                    black_queen_pos += black_queen_pos_table[safe_i]
-
+                    black_queen_pos += positional_board_values.black_queen_pos_table[safe_i]
 
                     ###(2000.0 * (count['K'] - count['k'])) +
-
         value = ((900.0 * (count['Q'] - count['q'])) +
                  (500.0 * (count['R'] - count['r'])) + (330.0 * (count['B'] - count['b'])) +
                  (320.0 * (count['N'] - count['n'])) + (100.0 * (count['P'] - count['p']))) \
@@ -228,15 +197,9 @@ class IZII:
         # print("value post: ", value)
         # value += 1000*(white_castle - black_castle)
         # value += 2 * (state[5][0]-state[5][2]) + 2 * (state[5][1]-state[5][3])
-
-
         return value
 
     def run_move_at_state(self, state, move):
-        # self.save_state_to_hist()
-        # print(move)
-        # print(self.sq64_to_RF(self.sq120_sq64(move[0])))
-        # print(self.sq64_to_RF(self.sq120_sq64(move[0][1])))
         return_state = self.move_at_state(state, move)
         return return_state
 
@@ -249,13 +212,8 @@ class IZII:
         castle_perm = list(state[5])
         white_king_sq = state[6]
         black_king_sq = state[7]
-        # board, turn, en_pass_sq, half_move, full_move, castle_perm, white_king_sq, black_king_sq = self.unpack_state(state)
-
-        # print("move: " , move)
         from_tile_n = move[0]
-        # print(from_tile_n)
         to_tile_n = move[1]
-        # print(to_tile_n)
 
         ### En Passant case
         en_pass_sq = -1
@@ -296,57 +254,6 @@ class IZII:
                 castle_perm[3] = -1
 
 
-                # Update Count
-                # if board[to_tile_n] in self.all_pieces:
-                # 	print(self.all_pieces.index(board[to_tile_n]))
-                # self.count[self.all_pieces.index(board[to_tile_n])] -= 1
-                # self.count[0] -= 1
-                # Actually Move
-                # print("moving:", board[from_tile_n])
-                # if from_tile_n == 0 and to_tile_n == 0:  # king side castle
-                # 	# print("I castled!")
-                # 	board[95] = "o"
-                # 	board[96] = 'R'
-                # 	board[97] = 'K'
-                # 	white_king_sq = 97
-                # 	board[98] = 'o'
-                # 	castle_perm[0] = 2
-                # 	castle_perm[1] = 2
-                # elif from_tile_n == 1 and to_tile_n == 0:  # queen side castle
-                # print("I castled!")
-                # board[91] = "o"
-                # board[92] = 'o'
-                # board[93] = 'K'
-                # white_king_sq = 93
-                # board[94] = 'R'
-                # board[95] = 'o'
-                # castle_perm[0] = 2
-                # castle_perm[1] = 2
-                # elif from_tile_n == 1 and to_tile_n == 1:  # king side castle
-                # # print("I castled!")
-                # board[25] = "o"
-                # board[26] = 'r'
-                # board[27] = 'k'
-                # black_king_sq = 27
-                # board[28] = 'o'
-                # castle_perm[2] = 2
-                # castle_perm[3] = 2
-                # elif from_tile_n == 0 and to_tile_n == 1:  # queen side castle
-                # # print("I castled!")
-                # board[21] = "o"
-                # board[22] = 'r'
-                # board[23] = 'k'
-                # black_king_sq = 23
-                # board[24] = 'o'
-                # board[25] = 'o'
-                # castle_perm[2] = 2
-                # castle_perm[3] = 2
-
-
-                # what the fuck is this
-                # else:
-                # board[to_tile_n] = board[from_tile_n]
-                # board[from_tile_n] = "o"
         if from_tile_n == 95 and to_tile_n == 97 and board[from_tile_n] == 'K':  # and castle_perm[0] == 1:
             board[95] = "o"
             board[96] = 'R'
@@ -357,7 +264,6 @@ class IZII:
             castle_perm[1] = 2
 
         elif from_tile_n == 95 and to_tile_n == 93 and board[from_tile_n] == 'K':  # queen side castle
-            # print("I castled!")
             board[91] = "o"
             board[92] = 'o'
             board[93] = 'K'
@@ -367,7 +273,6 @@ class IZII:
             castle_perm[0] = 2
             castle_perm[1] = 2
         elif from_tile_n == 25 and to_tile_n == 27 and board[from_tile_n] == 'k':  # king side castle
-            # print("I castled!")
             board[25] = "o"
             board[26] = 'r'
             board[27] = 'k'
@@ -376,7 +281,6 @@ class IZII:
             castle_perm[2] = 2
             castle_perm[3] = 2
         elif from_tile_n == 25 and to_tile_n == 23 and board[from_tile_n] == 'k':  # queen side castle
-            # # print("I castled!")
             board[21] = "o"
             board[22] = 'o'
             board[23] = 'k'
@@ -385,12 +289,9 @@ class IZII:
             board[25] = 'o'
             castle_perm[2] = 2
             castle_perm[3] = 2
-        # actually move??
         else:
             board[to_tile_n] = board[from_tile_n]
             board[from_tile_n] = "o"
-
-        # test if casstel legal
 
 
         # Change Turns
@@ -418,12 +319,8 @@ class IZII:
             return False
 
         elif board[96] == 'o' and board[97] == 'o':  # and castle_perm != -1 and castle_perm != 2:
-            # self.print_board(board)
-
-            # print("wk clear")
             return True
         else:
-            # print("white castle none case")
             return False
 
     def check_wc_q(self, state):  # return true if kingside castle is availible
@@ -442,11 +339,7 @@ class IZII:
             return False
 
         elif board[92] == 'o' and board[93] == 'o' and board[94] == 'o':  # and castle_perm != -1 and castle_perm != 2:
-            # self.print_board(board)
-            # print("wq clear")
             return True
-        # else:
-        # print("white castle none case")
         return False
 
     def check_bc_k(self, state):  # return true if kingside castle is availible
@@ -465,11 +358,7 @@ class IZII:
             return False
 
         elif board[26] == 'o' and board[27] == 'o':  # and castle_perm != -1:
-            # self.print_board(board)
-            # print("bk clear")
             return True
-        # else:
-        # print("white castle none case")
         return False
 
     def check_bc_q(self, state):  # return true if kingside castle is availible
@@ -489,11 +378,7 @@ class IZII:
             return False
 
         elif board[22] == 'o' and board[23] == 'o' and board[24] == 'o' and castle_perm != -1:
-            # self.print_board(board)
-            # print("bq clear")
             return True
-        # else:
-        # print("white castle none c
         return False
 
     # Check
@@ -769,17 +654,8 @@ class IZII:
 
     # Get Moves
     def get_all_moves_at_state(self, state):
-        # print(state)
         psuedo = self.get_pseudo_moves_beta(state)
-        # print("print pseudo", psuedo, state[5])
         legal = self.get_legal_moves_beta(state, psuedo)
-        # print("legal: ", legal, state[5])
-        # if [0,0] in legal:
-        # 	print("WHITE KIBNG CASTLE")
-        # 	state[5][0] = 1
-        # elif state[5][0] == 1:
-        # 	state[5][0] = 0
-        # print(legal)
         return legal
 
     def get_piece_moves(self, state, tile_n):
@@ -834,11 +710,8 @@ class IZII:
                         # 	moves.append([i, piece_moves])
 
         if state[1] == 0:
-            # print("checking white castle")
-            # self.print_board(state[0])
             if self.check_wc_k(state):  # if im not in check and i have not fucked up my castle perm add the move
                 state[5][0] = 1
-                # print("WK GOOOD")
                 moves.append([95, 97])
             if self.check_wc_q(state):
                 state[5][1] = 1
@@ -892,27 +765,6 @@ class IZII:
                 in_check = self.black_in_check(s2[0], s2[7])
             if in_check is False:
                 legal_moves.append(pseudo_moves[i])
-                # else:
-                # self.print_board(s2[0])
-                # print("in check")
-                # 	pass
-                # if state[1] == 0:
-                # if state[5][0] == 1
-                # state[5][0] = 0
-                # state[5][1] = 0
-                # elif state[1] == 1:
-                # 	state[5][2] = 0
-                # 	state[5][3] = 0
-
-
-                # if in_check is False:
-                # 	legal_set.append(to_sq)
-                # else:
-                # print("check")
-                # self.undo()
-                # if len(legal_set) > 0:
-                # 	legal_moves.append([from_sq, legal_set])
-                # legal_set = []
         return legal_moves
 
     def get_black_pawn_moves(self, board, en_passant_square, tile_n):
