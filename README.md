@@ -19,6 +19,7 @@ then press CTRL-t on the xboard GUI to run a two machine game.
 
 ## Development
 I wrote IZII on my free time as a means to improve my python and because I love chess! To implement IZII I used a 120 square chess board as used by Cray-1, one of the first chess playing computers.
+
 ![120sqboard](/images/cray.png?raw=true "120 square board") ![120sqboard](/images/120sqboard.png?raw=true "120 square board")
 
 IZII makes its decisions in two key steps 
