@@ -3,6 +3,18 @@
 import random
 import positional_board_values
 
+WKC_INDEX = 0
+WQC_INDEX = 1
+BKC_INDEX = 2
+BQC_INDEX = 3
+
+A1 = 91
+H1 = 98
+A8 = 21
+H8 = 28
+C_PERM_INDEX = 5
+
+
 
 class IZII:
     def __init__(self):
@@ -236,23 +248,32 @@ class IZII:
         elif board[from_tile_n] == 'K':
 
             white_king_sq = to_tile_n
-            castle_perm[0] = -1
-            castle_perm[1] = -1
+            castle_perm[WKC_INDEX] = -1
+            castle_perm[WQC_INDEX] = -1
         elif board[from_tile_n] == 'k':
             black_king_sq = to_tile_n
-            castle_perm[2] = -1
-            castle_perm[3] = -1
+            castle_perm[BKC_INDEX] = -1
+            castle_perm[BQC_INDEX] = -1
         elif board[from_tile_n] == 'R':
-            if from_tile_n == 98:  # king side
-                castle_perm[0] = -1
-            elif from_tile_n == 91:
-                castle_perm[1] = -1
+            if from_tile_n == H1:  # king side
+                castle_perm[WKC_INDEX] = -1
+            elif from_tile_n == A1:
+                castle_perm[WQC_INDEX] = -1
         elif board[from_tile_n] == 'r':
-            if from_tile_n == 28:  # king side
-                castle_perm[2] = -1
-            elif from_tile_n == 21:
-                castle_perm[3] = -1
+            if from_tile_n == H8:  # king side
+                castle_perm[BKC_INDEX] = -1
+            elif from_tile_n == H1:
+                castle_perm[BQC_INDEX] = -1
 
+        # Check if attacking black king side rook
+        if to_tile_n == A1:
+            castle_perm[WQC_INDEX] = -1
+        elif to_tile_n == H1:
+            castle_perm[WKC_INDEX] = -1
+        elif to_tile_n == A8:
+            castle_perm[BQC_INDEX] = -1
+        elif to_tile_n == H8:
+            castle_perm[BKC_INDEX] = -1
 
         if from_tile_n == 95 and to_tile_n == 97 and board[from_tile_n] == 'K':  # and castle_perm[0] == 1:
             board[95] = "o"
@@ -292,7 +313,6 @@ class IZII:
         else:
             board[to_tile_n] = board[from_tile_n]
             board[from_tile_n] = "o"
-
 
         # Change Turns
         if turn == 0:
@@ -338,7 +358,7 @@ class IZII:
         elif self.white_in_check(state[0], state[6] - 1):
             return False
 
-        elif board[92] == 'o' and board[93] == 'o' and board[94] == 'o':  # and castle_perm != -1 and castle_perm != 2:
+        elif board[92] == 'o' and board[93] == 'o' and board[94] == 'o':
             return True
         return False
 
@@ -357,7 +377,7 @@ class IZII:
         elif self.black_in_check(state[0], state[7] + 1):
             return False
 
-        elif board[26] == 'o' and board[27] == 'o':  # and castle_perm != -1:
+        elif board[26] == 'o' and board[27] == 'o':
             return True
         return False
 
@@ -377,7 +397,7 @@ class IZII:
         elif self.black_in_check(state[0], state[7] - 1):
             return False
 
-        elif board[22] == 'o' and board[23] == 'o' and board[24] == 'o' and castle_perm != -1:
+        elif board[22] == 'o' and board[23] == 'o' and board[24] == 'o':
             return True
         return False
 

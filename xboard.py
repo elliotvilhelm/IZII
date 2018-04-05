@@ -68,6 +68,8 @@ def run_xboard():
         elif cmd == 'go':  # start playing
             force_mode = False
             print("turn: ", state[1])
+            logging.debug("turn")
+            logging.debug(state[1])
             move = engine.best_move(state, 2)
             logging.debug(engine.get_all_moves_at_state(state))
             logging.debug(state[5])
