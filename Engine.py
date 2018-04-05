@@ -262,7 +262,7 @@ class IZII:
         elif board[from_tile_n] == 'r':
             if from_tile_n == H8:  # king side
                 castle_perm[BKC_INDEX] = -1
-            elif from_tile_n == H1:
+            elif from_tile_n == A8:
                 castle_perm[BQC_INDEX] = -1
 
         # Check if attacking black king side rook

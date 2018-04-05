@@ -130,5 +130,8 @@ def run_xboard():
 
 if __name__ == '__main__':
     import sys
-    logging.basicConfig(filename='test.log', level=logging.DEBUG)
+    import random
+    import string
+
+    logging.basicConfig(filename='test.log'.join(random.choices(string.ascii_uppercase + string.digits, k=3)), level=logging.DEBUG)
     run_xboard()
