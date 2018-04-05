@@ -1,6 +1,7 @@
 import Engine
 import re
 import logging
+from utils import *
 engine = Engine.IZII()
 init_board = "xxxxxxxxxx" \
              "xxxxxxxxxx" \
@@ -22,7 +23,7 @@ init_state = [init_board, 0, -1, 0, 1, [0, 0, 0, 0], init_board.index('K'), init
 WHITE = 0
 BLACK = 1
 
-
+print("helo me")
 def reply(command):
     logging.debug('<<' + command)
     sys.stdout.write(command + '\n')
@@ -76,10 +77,10 @@ def run_xboard():
             logging.debug(state[2])
 
             print(move)
-            fromsq = engine.sq120_sq64(move[0])
-            tosq = engine.sq120_sq64(move[1])
-            fromsq = engine.sq64_to_RF(fromsq)
-            tosq = engine.sq64_to_RF(tosq)
+            fromsq = sq120_sq64(move[0])
+            tosq = sq120_sq64(move[1])
+            fromsq = sq64_to_RF(fromsq)
+            tosq = sq64_to_RF(tosq)
             move_txt = fromsq[0] + fromsq[1] + tosq[0] + tosq[1]
             state = engine.run_move_at_state(state, move)
             reply("# moving in go")
@@ -104,8 +105,8 @@ def run_xboard():
                 # Update my board
                 fromsq = cmd[0:2]
                 tosq = cmd[2:4]
-                fromsq120 = engine.sq64_to_sq120(engine.RF_sq64(fromsq[0], fromsq[1]))
-                tosq120 = engine.sq64_to_sq120(engine.RF_sq64(tosq[0], tosq[1]))
+                fromsq120 = sq64_to_sq120(RF_sq64(fromsq[0], fromsq[1]))
+                tosq120 = sq64_to_sq120(RF_sq64(tosq[0], tosq[1]))
                 history.append(state)
                 state = engine.run_move_at_state(state, [fromsq120, tosq120])
                 logging.debug("state after re.match")
@@ -115,10 +116,10 @@ def run_xboard():
                     logging.debug(state[5])
                     logging.debug(state[2])
                     move = engine.best_move(state, 2)
-                    fromsq = engine.sq120_sq64(move[0])
-                    tosq = engine.sq120_sq64(move[1])
-                    fromsq = engine.sq64_to_RF(fromsq)
-                    tosq = engine.sq64_to_RF(tosq)
+                    fromsq = sq120_sq64(move[0])
+                    tosq = sq120_sq64(move[1])
+                    fromsq = sq64_to_RF(fromsq)
+                    tosq = sq64_to_RF(tosq)
                     move_txt = fromsq[0] + fromsq[1] + tosq[0] + tosq[1]
                     state = engine.run_move_at_state(state, move)
                     logging.debug(engine.get_board(state[0]))
