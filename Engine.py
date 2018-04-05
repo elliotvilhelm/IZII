@@ -367,96 +367,109 @@ class IZII:
         i = tile_n
         while board[i] != 'x':
             i -= 10
+            if board[i] in all_white:
+                break
+            if board[i] in "pkbn":
+                break
             if board[i] in "qr":
                 slider_found = True
                 return slider_found  # no need to check any more
-            if board[i] in "pkbn":
-                break
-            if board[i] in all_white:
-                break
+
+
         # DOWN
         i = tile_n
         while board[i] != 'x':
             i += 10
+            if board[i] in all_white:
+                break
+            if board[i] in "pkbn":
+                break
             if board[i] in "qr":
                 slider_found = True
                 return slider_found  # no need to check any more
-            if board[i] in "pkbn":
-                break
-            if board[i] in all_white:
-                break
+
 
         # LEFT
         i = tile_n
         while board[i] != 'x':
             i -= 1
+            if board[i] in all_white:
+                break
+            if board[i] in "pkbn":
+                break
             if board[i] in "qr":
                 slider_found = True
                 return slider_found  # no need to check any more
-            if board[i] in "pkbn":
-                break
-            if board[i] in all_white:
-                break
+
 
         # RIGHT
         i = tile_n
         while board[i] != 'x':
             i += 1
+            if board[i] in all_white:
+                break
+            if board[i] in "pkbn":
+                break
             if board[i] in "qr":
                 slider_found = True
                 return slider_found  # no need to check any more
-            if board[i] in "pkbn":
-                break
-            if board[i] in all_white:
-                break
+
 
         # UP LEFT
         i = tile_n
         while board[i] != 'x':
             i -= 11
+            if board[i] in all_white:
+                break
+            if board[i] in "pkrn":
+                break
             if board[i] in "qb":
                 slider_found = True
                 return slider_found  # no need to check any more
-            if board[i] in "pkrn":
-                break
-            if board[i] in all_white:
-                break
+
+
 
         # UP RIGHT
         i = tile_n
         while board[i] != 'x':
             i -= 9
+            if board[i] in all_white:
+                break
+            if board[i] in "pkrn":
+                break
             if board[i] in "qb":
                 slider_found = True
                 return slider_found  # no need to check any more
-            if board[i] in "pkrn":
-                break
-            if board[i] in all_white:
-                break
+
+
         # DOWN LEFT
         i = tile_n
         while board[i] != 'x':
             i += 9
+            if board[i] in all_white:
+                break
+            if board[i] in "pkrn":
+                break
             if board[i] in "qb":
                 slider_found = True
                 return slider_found  # no need to check any more
-            if board[i] in "pkrn":
-                break
-            if board[i] in all_white:
-                break
+
+
         # DOWN RIGHT
         i = tile_n
         while board[i] != 'x':
             i += 11
+            if board[i] in all_white:
+                break
+            if board[i] in "pkrn":
+                break
             if board[i] in "qb":
                 slider_found = True
                 return slider_found  # no need to check any more
-            if board[i] in "pkrn":
-                break
-            if board[i] in all_white:
-                break
+
 
         return slider_found
+
 
     def check_white_sliders(self, board, tile_n):
         slider_found = False
@@ -464,96 +477,103 @@ class IZII:
         i = tile_n
         while board[i] != 'x':
             i -= 10
+            if board[i] in all_black:
+                break
+            if board[i] in "PKBN":
+                break
+
             if board[i] in "QR":
                 slider_found = True
                 return slider_found  # no need to check any more
-            if board[i] in "PKBN":
-                break
-            if board[i] in all_black:
-                break
+
         # DOWN
         i = tile_n
         while board[i] != 'x':
             i += 10
+            if board[i] in all_black:
+                break
+            if board[i] in "PKBN":
+                break
+
             if board[i] in "QR":
                 # print("queen rook ")
                 slider_found = True
                 return slider_found  # no need to check any more
-            if board[i] in "PKBN":
-                break
-            if board[i] in all_black:
-                # print("blocked by black")
-                break
+
         # LEFT
         i = tile_n
         while board[i] != 'x':
             i -= 1
+            if board[i] in all_black:
+                break
+            if board[i] in "PKBN":
+                break
             if board[i] in "QR":
                 # print("slider at", self.sq64_to_RF(self.sq120_sq64(i)))
                 slider_found = True
                 return slider_found  # no need to check any more
-            if board[i] in "PKBN":
-                break
-            if board[i] in all_black:
-                break
 
         # RIGHT
         i = tile_n
         while board[i] != 'x':
             i += 1
+            if board[i] in all_black:
+                break
+            if board[i] in "PKBN":
+                break
             if board[i] in "QR":
                 slider_found = True
                 return slider_found  # no need to check any more
-            if board[i] in "PKBN":
-                break
-            if board[i] in all_black:
-                break
 
         # UP LEFT
         i = tile_n
         while board[i] != 'x':
             i -= 11
+            if board[i] in all_black:
+                break
+            if board[i] in "pkbn":
+                break
             if board[i] in "QB":
                 slider_found = True
                 return slider_found  # no need to check any more
-            if board[i] in "pkbn":
-                break
-            if board[i] in all_black:
-                break
 
         # UP RIGHT
         i = tile_n
         while board[i] != 'x':
             i -= 9
+            if board[i] in all_black:
+                break
+            if board[i] in "pkbn":
+                break
             if board[i] in "QB":
                 slider_found = True
                 return slider_found  # no need to check any more
-            if board[i] in "pkbn":
-                break
-            if board[i] in all_black:
-                break
+
+
         # DOWN LEFT
         i = tile_n
         while board[i] != 'x':
             i += 9
+            if board[i] in all_black:
+                break
+            if board[i] in "pkbn":
+                break
             if board[i] in "QB":
                 slider_found = True
                 return slider_found  # no need to check any more
-            if board[i] in "pkbn":
-                break
-            if board[i] in all_black:
-                break
+
         # DOWN RIGHT
         i = tile_n
         while board[i] != 'x':
             i += 11
+            if board[i] in all_black:
+                break
+            if board[i] in "pkbn":
+                break
             if board[i] in "QB":
                 slider_found = True
                 return slider_found  # no need to check any more
-            if board[i] in "pkbn":
-                break
-            if board[i] in all_black:
-                break
+
         return slider_found
 
     # Get Moves

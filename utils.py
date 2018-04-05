@@ -13,11 +13,9 @@ def int_sq120_sq64():
     return sq120
 
 
-sq120 = int_sq120_sq64()
 
-
-def sq120_sq64(sq):
-    return sq120[sq]
+# def sq120_sq64(sq):
+#     return sq120[sq]
 
 
 def sq64_to_sq120(sq):
@@ -28,8 +26,8 @@ def sq64_to_sq120(sq):
     return sq + 20 + extra
 
 
-def print_move(move):
-    print(sq64_to_RF(sq120_sq64(move[0])), sq64_to_RF(sq120_sq64(move[1])))
+# def print_move(move):
+#     print(sq64_to_RF(sq120[(move[0])), sq64_to_RF(sq120_sq64(move[1])))
 
 
 def copy_state(state):

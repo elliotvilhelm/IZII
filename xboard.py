@@ -2,6 +2,7 @@ import Engine
 import re
 import logging
 from utils import *
+from constants import sq120
 engine = Engine.IZII()
 init_board = "xxxxxxxxxx" \
              "xxxxxxxxxx" \
@@ -71,14 +72,14 @@ def run_xboard():
             print("turn: ", state[1])
             logging.debug("turn")
             logging.debug(state[1])
-            move = engine.best_move(state, 2)
+            move = engine.best_move(state, 3)
             logging.debug(engine.get_all_moves_at_state(state))
             logging.debug(state[5])
             logging.debug(state[2])
 
             print(move)
-            fromsq = sq120_sq64(move[0])
-            tosq = sq120_sq64(move[1])
+            fromsq = sq120[move[0]]
+            tosq = sq120[move[1]]
             fromsq = sq64_to_RF(fromsq)
             tosq = sq64_to_RF(tosq)
             move_txt = fromsq[0] + fromsq[1] + tosq[0] + tosq[1]
@@ -115,9 +116,9 @@ def run_xboard():
                     logging.debug(engine.get_all_moves_at_state(state))
                     logging.debug(state[5])
                     logging.debug(state[2])
-                    move = engine.best_move(state, 2)
-                    fromsq = sq120_sq64(move[0])
-                    tosq = sq120_sq64(move[1])
+                    move = engine.best_move(state, 3)
+                    fromsq = sq120[move[0]]
+                    tosq = sq120[move[1]]
                     fromsq = sq64_to_RF(fromsq)
                     tosq = sq64_to_RF(tosq)
                     move_txt = fromsq[0] + fromsq[1] + tosq[0] + tosq[1]

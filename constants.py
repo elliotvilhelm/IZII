@@ -1,3 +1,6 @@
+from utils import int_sq120_sq64
+
+sq120 = int_sq120_sq64()
 # Common squares
 A1 = 91
 H1 = 98
