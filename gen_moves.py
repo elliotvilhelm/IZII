@@ -1,4 +1,127 @@
-from constants import black_pieces, white_pieces
+from check_castle import check_wc_k, check_wc_q, check_bc_k, check_bc_q
+from check_detection import white_in_check, black_in_check
+from constants import *
+from move import run_move_at_state
+
+# Get Moves
+def get_all_moves_at_state(state):
+    psuedo = get_pseudo_moves_beta(state)
+    legal = get_legal_moves_beta(state, psuedo)
+    return legal
+
+
+def get_piece_moves(state, tile_n):
+    board = state[0]
+    en_pass_sq = state[2]
+    result = []
+    # print(tile_n, board[tile_n])
+    if board[tile_n] == "P":
+        result = get_white_pawn_moves(board, en_pass_sq, tile_n)
+    elif board[tile_n] == "p":
+        result = get_black_pawn_moves(board, en_pass_sq, tile_n)
+    elif board[tile_n] == "K":
+        result = get_white_king_moves(board, tile_n)
+    elif board[tile_n] == "k":
+        result = get_black_king_moves(board, tile_n)
+    elif board[tile_n] == "R":
+        result = get_white_rook_moves(board, tile_n)
+    elif board[tile_n] == "r":
+        result = get_black_rook_moves(board, tile_n)
+    elif board[tile_n] == "B":
+        result = get_white_bishop_moves(board, tile_n)
+    elif board[tile_n] == "b":
+        result = get_black_bishop_moves(board, tile_n)
+    elif board[tile_n] == "N":
+        result = get_white_knight_moves(board, tile_n)
+    elif board[tile_n] == "n":
+        result = get_black_knight_moves(board, tile_n)
+    elif board[tile_n] == "Q":
+        result = get_white_queen_moves(board, tile_n)
+    elif board[tile_n] == "q":
+        result = get_black_queen_moves(board, tile_n)
+    return result
+
+
+def get_pseudo_moves_beta(state):
+    moves = []
+    b = state[0]
+    turn = state[1]
+    for i in range(len(b)):
+        if turn == 0:
+            if b[i] in all_white:
+                piece_moves = get_piece_moves(state, i)
+                for k in range(len(piece_moves)):
+                    moves.append([i, piece_moves[k]])
+                    # if len(piece_moves) > 0:
+                    # 	moves.append([i, piece_moves])
+        elif turn == 1:
+            if b[i] in all_black:
+                piece_moves = get_piece_moves(state, i)
+                for k in range(len(piece_moves)):
+                    moves.append([i, piece_moves[k]])
+                    # if len(piece_moves) > 0:
+                    # 	moves.append([i, piece_moves])
+
+    if state[1] == 0:
+        if check_wc_k(state):  # if im not in check and i have not fucked up my castle perm add the move
+            state[C_PERM_INDEX][WKC_INDEX] = 1
+            moves.append([95, 97])
+        if check_wc_q(state):
+            state[C_PERM_INDEX][WQC_INDEX] = 1
+            moves.append([95, 93])
+    if state[1] == 1:
+        if check_bc_k(state):
+            state[C_PERM_INDEX][BKC_INDEX] = 1
+            moves.append([25, 27])
+        if check_bc_q(state):
+            state[C_PERM_INDEX][BQC_INDEX] = 1
+            moves.append([25, 23])
+    return moves
+
+
+def get_legal_moves_beta(state, pseudo_moves):
+    # take move
+    # check if in check
+    # valid/invalid move
+    # undo move
+    legal_moves = []
+    in_check = False
+    # if state[1] == 0:
+    # print("pseudo moves: ", pseudo_moves)
+    for i in range(len(pseudo_moves)):
+        move_set = pseudo_moves[i]
+        from_sq = move_set[0]
+        to_sq = move_set[1]
+        # for j in range(len(to_sqs)):
+        if pseudo_moves[i] == [95, 97]:
+            # print("ITS wk CASTLE TIME")
+            s2 = run_move_at_state(state, (95, 97))  # move king
+            s2 = run_move_at_state(state, (98, 96))  # move queen
+        elif pseudo_moves[i] == [95, 93]:
+            # print("ITS wq CASTLE TIME")
+            s2 = run_move_at_state(state, (95, 93))  # move king
+            s2 = run_move_at_state(state, (91, 94))  # move queen
+        elif pseudo_moves[i] == [25, 27]:
+            # print("ITS bk CASTLE TIME")
+            s2 = run_move_at_state(state, (25, 27))  # move king
+            s2 = run_move_at_state(state, (28, 26))  # move queen
+        elif pseudo_moves[i] == [25, 23]:
+            # print("ITS bq CASTLE TIME")
+            s2 = run_move_at_state(state, (25, 23))  # move king
+            s2 = run_move_at_state(state, (21, 24))  # move queen
+        else:
+            s2 = run_move_at_state(state, (from_sq, to_sq))
+
+        if s2[1] == 1:
+            in_check = white_in_check(s2[0], s2[6])
+
+        elif s2[1] == 0:
+            in_check = black_in_check(s2[0], s2[7])
+        if in_check is False:
+            legal_moves.append(pseudo_moves[i])
+    return legal_moves
+
+
 """
  _ __   __ ___      ___ __  ___ 
 | '_ \ / _` \ \ /\ / | '_ \/ __|

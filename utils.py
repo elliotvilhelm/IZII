@@ -1,4 +1,5 @@
-
+# having some import errors ..
+ranks = "87654321"
 
 def int_sq120_sq64():
     sq120 = []
@@ -117,6 +118,7 @@ def print_full_board(board):
             print(i, row_str)
 
 
+
 def print_board(board):
     k = 0
     for i in range(20, 100):
@@ -126,3 +128,57 @@ def print_board(board):
             print(ranks[k], row_str)
             k += 1
     print('  A B C D E F G H')
+
+def set_state_from_fen(fen):
+    ranks = fen.split(" ")[0].split("/")
+    print("fen:  ", fen, "ranks:  ", ranks)
+    board = ""
+    board += 'x' * 21
+    print(len(board))
+    counter = 0
+    for rank in ranks:
+        counter += 1
+        for ch in rank:
+            if ch in "12345678":
+                board += 'o' * int(ch)
+            else:
+                board += ch
+        if counter % 8:
+            board += 'x' * 2
+
+            # board[counter - 8
+    board += 'x' * 20
+
+    state = [board]
+    try:
+        index = fen.index("w")
+        state.append(0)
+    except:
+        index = fen.index("b")
+        state.append(1)
+    print("found turn: ", fen[index])
+    print(board)
+    print(print_board(board))
+    state.append(-1)
+    state.append(0)
+    state.append(0)
+    state.append([0, 0, 0, 0])
+    state.append(board.index('K'))
+    state.append(board.index('k'))
+    return state
+
+def get_board(board):
+    # print("printing board: ", board)
+    board_str = "\n"
+    k = 0
+    for i in range(20, 100):
+        if i % 10 == 0:
+            # print(board)
+            # print(i)
+            row = board[i + 1:i + 9]
+            row_str = ' '.join(row)
+            board_str += ranks[k] + row_str + "\n"
+            # print(self.ranks[k], row_str)
+            k += 1
+    board_str += ' A B C D E F G H\n'
+    return board_str

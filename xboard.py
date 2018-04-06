@@ -1,10 +1,11 @@
-import Engine
 import re
 import logging
 from utils import *
 from constants import sq120, init_state
-
-engine = Engine.IZII()
+from gen_moves import get_all_moves_at_state
+from search import best_move
+from move import run_move_at_state
+from utils import set_state_from_fen
 
 
 def reply(command):
@@ -55,10 +56,10 @@ def run_xboard():
             print("turn: ", state[1])
             logging.debug("turn")
             logging.debug(state[1])
-            move = engine.best_move(state, 2)
+            move = best_move(state, 2)
             if move is None:
                 return
-            logging.debug(engine.get_all_moves_at_state(state))
+            logging.debug(get_all_moves_at_state(state))
             logging.debug(state[5])
             logging.debug(state[2])
 
@@ -68,7 +69,7 @@ def run_xboard():
             fromsq = sq64_to_RF(fromsq)
             tosq = sq64_to_RF(tosq)
             move_txt = fromsq[0] + fromsq[1] + tosq[0] + tosq[1]
-            state = engine.run_move_at_state(state, move)
+            state = run_move_at_state(state, move)
             reply("# moving in go")
             reply("move " + move_txt.lower())
         elif cmd.startswith('ping'):
@@ -84,7 +85,7 @@ def run_xboard():
             return
         elif cmd.startswith('set board'):
             fen = cmd[9:].strip()
-            state = engine.set_state_from_fen(fen)
+            state = set_state_from_fen(fen)
             print("turn: ", state[1])
         elif cmd == 'undo':
             if len(history) > 0:
@@ -102,14 +103,15 @@ def run_xboard():
                 fromsq120 = sq64_to_sq120(RF_sq64(fromsq[0], fromsq[1]))
                 tosq120 = sq64_to_sq120(RF_sq64(tosq[0], tosq[1]))
                 history.append(state)
-                state = engine.run_move_at_state(state, [fromsq120, tosq120])
+                state = run_move_at_state(state, [fromsq120, tosq120])
                 logging.debug("state after re.match")
-                logging.debug(engine.get_board(state[0]))
+                logging.debug(get_board(state[0]))
+
                 if not force_mode:
-                    logging.debug(engine.get_all_moves_at_state(state))
+                    logging.debug(get_all_moves_at_state(state))
                     logging.debug(state[5])
                     logging.debug(state[2])
-                    move = engine.best_move(state, 2)
+                    move = best_move(state, 2)
                     if move is None:
                         return
                     fromsq = sq120[move[0]]
@@ -117,8 +119,8 @@ def run_xboard():
                     fromsq = sq64_to_RF(fromsq)
                     tosq = sq64_to_RF(tosq)
                     move_txt = fromsq[0] + fromsq[1] + tosq[0] + tosq[1]
-                    state = engine.run_move_at_state(state, move)
-                    logging.debug(engine.get_board(state[0]))
+                    state = run_move_at_state(state, move)
+                    logging.debug(get_board(state[0]))
                     reply("# state after moving in not force")
                     reply("move " + move_txt.lower())
             else:
@@ -130,5 +132,5 @@ if __name__ == '__main__':
     import random
     import string
 
-    logging.basicConfig(filename='test.log'.join(random.choices(string.ascii_uppercase + string.digits, k=3)), level=logging.DEBUG)
+    logging.basicConfig(filename='test.log' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=3)), level=logging.DEBUG)
     run_xboard()
