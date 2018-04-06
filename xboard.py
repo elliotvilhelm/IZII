@@ -68,11 +68,12 @@ def run_xboard():
         elif cmd == 'force':
             force_mode = True
         elif cmd == 'go':  # start playing
+            history.append(state)
             force_mode = False
             print("turn: ", state[1])
             logging.debug("turn")
             logging.debug(state[1])
-            move = engine.best_move(state, 3)
+            move = engine.best_move(state, 2)
             logging.debug(engine.get_all_moves_at_state(state))
             logging.debug(state[5])
             logging.debug(state[2])
@@ -101,8 +102,16 @@ def run_xboard():
             fen = cmd[9:].strip()
             state = engine.set_state_from_fen(fen)
             print("turn: ", state[1])
+        elif cmd == 'undo':
+            if len(history) > 0:
+                state = history.pop()
+        elif cmd == 'remove':
+            if len(history) > 1:
+                history.pop()
+                state = history.pop()
         else:
             if re.match('^[a-h][1-8][a-h][1-8].?$', cmd):
+                history.append(state)
                 # Update my board
                 fromsq = cmd[0:2]
                 tosq = cmd[2:4]
@@ -116,7 +125,7 @@ def run_xboard():
                     logging.debug(engine.get_all_moves_at_state(state))
                     logging.debug(state[5])
                     logging.debug(state[2])
-                    move = engine.best_move(state, 3)
+                    move = engine.best_move(state, 2)
                     fromsq = sq120[move[0]]
                     tosq = sq120[move[1]]
                     fromsq = sq64_to_RF(fromsq)
