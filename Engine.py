@@ -2,9 +2,8 @@
 import random
 from gen_moves import *
 from evaluate_state import evaluate_state
-from constants import *
 from utils import *
-
+from check_detection import *
 
 class IZII:
     def __init__(self):
@@ -13,6 +12,8 @@ class IZII:
     # Algorithm
     def best_move(self, state, depth=2):
         moves = self.get_all_moves_at_state(state)
+        if len(moves) == 0:
+            return None
 
         if state[1] == 0:
             current_score = -9999.0
@@ -53,14 +54,9 @@ class IZII:
             best_value = -999
             history = []
             if len(legal_moves) is 0:
-                if self.white_in_check(state[0], state[6]):
-                    print("real mate found for black")
-                    self.print_board(state[0])
+                if white_in_check(state[0], state[6]):
                     return -9999
                 else:
-                    print("real mate found for white")
-                    self.print_board(state[0])
-
                     return 9999
             for i in range(len(legal_moves)):
 
@@ -78,8 +74,7 @@ class IZII:
             history = []
             best_value = 999
             if len(legal_moves) == 0:
-                if self.black_in_check(state[0], state[7]):
-                    print("real mate found for white")
+                if black_in_check(state[0], state[7]):
                     return 9999
                 else:
                     return -999
@@ -127,8 +122,8 @@ class IZII:
             # promote
             if board[to_tile_n + 10] == 'x':
                 board[from_tile_n] = 'q'
-        ### King move case
 
+        ### King move case
         elif board[from_tile_n] == 'K':
 
             white_king_sq = to_tile_n
@@ -217,9 +212,9 @@ class IZII:
             return False
         elif castle_perm == 2:
             return False
-        elif self.white_in_check(state[0], state[6]):
+        elif white_in_check(state[0], state[6]):
             return False
-        elif self.white_in_check(state[0], state[6] + 1):
+        elif white_in_check(state[0], state[6] + 1):
             return False
 
         elif board[96] == 'o' and board[97] == 'o':  # and castle_perm != -1 and castle_perm != 2:
@@ -237,9 +232,9 @@ class IZII:
             return False
         elif castle_perm == 2:
             return False
-        elif self.white_in_check(state[0], state[6]):
+        elif white_in_check(state[0], state[6]):
             return False
-        elif self.white_in_check(state[0], state[6] - 1):
+        elif white_in_check(state[0], state[6] - 1):
             return False
 
         elif board[92] == 'o' and board[93] == 'o' and board[94] == 'o':
@@ -256,9 +251,9 @@ class IZII:
             return False
         elif castle_perm == 2:
             return False
-        elif self.black_in_check(state[0], state[7]):
+        elif black_in_check(state[0], state[7]):
             return False
-        elif self.black_in_check(state[0], state[7] + 1):
+        elif black_in_check(state[0], state[7] + 1):
             return False
 
         elif board[26] == 'o' and board[27] == 'o':
@@ -276,305 +271,14 @@ class IZII:
             return False
         elif castle_perm == 2:
             return False
-        elif self.black_in_check(state[0], state[7]):
+        elif black_in_check(state[0], state[7]):
             return False
-        elif self.black_in_check(state[0], state[7] - 1):
+        elif black_in_check(state[0], state[7] - 1):
             return False
 
         elif board[22] == 'o' and board[23] == 'o' and board[24] == 'o':
             return True
         return False
-
-    # Check
-    def white_in_check(self, board, tile_n):
-        # self.print_board(board)
-        if self.check_black_sliders(board, tile_n) is True:
-            return True
-        if self.check_black_knights(board, tile_n) is True:
-            return True
-        if self.check_black_king(board, tile_n) is True:
-            return True
-        if self.check_black_pawns(board, tile_n) is True:
-            return True
-        else:
-            return False
-
-    def black_in_check(self, board, tile_n):
-        if self.check_white_sliders(board, tile_n) is True:
-            # print("fucking sliders")
-            return True
-        if self.check_white_knights(board, tile_n) is True:
-            return True
-        if self.check_white_king(board, tile_n) is True:
-            return True
-        if self.check_white_pawns(board, tile_n) is True:
-            return True
-        else:
-
-            return False
-
-    def check_black_pawns(self, board, tile_n):
-        if board[tile_n - 11] == 'p':
-            # print("warning black pawn")
-            return True
-        if board[tile_n - 9] == 'p':
-            # print("warning black pawn")
-            return True
-        return False
-
-    def check_white_pawns(self, board, tile_n):
-        if board[tile_n + 11] == 'P':
-            # print("warning white pawn")
-            return True
-        if board[tile_n + 9] == 'P':
-            # print("warning white pawn")
-
-            return True
-        return False
-
-    def check_black_king(self, board, tile_n):
-        directions = [11, 10, 9, 1, -11, -10, -9, -1]
-        for direction in directions:
-            if board[tile_n + direction] == 'k':
-                return True
-        return False
-
-    def check_white_king(self, board, tile_n):
-        directions = [11, 10, 9, 1, -11, -10, -9, -1]
-        for direction in directions:
-            if board[tile_n + direction] == 'K':
-                return True
-        return False
-
-    def check_black_knights(self, board, tile_n):
-        directions = [21, 19, 12, 8, -21, -19, -8, -12]
-        for direction in directions:
-            # print(tile_n+direction)
-            if board[tile_n + direction] == 'n':
-                return True
-        return False
-
-    def check_white_knights(self, board, tile_n):
-        directions = [21, 19, 12, 8, -21, -19, -8, -12]
-        for direction in directions:
-            if board[tile_n + direction] == 'N':
-                return True
-        return False
-
-    def check_black_sliders(self, board, tile_n):
-        slider_found = False
-        # UP
-        i = tile_n
-        while board[i] != 'x':
-            i -= 10
-            if board[i] in all_white:
-                break
-            if board[i] in "pkbn":
-                break
-            if board[i] in "qr":
-                slider_found = True
-                return slider_found  # no need to check any more
-
-
-        # DOWN
-        i = tile_n
-        while board[i] != 'x':
-            i += 10
-            if board[i] in all_white:
-                break
-            if board[i] in "pkbn":
-                break
-            if board[i] in "qr":
-                slider_found = True
-                return slider_found  # no need to check any more
-
-
-        # LEFT
-        i = tile_n
-        while board[i] != 'x':
-            i -= 1
-            if board[i] in all_white:
-                break
-            if board[i] in "pkbn":
-                break
-            if board[i] in "qr":
-                slider_found = True
-                return slider_found  # no need to check any more
-
-
-        # RIGHT
-        i = tile_n
-        while board[i] != 'x':
-            i += 1
-            if board[i] in all_white:
-                break
-            if board[i] in "pkbn":
-                break
-            if board[i] in "qr":
-                slider_found = True
-                return slider_found  # no need to check any more
-
-
-        # UP LEFT
-        i = tile_n
-        while board[i] != 'x':
-            i -= 11
-            if board[i] in all_white:
-                break
-            if board[i] in "pkrn":
-                break
-            if board[i] in "qb":
-                slider_found = True
-                return slider_found  # no need to check any more
-
-
-
-        # UP RIGHT
-        i = tile_n
-        while board[i] != 'x':
-            i -= 9
-            if board[i] in all_white:
-                break
-            if board[i] in "pkrn":
-                break
-            if board[i] in "qb":
-                slider_found = True
-                return slider_found  # no need to check any more
-
-
-        # DOWN LEFT
-        i = tile_n
-        while board[i] != 'x':
-            i += 9
-            if board[i] in all_white:
-                break
-            if board[i] in "pkrn":
-                break
-            if board[i] in "qb":
-                slider_found = True
-                return slider_found  # no need to check any more
-
-
-        # DOWN RIGHT
-        i = tile_n
-        while board[i] != 'x':
-            i += 11
-            if board[i] in all_white:
-                break
-            if board[i] in "pkrn":
-                break
-            if board[i] in "qb":
-                slider_found = True
-                return slider_found  # no need to check any more
-
-
-        return slider_found
-
-
-    def check_white_sliders(self, board, tile_n):
-        slider_found = False
-        # UP
-        i = tile_n
-        while board[i] != 'x':
-            i -= 10
-            if board[i] in all_black:
-                break
-            if board[i] in "PKBN":
-                break
-
-            if board[i] in "QR":
-                slider_found = True
-                return slider_found  # no need to check any more
-
-        # DOWN
-        i = tile_n
-        while board[i] != 'x':
-            i += 10
-            if board[i] in all_black:
-                break
-            if board[i] in "PKBN":
-                break
-
-            if board[i] in "QR":
-                # print("queen rook ")
-                slider_found = True
-                return slider_found  # no need to check any more
-
-        # LEFT
-        i = tile_n
-        while board[i] != 'x':
-            i -= 1
-            if board[i] in all_black:
-                break
-            if board[i] in "PKBN":
-                break
-            if board[i] in "QR":
-                # print("slider at", self.sq64_to_RF(self.sq120_sq64(i)))
-                slider_found = True
-                return slider_found  # no need to check any more
-
-        # RIGHT
-        i = tile_n
-        while board[i] != 'x':
-            i += 1
-            if board[i] in all_black:
-                break
-            if board[i] in "PKBN":
-                break
-            if board[i] in "QR":
-                slider_found = True
-                return slider_found  # no need to check any more
-
-        # UP LEFT
-        i = tile_n
-        while board[i] != 'x':
-            i -= 11
-            if board[i] in all_black:
-                break
-            if board[i] in "pkbn":
-                break
-            if board[i] in "QB":
-                slider_found = True
-                return slider_found  # no need to check any more
-
-        # UP RIGHT
-        i = tile_n
-        while board[i] != 'x':
-            i -= 9
-            if board[i] in all_black:
-                break
-            if board[i] in "pkbn":
-                break
-            if board[i] in "QB":
-                slider_found = True
-                return slider_found  # no need to check any more
-
-
-        # DOWN LEFT
-        i = tile_n
-        while board[i] != 'x':
-            i += 9
-            if board[i] in all_black:
-                break
-            if board[i] in "pkbn":
-                break
-            if board[i] in "QB":
-                slider_found = True
-                return slider_found  # no need to check any more
-
-        # DOWN RIGHT
-        i = tile_n
-        while board[i] != 'x':
-            i += 11
-            if board[i] in all_black:
-                break
-            if board[i] in "pkbn":
-                break
-            if board[i] in "QB":
-                slider_found = True
-                return slider_found  # no need to check any more
-
-        return slider_found
 
     # Get Moves
     def get_all_moves_at_state(self, state):
@@ -589,27 +293,27 @@ class IZII:
         # print(tile_n, board[tile_n])
         if board[tile_n] == "P":
             result = get_white_pawn_moves(board, en_pass_sq, tile_n)
-        if board[tile_n] == "p":
+        elif board[tile_n] == "p":
             result = get_black_pawn_moves(board, en_pass_sq, tile_n)
-        if board[tile_n] == "K":
+        elif board[tile_n] == "K":
             result = get_white_king_moves(board, tile_n)
-        if board[tile_n] == "k":
+        elif board[tile_n] == "k":
             result = get_black_king_moves(board, tile_n)
-        if board[tile_n] == "R":
+        elif board[tile_n] == "R":
             result = get_white_rook_moves(board, tile_n)
-        if board[tile_n] == "r":
+        elif board[tile_n] == "r":
             result = get_black_rook_moves(board, tile_n)
-        if board[tile_n] == "B":
+        elif board[tile_n] == "B":
             result = get_white_bishop_moves(board, tile_n)
-        if board[tile_n] == "b":
+        elif board[tile_n] == "b":
             result = get_black_bishop_moves(board, tile_n)
-        if board[tile_n] == "N":
+        elif board[tile_n] == "N":
             result = get_white_knight_moves(board, tile_n)
-        if board[tile_n] == "n":
+        elif board[tile_n] == "n":
             result = get_black_knight_moves(board, tile_n)
-        if board[tile_n] == "Q":
+        elif board[tile_n] == "Q":
             result = get_white_queen_moves(board, tile_n)
-        if board[tile_n] == "q":
+        elif board[tile_n] == "q":
             result = get_black_queen_moves(board, tile_n)
         return result
 
@@ -683,33 +387,15 @@ class IZII:
                 s2 = self.run_move_at_state(state, (from_sq, to_sq))
 
             if s2[1] == 1:
-                in_check = self.white_in_check(s2[0], s2[6])
+                in_check = white_in_check(s2[0], s2[6])
 
             elif s2[1] == 0:
-                in_check = self.black_in_check(s2[0], s2[7])
+                in_check = black_in_check(s2[0], s2[7])
             if in_check is False:
                 legal_moves.append(pseudo_moves[i])
         return legal_moves
 
-    def print_full_board(self, board):
-        for i in range(0, 120):
-            if i % 10 == 0:
-                row = board[i:i + 10]
-                row_str = ' '.join(row)
-                print(i, row_str)
 
-    def print_board(self, board):
-        # print("printing board: ", board)
-        k = 0
-        for i in range(20, 100):
-            if i % 10 == 0:
-                # print(board)
-                # print(i)
-                row = board[i + 1:i + 9]
-                row_str = ' '.join(row)
-                print(ranks[k], row_str)
-                k += 1
-        print('  A B C D E F G H')
 
     def get_board(self, board):
         # print("printing board: ", board)

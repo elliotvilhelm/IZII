@@ -12,8 +12,6 @@ def int_sq120_sq64():
             skip += 2
     return sq120
 
-
-
 # def sq120_sq64(sq):
 #     return sq120[sq]
 
@@ -109,3 +107,22 @@ def sq64_to_RF(sq64):
     else:
         print("eror", file)
     return file, rank
+
+
+def print_full_board(board):
+    for i in range(0, 120):
+        if i % 10 == 0:
+            row = board[i:i + 10]
+            row_str = ' '.join(row)
+            print(i, row_str)
+
+
+def print_board(board):
+    k = 0
+    for i in range(20, 100):
+        if i % 10 == 0:
+            row = board[i + 1:i + 9]
+            row_str = ' '.join(row)
+            print(ranks[k], row_str)
+            k += 1
+    print('  A B C D E F G H')

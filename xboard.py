@@ -2,29 +2,17 @@ import Engine
 import re
 import logging
 from utils import *
-from constants import sq120
+from constants import sq120, init_board
 engine = Engine.IZII()
-init_board = "xxxxxxxxxx" \
-             "xxxxxxxxxx" \
-             "xrnbqkbnrx" \
-             "xppppppppx" \
-             "xoooooooox" \
-             "xoooooooox" \
-             "xoooooooox" \
-             "xoooooooox" \
-             "xPPPPPPPPx" \
-             "xRNBQKBNRx" \
-             "xxxxxxxxxx" \
-             "xxxxxxxxxx"
 
 init_board = list(init_board)
-# board, turn, en pas, healf move, full move, castle perm, white king sq, black king sq
+# board, turn, en pas, half move, full move, castle perm, white king sq, black king sq
 init_state = [init_board, 0, -1, 0, 1, [0, 0, 0, 0], init_board.index('K'), init_board.index('k')]
 
 WHITE = 0
 BLACK = 1
 
-print("helo me")
+
 def reply(command):
     logging.debug('<<' + command)
     sys.stdout.write(command + '\n')
@@ -74,6 +62,8 @@ def run_xboard():
             logging.debug("turn")
             logging.debug(state[1])
             move = engine.best_move(state, 2)
+            if move is None:
+                return
             logging.debug(engine.get_all_moves_at_state(state))
             logging.debug(state[5])
             logging.debug(state[2])
@@ -126,6 +116,8 @@ def run_xboard():
                     logging.debug(state[5])
                     logging.debug(state[2])
                     move = engine.best_move(state, 2)
+                    if move is None:
+                        return
                     fromsq = sq120[move[0]]
                     tosq = sq120[move[1]]
                     fromsq = sq64_to_RF(fromsq)

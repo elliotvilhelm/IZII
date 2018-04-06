@@ -1,13 +1,4 @@
-black_pieces = "pnbrq"
-white_pieces = "PNBRQ"  # excludes king
-all_white = "PKQRNBP"  # includes king
-all_black = "pkqrnbp"
-black_sliders = "qrb"
-white_sliders = "QRB"
-all_pieces = "KQRBNPkqrbnp"
-ranks = "87654321"
-
-
+from constants import black_pieces, white_pieces
 """
  _ __   __ ___      ___ __  ___ 
 | '_ \ / _` \ \ /\ / | '_ \/ __|
