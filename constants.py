@@ -21,6 +21,8 @@ H1 = 98
 A8 = 21
 H8 = 28
 
+WHITE = 0
+BLACK = 1
 # State indexes
 BOARD_INDEX = 0
 TURN_INDEX = 1
@@ -50,3 +52,5 @@ black_sliders = "qrb"
 white_sliders = "QRB"
 all_pieces = "KQRBNPkqrbnp"
 ranks = "87654321"
+
+init_state = [init_board, 0, -1, 0, 1, [0, 0, 0, 0], init_board.index('K'), init_board.index('k')]

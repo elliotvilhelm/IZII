@@ -2,15 +2,9 @@ import Engine
 import re
 import logging
 from utils import *
-from constants import sq120, init_board
+from constants import sq120, init_state
+
 engine = Engine.IZII()
-
-init_board = list(init_board)
-# board, turn, en pas, half move, full move, castle perm, white king sq, black king sq
-init_state = [init_board, 0, -1, 0, 1, [0, 0, 0, 0], init_board.index('K'), init_board.index('k')]
-
-WHITE = 0
-BLACK = 1
 
 
 def reply(command):
