@@ -73,7 +73,7 @@ def evaluate_state(state):
     #                   + (white_bishop_pos - black_bishop_pos) + (white_rook_pos - black_rook_pos) \
     #                   + (white_queen_pos - black_queen_pos)))
 
-    value = (9 * (wq-bq)) + (5 * (wr-br)) + (3 * (wb - bb)) + (3 * (wk - bk)) + (wp-bp)\
+    value = (900 * (wq-bq)) + (500 * (wr-br)) + (300 * (wb - bb)) + (300 * (wk - bk)) + (100 * (wp-bp))\
             + (0.1 * ((white_pawn_pos - black_pawn_pos) + (white_knight_pos - black_knight_pos)
                       + (white_bishop_pos - black_bishop_pos) + (white_rook_pos - black_rook_pos)
                       + (white_queen_pos - black_queen_pos)))  # +(.1 * (white_move_count - black_move_count)))
