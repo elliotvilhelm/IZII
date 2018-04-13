@@ -27,54 +27,44 @@ def black_in_check(board, tile_n):
 
 
 def check_black_pawns(board, tile_n):
-    if board[tile_n - 11] == 'p':
-        # print("warning black pawn")
+    if board[tile_n + NORTH_WEST] == 'p':
         return True
-    if board[tile_n - 9] == 'p':
-        # print("warning black pawn")
+    if board[tile_n + NORTH_EAST] == 'p':
         return True
     return False
 
 
 def check_white_pawns(board, tile_n):
-    if board[tile_n + 11] == 'P':
-        # print("warning white pawn")
+    if board[tile_n + SOUTH_EAST] == 'P':
         return True
-    if board[tile_n + 9] == 'P':
-        # print("warning white pawn")
-
+    if board[tile_n + SOUTH_WEST] == 'P':
         return True
     return False
 
 
 def check_black_king(board, tile_n):
-    directions = [11, 10, 9, 1, -11, -10, -9, -1]
-    for direction in directions:
+    for direction in KING_MOVES:
         if board[tile_n + direction] == 'k':
             return True
     return False
 
 
 def check_white_king(board, tile_n):
-    directions = [11, 10, 9, 1, -11, -10, -9, -1]
-    for direction in directions:
+    for direction in KING_MOVES:
         if board[tile_n + direction] == 'K':
             return True
     return False
 
 
 def check_black_knights(board, tile_n):
-    directions = [21, 19, 12, 8, -21, -19, -8, -12]
-    for direction in directions:
-        # print(tile_n+direction)
+    for direction in KNIGHT_MOVES:
         if board[tile_n + direction] == 'n':
             return True
     return False
 
 
 def check_white_knights(board, tile_n):
-    directions = [21, 19, 12, 8, -21, -19, -8, -12]
-    for direction in directions:
+    for direction in KNIGHT_MOVES:
         if board[tile_n + direction] == 'N':
             return True
     return False

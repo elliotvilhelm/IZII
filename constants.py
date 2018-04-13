@@ -17,9 +17,23 @@ sq120 = int_sq120_sq64()
 
 # Common squares
 A1 = 91
+B1 = 92
+C1 = 93
+D1 = 94
+E1 = 95
+F1 = 96
+G1 = 97
 H1 = 98
+
 A8 = 21
+B8 = 22
+C8 = 23
+D8 = 24
+E8 = 25
+F8 = 26
+G8 = 27
 H8 = 28
+
 
 WHITE = 0
 BLACK = 1
@@ -52,5 +66,27 @@ black_sliders = "qrb"
 white_sliders = "QRB"
 all_pieces = "KQRBNPkqrbnp"
 ranks = "87654321"
+
+# Directions
+"""
+0 1 .. . 9
+10 11 .. 19
+
+  NW  N  NE
+W           E
+  SW  S SE
+"""
+NORTH = -10
+SOUTH = 10
+WEST = -1
+EAST = 1
+
+NORTH_WEST = -11
+NORTH_EAST = -9
+SOUTH_WEST = 9
+SOUTH_EAST = 11
+
+KNIGHT_MOVES = [21, 19, 12, 8, -21, -19, -8, -12]
+KING_MOVES = [NORTH, SOUTH, EAST, WEST, NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST]
 
 init_state = [init_board, 0, -1, 0, 1, [0, 0, 0, 0], init_board.index('K'), init_board.index('k')]

@@ -3,6 +3,7 @@ from check_detection import white_in_check, black_in_check
 from constants import *
 from move import run_move_at_state
 
+
 # Get Moves
 def get_all_moves_at_state(state):
     psuedo = get_pseudo_moves_beta(state)
@@ -11,8 +12,8 @@ def get_all_moves_at_state(state):
 
 
 def get_piece_moves(state, tile_n):
-    board = state[0]
-    en_pass_sq = state[2]
+    board = state[BOARD_INDEX]
+    en_pass_sq = state[EN_PAS_INDEX]
     result = []
     # print(tile_n, board[tile_n])
     if board[tile_n] == "P":
@@ -44,17 +45,17 @@ def get_piece_moves(state, tile_n):
 
 def get_pseudo_moves_beta(state):
     moves = []
-    b = state[0]
-    turn = state[1]
+    b = state[BOARD_INDEX]
+    turn = state[TURN_INDEX]
     for i in range(len(b)):
-        if turn == 0:
+        if turn == WHITE:
             if b[i] in all_white:
                 piece_moves = get_piece_moves(state, i)
                 for k in range(len(piece_moves)):
                     moves.append([i, piece_moves[k]])
                     # if len(piece_moves) > 0:
                     # 	moves.append([i, piece_moves])
-        elif turn == 1:
+        elif turn == BLACK:
             if b[i] in all_black:
                 piece_moves = get_piece_moves(state, i)
                 for k in range(len(piece_moves)):
@@ -62,20 +63,20 @@ def get_pseudo_moves_beta(state):
                     # if len(piece_moves) > 0:
                     # 	moves.append([i, piece_moves])
 
-    if state[1] == 0:
+    if state[TURN_INDEX] == WHITE:
         if check_wc_k(state):  # if im not in check and i have not fucked up my castle perm add the move
             state[C_PERM_INDEX][WKC_INDEX] = 1
-            moves.append([95, 97])
+            moves.append([E1, G1])
         if check_wc_q(state):
             state[C_PERM_INDEX][WQC_INDEX] = 1
-            moves.append([95, 93])
-    if state[1] == 1:
+            moves.append([E1, C1])
+    if state[TURN_INDEX] == BLACK:
         if check_bc_k(state):
             state[C_PERM_INDEX][BKC_INDEX] = 1
-            moves.append([25, 27])
+            moves.append([E8, G8])
         if check_bc_q(state):
             state[C_PERM_INDEX][BQC_INDEX] = 1
-            moves.append([25, 23])
+            moves.append([E8, C8])
     return moves
 
 
@@ -86,6 +87,7 @@ def get_legal_moves_beta(state, pseudo_moves):
     # undo move
     legal_moves = []
     in_check = False
+    turn = state[TURN_INDEX]
     # if state[1] == 0:
     # print("pseudo moves: ", pseudo_moves)
     for i in range(len(pseudo_moves)):
@@ -93,30 +95,30 @@ def get_legal_moves_beta(state, pseudo_moves):
         from_sq = move_set[0]
         to_sq = move_set[1]
         # for j in range(len(to_sqs)):
-        if pseudo_moves[i] == [95, 97]:
+        if pseudo_moves[i] == [E1, G1]:
             # print("ITS wk CASTLE TIME")
-            s2 = run_move_at_state(state, (95, 97))  # move king
-            s2 = run_move_at_state(state, (98, 96))  # move queen
-        elif pseudo_moves[i] == [95, 93]:
+            s2 = run_move_at_state(state, (E1, G1))  # move king
+            s2 = run_move_at_state(state, (H1, F1))  # move castle
+        elif pseudo_moves[i] == [E1, C1]:
             # print("ITS wq CASTLE TIME")
-            s2 = run_move_at_state(state, (95, 93))  # move king
-            s2 = run_move_at_state(state, (91, 94))  # move queen
-        elif pseudo_moves[i] == [25, 27]:
+            s2 = run_move_at_state(state, (E1, C1))  # move king
+            s2 = run_move_at_state(state, (A1, D1))  # move castle
+        elif pseudo_moves[i] == [E8, G8]:
             # print("ITS bk CASTLE TIME")
-            s2 = run_move_at_state(state, (25, 27))  # move king
-            s2 = run_move_at_state(state, (28, 26))  # move queen
-        elif pseudo_moves[i] == [25, 23]:
+            s2 = run_move_at_state(state, (E8, G8))  # move king
+            s2 = run_move_at_state(state, (H8, F8))  # move castle
+        elif pseudo_moves[i] == [E8, C8]:
             # print("ITS bq CASTLE TIME")
-            s2 = run_move_at_state(state, (25, 23))  # move king
-            s2 = run_move_at_state(state, (21, 24))  # move queen
+            s2 = run_move_at_state(state, (E8, C8))  # move king
+            s2 = run_move_at_state(state, (A8, D8))  # move castle
         else:
             s2 = run_move_at_state(state, (from_sq, to_sq))
 
-        if s2[1] == 1:
-            in_check = white_in_check(s2[0], s2[6])
-
-        elif s2[1] == 0:
-            in_check = black_in_check(s2[0], s2[7])
+        if turn == WHITE:
+            in_check = white_in_check(s2[BOARD_INDEX], s2[WK_SQ_INDEX])
+        elif turn == BLACK:
+            in_check = black_in_check(s2[BOARD_INDEX], s2[BK_SQ_INDEX])
+            
         if in_check is False:
             legal_moves.append(pseudo_moves[i])
     return legal_moves
@@ -193,7 +195,7 @@ def get_black_pawn_moves(board, en_passant_square, tile_n):
 
 def get_white_king_moves(board, tile_n):
     result = []
-    down = tile_n + 10
+    down = tile_n + SOUTH
     up = tile_n - 10
     right = tile_n - 1
     left = tile_n + 1
@@ -593,18 +595,16 @@ def get_black_bishop_moves(board, tile_n):
 
 def get_white_knight_moves(board, tile_n):
     result = []
-    directions = [21, 19, 12, 8, -21, -19, -8, -12]
-    for i in range(len(directions)):
-        if board[tile_n + directions[i]] == 'o' or board[tile_n + directions[i]] in black_pieces:
-            result.append(tile_n + directions[i])
+    for i in range(len(KNIGHT_MOVES)):
+        if board[tile_n + KNIGHT_MOVES[i]] == 'o' or board[tile_n + KNIGHT_MOVES[i]] in black_pieces:
+            result.append(tile_n + KNIGHT_MOVES[i])
     return result
 
 def get_black_knight_moves(board, tile_n):
     result = []
-    directions = [21, 19, 12, 8, -21, -19, -8, -12]
-    for i in range(len(directions)):
-        if board[tile_n + directions[i]] == 'o' or board[tile_n + directions[i]] in white_pieces:
-            result.append(tile_n + directions[i])
+    for i in range(len(KNIGHT_MOVES)):
+        if board[tile_n + KNIGHT_MOVES[i]] == 'o' or board[tile_n + KNIGHT_MOVES[i]] in white_pieces:
+            result.append(tile_n + KNIGHT_MOVES[i])
     return result
 
 
