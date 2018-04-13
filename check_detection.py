@@ -75,7 +75,7 @@ def check_black_sliders(board, tile_n):
     # UP
     i = tile_n
     while board[i] != 'x':
-        i -= 10
+        i += NORTH
         if board[i] in all_white:
             break
         if board[i] in "pkbn":
@@ -87,7 +87,7 @@ def check_black_sliders(board, tile_n):
     # DOWN
     i = tile_n
     while board[i] != 'x':
-        i += 10
+        i += SOUTH
         if board[i] in all_white:
             break
         if board[i] in "pkbn":
@@ -99,7 +99,7 @@ def check_black_sliders(board, tile_n):
     # LEFT
     i = tile_n
     while board[i] != 'x':
-        i -= 1
+        i += WEST
         if board[i] in all_white:
             break
         if board[i] in "pkbn":
@@ -111,7 +111,7 @@ def check_black_sliders(board, tile_n):
     # RIGHT
     i = tile_n
     while board[i] != 'x':
-        i += 1
+        i += EAST
         if board[i] in all_white:
             break
         if board[i] in "pkbn":
@@ -123,7 +123,7 @@ def check_black_sliders(board, tile_n):
     # UP LEFT
     i = tile_n
     while board[i] != 'x':
-        i -= 11
+        i += NORTH_WEST
         if board[i] in all_white:
             break
         if board[i] in "pkrn":
@@ -135,7 +135,7 @@ def check_black_sliders(board, tile_n):
     # UP RIGHT
     i = tile_n
     while board[i] != 'x':
-        i -= 9
+        i += NORTH_EAST
         if board[i] in all_white:
             break
         if board[i] in "pkrn":
@@ -147,7 +147,7 @@ def check_black_sliders(board, tile_n):
     # DOWN LEFT
     i = tile_n
     while board[i] != 'x':
-        i += 9
+        i += SOUTH_WEST
         if board[i] in all_white:
             break
         if board[i] in "pkrn":
@@ -159,7 +159,7 @@ def check_black_sliders(board, tile_n):
     # DOWN RIGHT
     i = tile_n
     while board[i] != 'x':
-        i += 11
+        i += SOUTH_EAST
         if board[i] in all_white:
             break
         if board[i] in "pkrn":
@@ -176,7 +176,7 @@ def check_white_sliders(board, tile_n):
     # UP
     i = tile_n
     while board[i] != 'x':
-        i -= 10
+        i += NORTH
         if board[i] in all_black:
             break
         if board[i] in "PKBN":
@@ -189,21 +189,20 @@ def check_white_sliders(board, tile_n):
     # DOWN
     i = tile_n
     while board[i] != 'x':
-        i += 10
+        i += SOUTH
         if board[i] in all_black:
             break
         if board[i] in "PKBN":
             break
 
         if board[i] in "QR":
-            # print("queen rook ")
             slider_found = True
             return slider_found  # no need to check any more
 
     # LEFT
     i = tile_n
     while board[i] != 'x':
-        i -= 1
+        i += WEST
         if board[i] in all_black:
             break
         if board[i] in "PKBN":
@@ -216,7 +215,7 @@ def check_white_sliders(board, tile_n):
     # RIGHT
     i = tile_n
     while board[i] != 'x':
-        i += 1
+        i += EAST
         if board[i] in all_black:
             break
         if board[i] in "PKBN":
@@ -228,7 +227,7 @@ def check_white_sliders(board, tile_n):
     # UP LEFT
     i = tile_n
     while board[i] != 'x':
-        i -= 11
+        i += NORTH_WEST
         if board[i] in all_black:
             break
         if board[i] in "pkbn":
@@ -240,7 +239,7 @@ def check_white_sliders(board, tile_n):
     # UP RIGHT
     i = tile_n
     while board[i] != 'x':
-        i -= 9
+        i += NORTH_EAST
         if board[i] in all_black:
             break
         if board[i] in "pkbn":
@@ -252,7 +251,7 @@ def check_white_sliders(board, tile_n):
     # DOWN LEFT
     i = tile_n
     while board[i] != 'x':
-        i += 9
+        i += SOUTH_WEST
         if board[i] in all_black:
             break
         if board[i] in "pkbn":
@@ -264,7 +263,7 @@ def check_white_sliders(board, tile_n):
     # DOWN RIGHT
     i = tile_n
     while board[i] != 'x':
-        i += 11
+        i += SOUTH_EAST
         if board[i] in all_black:
             break
         if board[i] in "pkbn":

@@ -34,6 +34,8 @@ F8 = 26
 G8 = 27
 H8 = 28
 
+RANK7 = 39
+RANK2 = 81
 
 WHITE = 0
 BLACK = 1

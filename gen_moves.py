@@ -94,31 +94,31 @@ def get_legal_moves_beta(state, pseudo_moves):
         move_set = pseudo_moves[i]
         from_sq = move_set[0]
         to_sq = move_set[1]
-        # for j in range(len(to_sqs)):
+        # WK Castle
         if pseudo_moves[i] == [E1, G1]:
-            # print("ITS wk CASTLE TIME")
             s2 = run_move_at_state(state, (E1, G1))  # move king
             s2 = run_move_at_state(state, (H1, F1))  # move castle
+        # WQ Castle
         elif pseudo_moves[i] == [E1, C1]:
-            # print("ITS wq CASTLE TIME")
             s2 = run_move_at_state(state, (E1, C1))  # move king
             s2 = run_move_at_state(state, (A1, D1))  # move castle
+        # BK Castle
         elif pseudo_moves[i] == [E8, G8]:
-            # print("ITS bk CASTLE TIME")
             s2 = run_move_at_state(state, (E8, G8))  # move king
             s2 = run_move_at_state(state, (H8, F8))  # move castle
+        # BQ Castle
         elif pseudo_moves[i] == [E8, C8]:
-            # print("ITS bq CASTLE TIME")
             s2 = run_move_at_state(state, (E8, C8))  # move king
             s2 = run_move_at_state(state, (A8, D8))  # move castle
+        # Non Castle Move
         else:
             s2 = run_move_at_state(state, (from_sq, to_sq))
 
+        # Check if I am in check after making the move, if so do not append move to legal moves list
         if turn == WHITE:
             in_check = white_in_check(s2[BOARD_INDEX], s2[WK_SQ_INDEX])
         elif turn == BLACK:
             in_check = black_in_check(s2[BOARD_INDEX], s2[BK_SQ_INDEX])
-            
         if in_check is False:
             legal_moves.append(pseudo_moves[i])
     return legal_moves
@@ -132,29 +132,31 @@ def get_legal_moves_beta(state, pseudo_moves):
 |_|                             
 
 """
+
+
 def get_white_pawn_moves(board, en_passant_square, tile_n):
     result = []
     # en_passant_square = self.current_state[2]
     # forward
     # initial move
     if en_passant_square != -1:
-        if tile_n == en_passant_square + 9 or tile_n == en_passant_square + 11:
+        if tile_n == en_passant_square + SOUTH_WEST or tile_n == en_passant_square + SOUTH_EAST:
             result.append(en_passant_square)
-    if tile_n > 80:  # first row
-        if board[tile_n - 10] == "o":
-            result.append(tile_n - 10)
-            if board[tile_n - 20] == "o":
-                result.append(tile_n - 20)
+    if tile_n >= RANK2:  # first row
+        if board[tile_n + NORTH] == "o":
+            result.append(tile_n + NORTH)
+            if board[tile_n + (2 * NORTH)] == "o":
+                result.append(tile_n + (2 * NORTH))
     else:
-        if board[tile_n - 10] == "o":
-            result.append(tile_n - 10)
+        if board[tile_n + NORTH] == "o":
+            result.append(tile_n + NORTH)
     ###########
     # attack
     #############
-    if board[tile_n - 11] in black_pieces:  # attack left only black pawn only
-        result.append(tile_n - 11)
-    if board[tile_n - 9] in black_pieces:  # attack right only black pawn only
-        result.append(tile_n - 9)
+    if board[tile_n + NORTH_WEST] in black_pieces:  # attack left only black pawn only
+        result.append(tile_n + NORTH_WEST)
+    if board[tile_n + NORTH_EAST] in black_pieces:  # attack right only black pawn only
+        result.append(tile_n + NORTH_EAST)
     return result
 
 
@@ -162,25 +164,25 @@ def get_black_pawn_moves(board, en_passant_square, tile_n):
     result = []
     # en_passant_square = self.current_state[2]
     if en_passant_square != -1:
-        if tile_n == en_passant_square - 9 or tile_n == en_passant_square - 11:
+        if tile_n == en_passant_square + NORTH_EAST or tile_n == en_passant_square + NORTH_WEST:
             result.append(en_passant_square)
     # forward
     # initial move
-    if tile_n < 40:  # first row
-        if board[tile_n + 10] == "o":
-            result.append(tile_n + 10)
-            if board[tile_n + 20] == "o":
-                result.append(tile_n + 20)
+    if tile_n <= RANK7:  # first row
+        if board[tile_n + SOUTH] == "o":
+            result.append(tile_n + SOUTH)
+            if board[tile_n + (SOUTH * 2)] == "o":
+                result.append(tile_n + (SOUTH * 2))
     else:
-        if board[tile_n + 10] == "o":
-            result.append(tile_n + 10)
+        if board[tile_n + SOUTH] == "o":
+            result.append(tile_n + SOUTH)
     ###########
     # attack
     #############
-    if board[tile_n + 11] in white_pieces:  # attack left only black pawn only
-        result.append(tile_n + 11)
-    if board[tile_n + 9] in white_pieces:  # attack right only black pawn only
-        result.append(tile_n + 9)
+    if board[tile_n + SOUTH_EAST] in white_pieces:  # attack left only black pawn only
+        result.append(tile_n + SOUTH_EAST)
+    if board[tile_n + SOUTH_WEST] in white_pieces:  # attack right only black pawn only
+        result.append(tile_n + SOUTH_WEST)
     return result
 
 
@@ -308,7 +310,7 @@ def get_white_rook_moves(board, tile_n):
     # UP
     i = tile_n
     while board[i] != 'x':
-        i -= 10
+        i += NORTH
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -323,7 +325,7 @@ def get_white_rook_moves(board, tile_n):
     # DOWN
     i = tile_n
     while board[i] != 'x':
-        i += 10
+        i += SOUTH
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -339,7 +341,7 @@ def get_white_rook_moves(board, tile_n):
     # LEFT
     i = tile_n
     while board[i] != 'x':
-        i -= 1
+        i += WEST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -355,7 +357,7 @@ def get_white_rook_moves(board, tile_n):
     # RIGHT
     i = tile_n
     while board[i] != 'x':
-        i += 1
+        i += EAST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -375,7 +377,7 @@ def get_black_rook_moves(board, tile_n):
     # UP
     i = tile_n
     while board[i] != 'x':
-        i += 10
+        i += SOUTH
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -390,7 +392,7 @@ def get_black_rook_moves(board, tile_n):
     # DOWN
     i = tile_n
     while board[i] != 'x':
-        i -= 10
+        i += NORTH
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -406,7 +408,7 @@ def get_black_rook_moves(board, tile_n):
     # LEFT
     i = tile_n
     while board[i] != 'x':
-        i += 1
+        i += EAST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -422,7 +424,7 @@ def get_black_rook_moves(board, tile_n):
     # RIGHT
     i = tile_n
     while board[i] != 'x':
-        i -= 1
+        i += WEST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -454,7 +456,7 @@ def get_white_bishop_moves(board, tile_n):
     # UP LEFT
     i = tile_n
     while board[i] != 'x':
-        i -= 11
+        i += NORTH_WEST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -470,7 +472,7 @@ def get_white_bishop_moves(board, tile_n):
     # UP RIGHT
     i = tile_n
     while board[i] != 'x':
-        i -= 9
+        i += NORTH_EAST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -485,7 +487,7 @@ def get_white_bishop_moves(board, tile_n):
     # DOWN LEFT
     i = tile_n
     while board[i] != 'x':
-        i += 9
+        i += SOUTH_WEST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -501,7 +503,7 @@ def get_white_bishop_moves(board, tile_n):
     # DOWN RIGHT
     i = tile_n
     while board[i] != 'x':
-        i += 11
+        i += SOUTH_EAST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -521,7 +523,7 @@ def get_black_bishop_moves(board, tile_n):
     # DOWN LEFT
     i = tile_n
     while board[i] != 'x':
-        i += 11
+        i += SOUTH_EAST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -537,7 +539,7 @@ def get_black_bishop_moves(board, tile_n):
     # DOWN RIGHT
     i = tile_n
     while board[i] != 'x':
-        i += 9
+        i += SOUTH_WEST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -552,7 +554,7 @@ def get_black_bishop_moves(board, tile_n):
     # UP LEFT
     i = tile_n
     while board[i] != 'x':
-        i -= 9
+        i += NORTH_EAST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -568,7 +570,7 @@ def get_black_bishop_moves(board, tile_n):
     # UP RIGHT
     i = tile_n
     while board[i] != 'x':
-        i -= 11
+        i += NORTH_WEST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -600,6 +602,7 @@ def get_white_knight_moves(board, tile_n):
             result.append(tile_n + KNIGHT_MOVES[i])
     return result
 
+
 def get_black_knight_moves(board, tile_n):
     result = []
     for i in range(len(KNIGHT_MOVES)):
@@ -623,7 +626,7 @@ def get_white_queen_moves(board, tile_n):
     # UP
     i = tile_n
     while board[i] != 'x':
-        i -= 10
+        i += NORTH
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -638,7 +641,7 @@ def get_white_queen_moves(board, tile_n):
     # DOWN
     i = tile_n
     while board[i] != 'x':
-        i += 10
+        i += SOUTH
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -654,7 +657,7 @@ def get_white_queen_moves(board, tile_n):
     # LEFT
     i = tile_n
     while board[i] != 'x':
-        i -= 1
+        i += WEST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -670,7 +673,7 @@ def get_white_queen_moves(board, tile_n):
     # RIGHT
     i = tile_n
     while board[i] != 'x':
-        i += 1
+        i += EAST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -686,7 +689,7 @@ def get_white_queen_moves(board, tile_n):
     # UP LEFT
     i = tile_n
     while board[i] != 'x':
-        i -= 11
+        i += NORTH_WEST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -702,7 +705,7 @@ def get_white_queen_moves(board, tile_n):
     # UP RIGHT
     i = tile_n
     while board[i] != 'x':
-        i -= 9
+        i += NORTH_EAST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -717,7 +720,7 @@ def get_white_queen_moves(board, tile_n):
     # DOWN LEFT
     i = tile_n
     while board[i] != 'x':
-        i += 9
+        i += SOUTH_WEST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -733,7 +736,7 @@ def get_white_queen_moves(board, tile_n):
     # DOWN RIGHT
     i = tile_n
     while board[i] != 'x':
-        i += 11
+        i += SOUTH_EAST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -754,7 +757,7 @@ def get_black_queen_moves(board, tile_n):
     # UP
     i = tile_n
     while board[i] != 'x':
-        i += 10
+        i += SOUTH
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -769,7 +772,7 @@ def get_black_queen_moves(board, tile_n):
     # DOWN
     i = tile_n
     while board[i] != 'x':
-        i -= 10
+        i += NORTH
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -785,7 +788,7 @@ def get_black_queen_moves(board, tile_n):
     # LEFT
     i = tile_n
     while board[i] != 'x':
-        i += 1
+        i += EAST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -801,7 +804,7 @@ def get_black_queen_moves(board, tile_n):
     # RIGHT
     i = tile_n
     while board[i] != 'x':
-        i -= 1
+        i += WEST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -817,7 +820,7 @@ def get_black_queen_moves(board, tile_n):
     # DOWN LEFT
     i = tile_n
     while board[i] != 'x':
-        i += 11
+        i += SOUTH_EAST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -833,7 +836,7 @@ def get_black_queen_moves(board, tile_n):
     # DOWN RIGHT
     i = tile_n
     while board[i] != 'x':
-        i += 9
+        i += SOUTH_WEST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -848,7 +851,7 @@ def get_black_queen_moves(board, tile_n):
     # UP LEFT
     i = tile_n
     while board[i] != 'x':
-        i -= 9
+        i += NORTH_EAST
         # open square
         if board[i] == 'o':
             result.append(i)
@@ -863,7 +866,7 @@ def get_black_queen_moves(board, tile_n):
     # UP RIGHT
     i = tile_n
     while board[i] != 'x':
-        i -= 11
+        i += NORTH_WEST
         # open square
         if board[i] == 'o':
             result.append(i)
