@@ -4,7 +4,8 @@ from constants import *
 
 def evaluate_state(state):
     # count = {'K': 0, 'Q': 0, 'R': 0, 'B': 0, 'N': 0, 'P': 0, 'k': 0, 'q': 0, 'r': 0, 'b': 0, 'n': 0, 'p': 0}
-    board = state[0][20:100]
+    # board = state[0][20:100]
+    board = state[0]
     white_pawn_pos = 0.0
     black_pawn_pos = 0.0
     white_knight_pos = 0.0
@@ -28,7 +29,7 @@ def evaluate_state(state):
     bk = 0
     br = 0
     bq = 0
-    for i in range(80):
+    for i in range(20, 100):
         if board[i] == 'x' or board[i] == 'o':
             pass
         else:

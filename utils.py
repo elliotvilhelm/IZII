@@ -1,6 +1,7 @@
 # having some import errors ..
 ranks = "87654321"
 
+
 def int_sq120_sq64():
     sq120 = []
     for i in range(120):
@@ -63,8 +64,6 @@ def RF_sq64(file, rank):
         file = 8
     else:
         file = -1
-    # print("error unkown file")
-    print("rank", rank)
     sq = abs(int(rank) - 9) * 8 - 8 + file
     return sq
 

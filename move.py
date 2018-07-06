@@ -111,5 +111,5 @@ def move_at_state(state, move):
     else:
         turn = WHITE
     # print(board[to_tile_n])
-    return board, turn, en_pass_sq, half_move, full_move, castle_perm, white_king_sq, black_king_sq
+    return [board, turn, en_pass_sq, half_move, full_move, castle_perm, white_king_sq, black_king_sq]
 

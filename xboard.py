@@ -56,7 +56,7 @@ def run_xboard():
             print("turn: ", state[1])
             logging.debug("turn")
             logging.debug(state[1])
-            move = best_move(state, 3)
+            move = best_move(state, 2)
             if move is None:
                 return
             logging.debug(get_all_moves_at_state(state))
@@ -111,7 +111,7 @@ def run_xboard():
                     logging.debug(get_all_moves_at_state(state))
                     logging.debug(state[5])
                     logging.debug(state[2])
-                    move = best_move(state, 3)
+                    move = best_move(state, 2)
                     if move is None:
                         return
                     fromsq = sq120[move[0]]
