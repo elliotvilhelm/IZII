@@ -3,8 +3,9 @@ import random
 from check_detection import white_in_check, black_in_check
 from utils import copy_state
 from gen_moves import get_all_moves_at_state
-from move import move_at_state, run_move_at_state
+from move import move_at_state
 
+from constants import init_state
 
 # Algorithm
 def best_move(state, depth=2):
@@ -37,6 +38,8 @@ def best_move(state, depth=2):
                 if random.randint(1, 5) == 3:
                     move_n = i
                     current_score = score
+
+
     return moves[move_n]
 
 
@@ -51,7 +54,7 @@ def minimax(depth, state, alpha, beta):
     if player_turn == 0:
         best_value = -999
         history = []
-        if len(legal_moves) is 0:
+        if len(legal_moves) == 0:
             if white_in_check(state[0], state[6]):
                 return -9999
             else:
@@ -60,7 +63,7 @@ def minimax(depth, state, alpha, beta):
 
             moveset = legal_moves[i]
             history.append(copy_state(state))
-            state = run_move_at_state(state, moveset)
+            state = move_at_state(state, moveset)
             value = minimax(depth - 1, state, alpha, beta)
             state = history.pop()
             best_value = max(best_value, value)
@@ -79,7 +82,7 @@ def minimax(depth, state, alpha, beta):
         for i in range(len(legal_moves)):
             moveset = legal_moves[i]
             history.append(state)
-            state = run_move_at_state(state, moveset)
+            state = move_at_state(state, moveset)
             value = minimax(depth - 1, state, alpha, beta)
             state = history.pop()
             best_value = min(best_value, value)
@@ -87,3 +90,5 @@ def minimax(depth, state, alpha, beta):
             if beta <= alpha:
                 break
         return best_value
+
+print(best_move(init_state, 3))

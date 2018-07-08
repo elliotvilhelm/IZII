@@ -4,12 +4,12 @@ from utils import *
 from constants import sq120, init_state
 from gen_moves import get_all_moves_at_state
 from search import best_move
-from move import run_move_at_state
+from move import move_at_state
 from utils import set_state_from_fen
 
 
 def reply(command):
-    logging.debug('<<' + command)
+    # logging.debug('<<' + command)
     sys.stdout.write(command + '\n')
     sys.stdout.flush()
 
@@ -21,8 +21,12 @@ def run_xboard():
     if sys.stdout.isatty():
         reply("-> Welcome to IZZI!, type 'new' to start a new game")
 
+    move = []
     # Begin Input loop
     while True:
+        logging.debug("board:")
+        logging.debug(get_board(state[0]))
+        logging.debug(move)
         try:
             line = input()
         except IOError:
@@ -30,7 +34,7 @@ def run_xboard():
             continue
         # Prep and log input
         cmd = line.strip()  # remove whitespace
-        logging.debug(">> " + cmd)
+        # logging.debug(">> " + cmd)
         if cmd == 'xboard':
             reply("tellics say     IZZI")
             reply("tellics say     (c) Elliot Vilhelm Pourmand, All rights reserved.")
@@ -53,23 +57,17 @@ def run_xboard():
         elif cmd == 'go':  # start playing
             history.append(state)
             force_mode = False
-            print("turn: ", state[1])
-            logging.debug("turn")
-            logging.debug(state[1])
-            move = best_move(state, 2)
+            move = best_move(state, 3)
+            logging.debug(move)
             if move is None:
                 return
-            logging.debug(get_all_moves_at_state(state))
-            logging.debug(state[5])
-            logging.debug(state[2])
 
-            print(move)
             fromsq = sq120[move[0]]
             tosq = sq120[move[1]]
             fromsq = sq64_to_RF(fromsq)
             tosq = sq64_to_RF(tosq)
             move_txt = fromsq[0] + fromsq[1] + tosq[0] + tosq[1]
-            state = run_move_at_state(state, move)
+            state = move_at_state(state, move)
             reply("# moving in go")
             reply("move " + move_txt.lower())
         elif cmd.startswith('ping'):
@@ -103,15 +101,15 @@ def run_xboard():
                 fromsq120 = sq64_to_sq120(RF_sq64(fromsq[0], fromsq[1]))
                 tosq120 = sq64_to_sq120(RF_sq64(tosq[0], tosq[1]))
                 history.append(state)
-                state = run_move_at_state(state, [fromsq120, tosq120])
-                logging.debug("state after re.match")
-                logging.debug(get_board(state[0]))
+                state = move_at_state(state, [fromsq120, tosq120])
+
+
 
                 if not force_mode:
-                    logging.debug(get_all_moves_at_state(state))
-                    logging.debug(state[5])
-                    logging.debug(state[2])
-                    move = best_move(state, 2)
+                    # logging.debug(state[5])
+                    # logging.debug(state[2])
+                    move = best_move(state, 3)
+                    # logging.debug(move)
                     if move is None:
                         return
                     fromsq = sq120[move[0]]
@@ -119,8 +117,7 @@ def run_xboard():
                     fromsq = sq64_to_RF(fromsq)
                     tosq = sq64_to_RF(tosq)
                     move_txt = fromsq[0] + fromsq[1] + tosq[0] + tosq[1]
-                    state = run_move_at_state(state, move)
-                    logging.debug(get_board(state[0]))
+                    state = move_at_state(state, move)
                     reply("# state after moving in not force")
                     reply("move " + move_txt.lower())
             else:

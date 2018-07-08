@@ -1,5 +1,6 @@
 from utils import int_sq120_sq64
 
+board_hash = {}
 init_board = "xxxxxxxxxx" \
              "xxxxxxxxxx" \
              "xrnbqkbnrx" \
@@ -12,6 +13,7 @@ init_board = "xxxxxxxxxx" \
              "xRNBQKBNRx" \
              "xxxxxxxxxx" \
              "xxxxxxxxxx"
+init_board = list(init_board)
 
 sq120 = int_sq120_sq64()
 
@@ -83,10 +85,42 @@ SOUTH = 10
 WEST = -1
 EAST = 1
 
+# W_PAWN_MOVES = {-10}
+# W_PAWN_ATTACKS = {-9, -11}
+#
+# B_PAWN_MOVES = {10}
+# B_PAWN_ATTACKS = {9, 11}
+
+Q_MOVES = [-11, -10, -9, -1, 1, 9, 10, 11]
+R_MOVES = [-10, -1, 1, 10]
+B_MOVES = [-11, -9, 9, 11]
+
+
+PIECE_MOVES = {'Q': Q_MOVES, 'R': R_MOVES, 'B': B_MOVES, 'q': Q_MOVES, 'r': R_MOVES, 'b': B_MOVES}
+
+OUT_OF_BOUND = 'x'
+EMPTY = 'o'
+
+WHITE_PIECES = {'P', 'N', 'B', 'R', 'Q', 'K'}
+BLACK_PIECES = {'p', 'n', 'b', 'r', 'q', 'k'}
+
+W_ROOK = 'R'
+W_QUEEN = 'Q'
+W_PAWN = 'P'
+
+
+B_ROOK = 'r'
+B_QUEEN = 'q'
+B_PAWN = 'p'
+
+
+
+
 NORTH_WEST = -11
 NORTH_EAST = -9
 SOUTH_WEST = 9
 SOUTH_EAST = 11
+
 
 KNIGHT_MOVES = [21, 19, 12, 8, -21, -19, -8, -12]
 KING_MOVES = [NORTH, SOUTH, EAST, WEST, NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST]

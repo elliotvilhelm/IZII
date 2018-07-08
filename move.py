@@ -1,10 +1,6 @@
 from constants import *
 
 
-def run_move_at_state(state, move):
-    return_state = move_at_state(state, move)
-    return return_state
-
 
 def move_at_state(state, move):
     board = list(state[BOARD_INDEX])
