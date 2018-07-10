@@ -85,6 +85,7 @@ SOUTH = 10
 WEST = -1
 EAST = 1
 
+
 # W_PAWN_MOVES = {-10}
 # W_PAWN_ATTACKS = {-9, -11}
 #

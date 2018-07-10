@@ -90,5 +90,3 @@ def minimax(depth, state, alpha, beta):
             if beta <= alpha:
                 break
         return best_value
-
-print(best_move(init_state, 3))
