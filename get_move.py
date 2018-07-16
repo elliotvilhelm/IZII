@@ -1,5 +1,5 @@
 import sys
-from move import run_move_at_state
+from move import move_at_state
 from react_chess_to_IZII_state import react_chess_board_to_IZII_board
 from search import best_move
 from utils import print_board
@@ -9,6 +9,7 @@ try:
     # State = {board, turn, en pass, half move, full move, castle perms, wk sq, bk sq]}
     # init_state = [init_board, 0, -1, 0, 1, [0, 0, 0, 0], init_board.index('K'), init_board.index('k')]
     if sys.argv[1] == 'undefined':
+        print("args undefined (get_move.py)")
         exit()
 
     state = [0,0,0,0,0,0, 0, 0]
@@ -21,7 +22,6 @@ try:
     state[5] = [0,0,0,0] # for now
     state[6] = state[0].index('K')
     state[7] = state[0].index('k')
-
 
 
     move = best_move(state, 3)
@@ -53,7 +53,9 @@ try:
 
 
     # print(output)
-except:
+except Exception as e:
+    print("except e", e)
     exit()
+
 
 

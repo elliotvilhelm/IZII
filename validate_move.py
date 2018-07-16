@@ -1,15 +1,17 @@
-import sys
-from move import run_move_at_state
+from move import move_at_state
 from react_chess_to_IZII_state import react_chess_board_to_IZII_board
 from search import best_move
 from utils import print_board
 from utils import int_sq120_sq64, sq64_to_RF, RF_sq64, sq64_to_sq120
 from gen_moves import get_all_moves_at_state
+import sys
+
 
 try:
     # State = {board, turn, en pass, half move, full move, castle perms, wk sq, bk sq]}
     # init_state = [init_board, 0, -1, 0, 1, [0, 0, 0, 0], init_board.index('K'), init_board.index('k')]
     if sys.argv[1] == 'undefined':
+        print("undefined args")
         exit()
 
     state = [0,0,0,0,0,0, 0, 0]
@@ -35,8 +37,10 @@ try:
     else:
         print("false")
 
-except:
-     print("EXCEPTION")
-     exit()
+except Exception as e:
+    print(e)
+    print("EXCEPTION")
+    exit()
+
 
 

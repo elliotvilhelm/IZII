@@ -8,12 +8,12 @@ def evaluate_state(state):
     hash_val = tuple(board)
     if hash_val in board_hash:
         return board_hash[hash_val]
-    pos_values = {'Q': 0.0, 'R': 0.0, 'N': 0.0,
-                  'B': 0.0, 'P': 0.0, 'q': 0.0,
+    pos_values = {'K': 0.0, 'Q': 0.0, 'R': 0.0, 'N': 0.0,
+                  'B': 0.0, 'P': 0.0, 'k': 0, 'q': 0.0,
                   'r': 0.0, 'n': 0.0, 'b': 0.0,
                   'p': 0.0}
-    piece_counts = {'Q': 0, 'R': 0, 'N': 0,
-                    'B': 0, 'P': 0, 'q': 0,
+    piece_counts = {'K': 0, 'Q': 0, 'R': 0, 'N': 0,
+                    'B': 0, 'P': 0, 'k': 0, 'q': 0,
                     'r': 0, 'n': 0, 'b': 0,
                     'p': 0
                     }
