@@ -26,18 +26,23 @@ def evaluate_state(state):
             piece_counts[board[i]] += 1
 
     # Piece counts
-    value = ((900 * (piece_counts['Q'] - piece_counts['q']))
+    value = piece_value(piece_counts)
+    # Piece positional Values
+    value += positional_value(pos_values)
+    board_hash[hash_val] = value
+    return value
+
+def piece_value(piece_counts):
+    return ((900 * (piece_counts['Q'] - piece_counts['q']))
              + (500 * (piece_counts['R'] - piece_counts['r']))
              + (300 * (piece_counts['B'] - piece_counts['b']))
              + (300 * (piece_counts['N'] - piece_counts['n']))
              + (100 * (piece_counts['P'] - piece_counts['p'])))
 
-    # Piece positional Values
-    value += 0.1 * (pos_values['Q'] - pos_values['q']
+def positional_value(pos_values):
+    return 0.1 * (pos_values['Q'] - pos_values['q']
                     + pos_values['R'] - pos_values['r']
                     + pos_values['B'] - pos_values['b']
                     + pos_values['N'] - pos_values['n']
                     + pos_values['B'] - pos_values['b']
                     + pos_values['P'] - pos_values['p'])
-    board_hash[hash_val] = value
-    return value

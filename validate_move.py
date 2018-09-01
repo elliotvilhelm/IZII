@@ -21,7 +21,8 @@ try:
     state[2] = int(sys.argv[3])
     state[3] = 0
     state[4] = 0
-    state[5] = [0,0,0,0] # for now
+    castle_perms = sys.argv[6]
+    state[5] = [int(castle_perms[0]), int(castle_perms[1]), int(castle_perms[2]), int(castle_perms[3])]  # for now
     state[6] = state[0].index('K')
     state[7] = state[0].index('k')
 

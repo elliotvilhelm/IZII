@@ -19,12 +19,13 @@ try:
     state[2] = int(sys.argv[3])
     state[3] = 0
     state[4] = 0
-    state[5] = [0,0,0,0] # for now
+    castle_perms = sys.argv[6]
+    state[5] = [int(castle_perms[0]), int(castle_perms[1]), int(castle_perms[2]), int(castle_perms[3])]  # for now
     state[6] = state[0].index('K')
     state[7] = state[0].index('k')
 
 
-    move = best_move(state, 3)
+    move = best_move(state, 2)
 
     piece_at_from_sq = state[0][move[0]]
     source_sq_RF = list(sq64_to_RF(int_sq120_sq64()[move[0]]))

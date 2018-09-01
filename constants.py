@@ -60,7 +60,7 @@ BQC_INDEX = 3
 CASTLE_NEW = 0
 CASTLE_OPEN = 1
 CASTLED = 2
-CASTLE_VOIDED = -1
+CASTLE_VOIDED = 3
 
 black_pieces = "pnbrq"
 white_pieces = "PNBRQ"  # excludes king
