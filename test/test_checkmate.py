@@ -19,6 +19,3 @@ def test_white_checkmates():
     assert sq120_RF(move[1]) == ('B', '8')
     state = move_at_state(state, move)
     assert best_move(state, 3, randomness=False) is None
-
-
-
