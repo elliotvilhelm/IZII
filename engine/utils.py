@@ -42,6 +42,14 @@ def copy_state(state):
     return board, turn, en_pass_sq, half_move, full_move, castle_perm, white_king_sq, black_king_sq
 
 
+def sq120_RF(sq120):
+    sq64 = int_sq120_sq64()[sq120]
+    return sq64_to_RF(sq64)
+
+
+def RF_sq120(file, rank):
+    return sq64_to_sq120(RF_sq64(file, rank))
+
 # Helper Functions
 def RF_sq64(file, rank):
     sq = 0

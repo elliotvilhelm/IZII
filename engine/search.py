@@ -7,7 +7,7 @@ from engine.move import move_at_state
 
 
 # Algorithm
-def best_move(state, depth=2):
+def best_move(state, depth=2, randomness=True):
     moves = get_all_moves_at_state(state)
     if len(moves) == 0:
         return None
@@ -26,7 +26,7 @@ def best_move(state, depth=2):
                 move_n = i
                 current_score = score
             elif score == current_score:
-                if random.randint(1, 5) == 3:
+                if randomness and random.randint(1, 5) == 3:
                     move_n = i
                     current_score = score
         elif turn == 1:
@@ -34,10 +34,9 @@ def best_move(state, depth=2):
                 move_n = i
                 current_score = score
             elif score == current_score:
-                if random.randint(1, 5) == 3:
+                if randomness and random.randint(1, 5) == 3:
                     move_n = i
                     current_score = score
-
 
     return moves[move_n]
 
