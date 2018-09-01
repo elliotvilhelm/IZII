@@ -1,5 +1,6 @@
+[![Build Status](https://travis-ci.org/ElliotVilhelm/IZII.svg?branch=master)](https://travis-ci.org/ElliotVilhelm/IZII)
 ## Overview
-IZII is a Python based Chess Engine
+IZII is a Python Chess Engine
 
 Decisions are made using the minimax search algorithm with alpha-beta pruning to optimize search time. The engine is compatible with xboard or any other GUI using xboard/winboard protocol.
 
