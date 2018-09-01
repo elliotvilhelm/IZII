@@ -11,13 +11,18 @@ To run IZII, download all files to your local system. You also must have [xboard
 
 To play the engine, cd into the source directory and run:
 ```python3
-xboard -cp -fcp "python3 xboard.py"
+xboard -cp -fcp "python3 engine/xboard.py"
 ```
 Furthermore, to watch IZII play itself you can run,
 ```python3
-xboard -cp -fcp "python3 xboard.py" -scp "python3 xboard.py"
+xboard -cp -fcp "python3 xboard.py" -scp "python3 engine/xboard.py"
 ```
 then press CTRL-t on the xboard GUI to run a two machine game.
+
+There is a script included to run this command
+```
+./scripts/run.sh
+```
 
 ## Development
 I wrote IZII on my free time as a means to improve my python and because I love chess! To implement IZII I used a 120 square chess board as used by Cray-1, one of the first chess playing computers.
