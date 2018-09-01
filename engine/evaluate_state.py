@@ -32,6 +32,7 @@ def evaluate_state(state):
     board_hash[hash_val] = value
     return value
 
+
 def piece_value(piece_counts):
     return ((900 * (piece_counts['Q'] - piece_counts['q']))
              + (500 * (piece_counts['R'] - piece_counts['r']))

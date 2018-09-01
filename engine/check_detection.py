@@ -1,4 +1,4 @@
-from constants import *
+from engine.constants import *
 
 
 def white_in_check(board, tile_n):

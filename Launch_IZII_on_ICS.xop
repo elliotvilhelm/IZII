@@ -1,8 +1,0 @@
--zp
--ics
--icshost freechess.org
--fd /Users/null/Dropbox/IZII
--fcp "/usr/local/bin/python3 xboard.py"
--icshelper ~~/../../bin/timeseal
--zippyPassword beer
--icsUp true

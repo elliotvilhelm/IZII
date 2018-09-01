@@ -1,8 +1,8 @@
-from check_detection import *
-from constants import CASTLED, CASTLE_NEW, CASTLE_OPEN, CASTLE_VOIDED
+from engine.check_detection import *
+from engine.constants import CASTLED, CASTLE_NEW, CASTLE_OPEN, CASTLE_VOIDED
 
 
-def check_wc_k(state):  # return true if kingside castle is availible
+def check_wc_k(state):  # return true if kingside castle is available
     # check if im in check
     # check if state perm is valid
     # check if the path is clear
