@@ -1,4 +1,4 @@
-from utils import RF_sq64, sq64_to_sq120, print_board
+from engine.utils import RF_sq64, sq64_to_sq120, print_board
 
 
 def react_chess_board_to_IZII_board(board):

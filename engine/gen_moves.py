@@ -1,7 +1,7 @@
-from check_castle import check_wc_k, check_wc_q, check_bc_k, check_bc_q
-from check_detection import white_in_check, black_in_check
-from constants import *
-from move import move_at_state
+from engine.check_castle import check_wc_k, check_wc_q, check_bc_k, check_bc_q
+from engine.check_detection import white_in_check, black_in_check
+from engine.constants import *
+from engine.move import move_at_state
 
 
 # Get Moves

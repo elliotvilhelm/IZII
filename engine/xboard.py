@@ -1,11 +1,10 @@
 import re
 import logging
-from utils import *
-from constants import sq120, init_state
-from gen_moves import get_all_moves_at_state
-from search import best_move
-from move import move_at_state
-from utils import set_state_from_fen
+from engine.utils import *
+from engine.constants import sq120, init_state
+from engine.search import best_move
+from engine.move import move_at_state
+from engine.utils import set_state_from_fen
 
 
 def reply(command):

@@ -1,5 +1,5 @@
-from positional_board_values import *
-from constants import sq120, board_hash
+from engine.positional_board_values import *
+from engine.constants import sq120, board_hash
 
 
 def evaluate_state(state):

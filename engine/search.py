@@ -1,11 +1,10 @@
-from evaluate_state import evaluate_state
+from engine.evaluate_state import evaluate_state
 import random
-from check_detection import white_in_check, black_in_check
-from utils import copy_state
-from gen_moves import get_all_moves_at_state
-from move import move_at_state
+from engine.check_detection import white_in_check, black_in_check
+from engine.utils import copy_state
+from engine.gen_moves import get_all_moves_at_state
+from engine.move import move_at_state
 
-from constants import init_state
 
 # Algorithm
 def best_move(state, depth=2):

@@ -1,9 +1,7 @@
 import sys
-from move import move_at_state
-from react_chess_to_IZII_state import react_chess_board_to_IZII_board
-from search import best_move
-from utils import print_board
-from utils import int_sq120_sq64, sq64_to_RF
+from engine.react_chess_to_IZII_state import react_chess_board_to_IZII_board
+from engine.search import best_move
+from engine.utils import int_sq120_sq64, sq64_to_RF
 
 try:
     # State = {board, turn, en pass, half move, full move, castle perms, wk sq, bk sq]}
