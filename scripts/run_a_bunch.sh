@@ -8,6 +8,6 @@ if [ "$#" -eq 1 ]; then
 fi
 
 while [ $counter -le $lim ]; do
-	xboard -cp -fcp "python3 xboard.py" -scp "python3 xboard.py" &
+	xboard -cp -fcp "python3 ../engine/xboard.py" -scp "python3 ../engine/xboard.py" &
 	((counter++))
 done
