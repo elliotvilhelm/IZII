@@ -15,7 +15,7 @@ xboard -cp -fcp "python3 engine/xboard.py"
 ```
 Furthermore, to watch IZII play itself you can run,
 ```python3
-xboard -cp -fcp "python3 xboard.py" -scp "python3 engine/xboard.py"
+xboard -cp -fcp "python3 engine/xboard.py" -scp "python3 engine/xboard.py"
 ```
 then press CTRL-t on the xboard GUI to run a two machine game.
 
