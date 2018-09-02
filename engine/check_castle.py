@@ -1,5 +1,5 @@
-from engine.check_detection import *
-from engine.constants import CASTLED, CASTLE_NEW, CASTLE_OPEN, CASTLE_VOIDED
+from engine.check_detection import white_in_check, black_in_check
+from engine.constants import CASTLED, CASTLE_VOIDED
 
 
 def check_wc_k(state):  # return true if kingside castle is available
@@ -17,7 +17,8 @@ def check_wc_k(state):  # return true if kingside castle is available
     elif white_in_check(state[0], state[6] + 1):
         return False
 
-    elif board[96] == 'o' and board[97] == 'o':  # and castle_perm !=  and castle_perm != 2:
+    # and castle_perm !=  and castle_perm != 2:
+    elif board[96] == 'o' and board[97] == 'o':
         return True
     else:
         return False
