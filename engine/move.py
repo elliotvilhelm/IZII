@@ -18,13 +18,14 @@ def move_at_state(state, move):
     en_pass_sq = -1
     if board[from_tile_n] == 'P':
         if from_tile_n <= RANK7:
-            if abs(to_tile_n - from_tile_n) == (20):
+            if abs(to_tile_n - from_tile_n) == 20:
                 en_pass_sq = from_tile_n + NORTH
         # promote
         if board[to_tile_n + NORTH] == 'x':
             board[from_tile_n] = 'Q'
     elif board[from_tile_n] == 'p':
-        if from_tile_n >= RANK2:
+        # if from_tile_n >= RANK2:
+        if from_tile_n <= RANK7:
             if abs(to_tile_n - from_tile_n) == 20:
                 en_pass_sq = from_tile_n + SOUTH
         # promote

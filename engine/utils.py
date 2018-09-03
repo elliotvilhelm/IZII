@@ -114,7 +114,7 @@ def sq64_to_RF(sq64):
         file = 'H'
     else:
         print("eror", file)
-    return file, rank
+    return file+rank
 
 
 def print_full_board(board):
