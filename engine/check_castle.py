@@ -16,7 +16,6 @@ def check_wc_k(state):  # return true if kingside castle is available
         return False
     elif white_in_check(state[0], state[6] + 1):
         return False
-
     # and castle_perm !=  and castle_perm != 2:
     elif board[96] == 'o' and board[97] == 'o':
         return True

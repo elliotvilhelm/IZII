@@ -14,10 +14,18 @@ def move_at_state(state, move):
     from_tile_n = move[0]
     to_tile_n = move[1]
 
+    if state[EN_PAS_INDEX] == to_tile_n and board[from_tile_n] == 'P':
+        if abs(from_tile_n - to_tile_n) == 11 or abs(from_tile_n - to_tile_n) == 9:
+            board[to_tile_n + SOUTH] = 'o'
+    elif state[EN_PAS_INDEX] == to_tile_n and board[from_tile_n] == 'p':
+        if abs(from_tile_n - to_tile_n) == 11 or abs(from_tile_n - to_tile_n) == 9:
+            board[to_tile_n + NORTH] = 'o'
+
+
     ### En Passant case
     en_pass_sq = -1
     if board[from_tile_n] == 'P':
-        if from_tile_n <= RANK7:
+        if from_tile_n >= RANK2:
             if abs(to_tile_n - from_tile_n) == 20:
                 en_pass_sq = from_tile_n + NORTH
         # promote
