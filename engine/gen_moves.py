@@ -6,13 +6,11 @@ from engine.move import move_at_state
 
 # Get Moves
 def get_all_moves_at_state(state):
-    # psuedo = get_pseudo_moves_beta(state)
-    # psuedo = gen_pseudo_moves_v3(state)
-    legal = get_legal_moves_beta(state, gen_pseudo_moves_v3(state))
+    legal = get_legal_moves(state, gen_pseudo_moves(state))
     return legal
 
 
-def get_legal_moves_beta(state, pseudo_moves):
+def get_legal_moves(state, pseudo_moves):
     # take move
     # check if in check
     # valid/invalid move
@@ -63,6 +61,7 @@ def get_legal_moves_beta(state, pseudo_moves):
 |_|
 
 """
+
 
 def get_white_pawn_moves(board, en_passant_square, tile_n):
     result = []
@@ -178,203 +177,14 @@ def get_white_pawn_moves2(board, en_passant_square, tile_n):
 """
 
 
-def get_white_king_moves(board, tile_n):
+def get_king_moves(board, tile_n, color):
     result = []
-    down = tile_n + SOUTH
-    up = tile_n - 10
-    right = tile_n - 1
-    left = tile_n + 1
-    up_left = tile_n - 11
-    up_right = tile_n - 9
-    down_left = tile_n + 9
-    down_right = tile_n + 11
-
-    # passive moves
-    if board[down] == 'o':
-        result.append(down)
-    if board[up] == 'o':
-        result.append(up)
-    if board[left] == 'o':
-        result.append(left)
-    if board[right] == 'o':
-        result.append(right)
-    if board[up_right] == 'o':
-        result.append(up_right)
-    if board[down_right] == 'o':
-        result.append(down_right)
-    if board[up_left] == 'o':
-        result.append(up_left)
-    if board[down_left] == 'o':
-        result.append(down_left)
-
-    # attack moves
-    if board[down] in black_pieces:
-        result.append(down)
-    if board[up] in black_pieces:
-        result.append(up)
-    if board[left] in black_pieces:
-        result.append(left)
-    if board[right] in black_pieces:
-        result.append(right)
-    if board[up_right] in black_pieces:
-        result.append(up_right)
-    if board[down_right] in black_pieces:
-        result.append(down_right)
-    if board[up_left] in black_pieces:
-        result.append(up_left)
-    if board[down_left] in black_pieces:
-        result.append(down_left)
-
-    return result
-
-
-def get_black_king_moves(board, tile_n):
-    result = []
-    up = tile_n + 10
-    down = tile_n - 10
-    left = tile_n - 1
-    right = tile_n + 1
-    down_right = tile_n - 11
-    down_left = tile_n - 9
-    up_right = tile_n + 9
-    up_left = tile_n + 11
-
-    # passive moves
-    if board[down] == 'o':
-        result.append(down)
-    if board[up] == 'o':
-        result.append(up)
-    if board[left] == 'o':
-        result.append(left)
-    if board[right] == 'o':
-        result.append(right)
-    if board[up_right] == 'o':
-        result.append(up_right)
-    if board[down_right] == 'o':
-        result.append(down_right)
-    if board[up_left] == 'o':
-        result.append(up_left)
-    if board[down_left] == 'o':
-        result.append(down_left)
-
-    # attack moves
-    if board[down] in white_pieces:
-        result.append(down)
-    if board[up] in white_pieces:
-        result.append(up)
-    if board[left] in white_pieces:
-        result.append(left)
-    if board[right] in white_pieces:
-        result.append(right)
-    if board[up_right] in white_pieces:
-        result.append(up_right)
-    if board[down_right] in white_pieces:
-        result.append(down_right)
-    if board[up_left] in white_pieces:
-        result.append(up_left)
-    if board[down_left] in white_pieces:
-        result.append(down_left)
-
-    return result
-
-
-def get_white_king_moves2(board, tile_n):
-    result = []
-    down = tile_n + SOUTH
-    up = tile_n - 10
-    right = tile_n - 1
-    left = tile_n + 1
-    up_left = tile_n - 11
-    up_right = tile_n - 9
-    down_left = tile_n + 9
-    down_right = tile_n + 11
-
-    # passive moves
-    if board[down] == 'o':
-        result.append([tile_n, down])
-    if board[up] == 'o':
-        result.append([tile_n, up])
-    if board[left] == 'o':
-        result.append([tile_n, left])
-    if board[right] == 'o':
-        result.append([tile_n, right])
-    if board[up_right] == 'o':
-        result.append([tile_n, up_right])
-    if board[down_right] == 'o':
-        result.append([tile_n, down_right])
-    if board[up_left] == 'o':
-        result.append([tile_n, up_left])
-    if board[down_left] == 'o':
-        result.append([tile_n, down_left])
-
-    # attack moves
-    if board[down] in black_pieces:
-        result.append([tile_n, down])
-    if board[up] in black_pieces:
-        result.append([tile_n, up])
-    if board[left] in black_pieces:
-        result.append([tile_n, left])
-    if board[right] in black_pieces:
-        result.append([tile_n, right])
-    if board[up_right] in black_pieces:
-        result.append([tile_n, up_right])
-    if board[down_right] in black_pieces:
-        result.append([tile_n, down_right])
-    if board[up_left] in black_pieces:
-        result.append([tile_n, up_left])
-    if board[down_left] in black_pieces:
-        result.append([tile_n, down_left])
-
-    return result
-
-
-def get_black_king_moves2(board, tile_n):
-    result = []
-    up = tile_n + 10
-    down = tile_n - 10
-    left = tile_n - 1
-    right = tile_n + 1
-    down_right = tile_n - 11
-    down_left = tile_n - 9
-    up_right = tile_n + 9
-    up_left = tile_n + 11
-
-    # passive moves
-    if board[down] == 'o':
-        result.append([tile_n, down])
-    if board[up] == 'o':
-        result.append([tile_n, up])
-    if board[left] == 'o':
-        result.append([tile_n, left])
-    if board[right] == 'o':
-        result.append([tile_n, right])
-    if board[up_right] == 'o':
-        result.append([tile_n, up_right])
-    if board[down_right] == 'o':
-        result.append([tile_n, down_right])
-    if board[up_left] == 'o':
-        result.append([tile_n, up_left])
-    if board[down_left] == 'o':
-        result.append([tile_n, down_left])
-
-    # attack moves
-    if board[down] in white_pieces:
-        result.append([tile_n, down])
-    if board[up] in white_pieces:
-        result.append([tile_n, up])
-    if board[left] in white_pieces:
-        result.append([tile_n, left])
-    if board[right] in white_pieces:
-        result.append([tile_n, right])
-    if board[up_right] in white_pieces:
-        result.append([tile_n, up_right])
-    if board[down_right] in white_pieces:
-        result.append([tile_n, down_right])
-    if board[up_left] in white_pieces:
-        result.append([tile_n, up_left])
-    if board[down_left] in white_pieces:
-        result.append([tile_n, down_left])
-
+    opponent_pieces = black_pieces if color == WHITE else black_pieces
+    valid_squares = opponent_pieces + 'o'
+    for move in KING_MOVES:
+        to_sq = board[tile_n + move]
+        if to_sq in valid_squares:
+            result.append([tile_n, tile_n + move])
     return result
 
 
@@ -386,23 +196,6 @@ def get_black_king_moves2(board, tile_n):
 |_|\_|_| |_|_|\__, |_| |_|\__|___/
               |___/
 """
-
-
-def get_white_knight_moves(board, tile_n):
-    result = []
-    for i in range(len(KNIGHT_MOVES)):
-        if board[tile_n + KNIGHT_MOVES[i]] == 'o' or board[tile_n + KNIGHT_MOVES[i]] in black_pieces:
-            result.append(tile_n + KNIGHT_MOVES[i])
-    return result
-
-
-def get_black_knight_moves(board, tile_n):
-    result = []
-    for i in range(len(KNIGHT_MOVES)):
-        if board[tile_n + KNIGHT_MOVES[i]] == 'o' or board[tile_n + KNIGHT_MOVES[i]] in white_pieces:
-            result.append(tile_n + KNIGHT_MOVES[i])
-    return result
-
 
 def get_white_knight_moves2(board, tile_n):
     result = []
@@ -419,14 +212,13 @@ def get_black_knight_moves2(board, tile_n):
             result.append([tile_n, tile_n + KNIGHT_MOVES[i]])
     return result
 
-
 def swap_turn(turn):
     if turn is WHITE:
         return BLACK
     return WHITE
 
 
-def gen_pseudo_moves_v3(state):
+def gen_pseudo_moves(state):
     moves = []
     turn = state[TURN_INDEX]
     b = state[BOARD_INDEX]
@@ -436,31 +228,20 @@ def gen_pseudo_moves_v3(state):
             continue
         elif turn is BLACK and piece_at_index in WHITE_PIECES:
             continue
-        elif piece_at_index is OUT_OF_BOUND:
+        elif piece_at_index in (OUT_OF_BOUND, EMPTY):
             continue
-        elif piece_at_index is EMPTY:
-            continue
-
-        # PAWNS
-        if piece_at_index is 'P':
+        elif piece_at_index is 'P':
             moves += get_white_pawn_moves2(b, state[EN_PAS_INDEX], sq_index)
-            continue
         elif piece_at_index is 'p':
             moves += get_black_pawn_moves2(b, state[EN_PAS_INDEX], sq_index)
-            continue
-
         elif piece_at_index is 'n':
             moves += get_black_knight_moves2(b, sq_index)
-            continue
         elif piece_at_index is 'N':
             moves += get_white_knight_moves2(b, sq_index)
-            continue
         elif piece_at_index is 'K':
-            moves += get_white_king_moves2(b, sq_index)
-            continue
+            moves += get_king_moves(b, sq_index, WHITE)
         elif piece_at_index is 'k':
-            moves += get_black_king_moves2(b, sq_index)
-            continue
+            moves += get_king_moves(b, sq_index, BLACK)
         else:
             piece_moves = PIECE_MOVES[piece_at_index]
             for offset in piece_moves:
@@ -506,7 +287,5 @@ def gen_pseudo_moves_v3(state):
         if check_bc_q(state):
             state[C_PERM_INDEX][BQC_INDEX] = 1
             moves.append([E8, C8])
-
-
     return moves
 
