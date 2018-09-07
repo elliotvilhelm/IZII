@@ -18,8 +18,6 @@ def get_legal_moves(state, pseudo_moves):
     legal_moves = []
     in_check = False
     turn = state[TURN_INDEX]
-    # if state[1] == 0:
-    # print("pseudo moves: ", pseudo_moves)
     for i in range(len(pseudo_moves)):
         from_sq = pseudo_moves[i][0]
         to_sq = pseudo_moves[i][1]
@@ -62,57 +60,6 @@ def get_legal_moves(state, pseudo_moves):
 
 """
 
-
-def get_white_pawn_moves(board, en_passant_square, tile_n):
-    result = []
-    # en_passant_square = self.current_state[2]
-    # forward
-    # initial move
-    if en_passant_square != -1:
-        if tile_n == en_passant_square + SOUTH_WEST or tile_n == en_passant_square + SOUTH_EAST:
-            result.append(en_passant_square)
-    if tile_n >= RANK2:  # first row
-        if board[tile_n + NORTH] == "o":
-            result.append(tile_n + NORTH)
-            if board[tile_n + (2 * NORTH)] == "o":
-                result.append(tile_n + (2 * NORTH))
-    else:
-        if board[tile_n + NORTH] == "o":
-            result.append(tile_n + NORTH)
-    ###########
-    # attack
-    #############
-    if board[tile_n + NORTH_WEST] in black_pieces:  # attack left only black pawn only
-        result.append(tile_n + NORTH_WEST)
-    if board[tile_n + NORTH_EAST] in black_pieces:  # attack right only black pawn only
-        result.append(tile_n + NORTH_EAST)
-    return result
-
-
-def get_black_pawn_moves(board, en_passant_square, tile_n):
-    result = []
-    # en_passant_square = self.current_state[2]
-    if en_passant_square != -1:
-        if tile_n == en_passant_square + NORTH_EAST or tile_n == en_passant_square + NORTH_WEST:
-            result.append(en_passant_square)
-    # forward
-    # initial move
-    if tile_n <= RANK7:  # first row
-        if board[tile_n + SOUTH] == "o":
-            result.append(tile_n + SOUTH)
-            if board[tile_n + (SOUTH * 2)] == "o":
-                result.append(tile_n + (SOUTH * 2))
-    else:
-        if board[tile_n + SOUTH] == "o":
-            result.append(tile_n + SOUTH)
-    ###########
-    # attack
-    #############
-    if board[tile_n + SOUTH_EAST] in white_pieces:  # attack left only black pawn only
-        result.append(tile_n + SOUTH_EAST)
-    if board[tile_n + SOUTH_WEST] in white_pieces:  # attack right only black pawn only
-        result.append(tile_n + SOUTH_WEST)
-    return result
 
 def get_black_pawn_moves2(board, en_passant_square, tile_n):
     result = []
@@ -179,7 +126,7 @@ def get_white_pawn_moves2(board, en_passant_square, tile_n):
 
 def get_king_moves(board, tile_n, color):
     result = []
-    opponent_pieces = black_pieces if color == WHITE else black_pieces
+    opponent_pieces = black_pieces if color == WHITE else white_pieces
     valid_squares = opponent_pieces + 'o'
     for move in KING_MOVES:
         to_sq = board[tile_n + move]
