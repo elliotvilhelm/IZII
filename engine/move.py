@@ -1,7 +1,6 @@
 from engine.constants import *
 
 
-
 def move_at_state(state, move):
     board = list(state[BOARD_INDEX])
     turn = state[TURN_INDEX]

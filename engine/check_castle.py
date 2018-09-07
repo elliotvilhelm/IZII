@@ -1,5 +1,27 @@
 from engine.check_detection import white_in_check, black_in_check
-from engine.constants import CASTLED, CASTLE_VOIDED
+from engine.constants import CASTLED, CASTLE_VOIDED, BOARD_INDEX, C_PERM_INDEX, WQC_INDEX, WKC_INDEX, BKC_INDEX, BQC_INDEX
+
+
+def can_castle(state, castle_index):
+    castle_perm = state[C_PERM_INDEX][castle_index]
+    board = state[BOARD_INDEX]
+    if castle_perm == CASTLE_VOIDED:
+        return False
+    elif castle_index == CASTLED:
+        return False
+    elif white_in_check(state[0], state[6]):
+        return False
+    elif white_in_check(state[0], state[6] + 1):
+        return False
+    # and castle_perm !=  and castle_perm != 2:
+    if castle_index == WKC_INDEX:
+        return board[96] == 'o' and board[97] == 'o'
+    elif castle_index == WQC_INDEX:
+        return board[92] == 'o' and board[93] == 'o' and board[94] == 'o'
+    elif castle_index == BKC_INDEX:
+        return board[26] == 'o' and board[27] == 'o'
+    elif castle_index == BQC_INDEX:
+        return board[22] == 'o' and board[23] == 'o' and board[24] == 'o'
 
 
 def check_wc_k(state):  # return true if kingside castle is available

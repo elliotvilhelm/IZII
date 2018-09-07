@@ -1,4 +1,4 @@
-from engine.check_castle import check_wc_k, check_wc_q, check_bc_k, check_bc_q
+from engine.check_castle import check_wc_k, check_wc_q, check_bc_k, check_bc_q, can_castle
 from engine.check_detection import white_in_check, black_in_check
 from engine.constants import *
 from engine.move import move_at_state
@@ -489,6 +489,10 @@ def gen_pseudo_moves_v3(state):
 
     # Castling
     if state[TURN_INDEX] == WHITE:
+        # castle_move = {WKC_INDEX: [E1, G1], WQC_INDEX: [E1, C1], BKC_INDEX: [E8, G8], BQC_INDEX: [E8, C8]}
+        # if can_castle(state, WKC_INDEX):
+        #     state[C_PERM_INDEX][WKC_INDEX] = 1
+        #     moves.append([E1, G1])
         if check_wc_k(state):  # if im not in check and i have not fucked up my castle perm add the move
             state[C_PERM_INDEX][WKC_INDEX] = 1
             moves.append([E1, G1])
