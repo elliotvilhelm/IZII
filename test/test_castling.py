@@ -7,8 +7,8 @@ from engine.utils import RF_sq120, print_board
 
 def test_init_castling():
     castle_perms = init_state[C_PERM_INDEX]
-    assert castle_perms[WKC_INDEX] == 0
-    assert castle_perms[WQC_INDEX] == 0
+    assert castle_perms[WKC_INDEX] == CASTLE_NEW
+    assert castle_perms[WQC_INDEX] == CASTLE_NEW
 
 
 def test_wq_castle_voided():

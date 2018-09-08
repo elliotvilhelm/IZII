@@ -13,7 +13,7 @@ init_board = "xxxxxxxxxx" \
              "xRNBQKBNRx" \
              "xxxxxxxxxx" \
              "xxxxxxxxxx"
-init_board = list(init_board)
+# init_board = list(init_board)
 
 sq120 = int_sq120_sq64()
 
@@ -57,10 +57,10 @@ BKC_INDEX = 2
 BQC_INDEX = 3
 
 # Castle States
-CASTLE_NEW = 0
-CASTLE_OPEN = 1
-CASTLED = 2
-CASTLE_VOIDED = 3
+CASTLE_NEW = '0'
+CASTLE_OPEN = '1'
+CASTLED = '2'
+CASTLE_VOIDED = '3'
 
 black_pieces = "pnbrq"
 white_pieces = "PNBRQ"  # excludes king
@@ -89,6 +89,7 @@ NORTH_EAST = -9
 SOUTH_WEST = 9
 SOUTH_EAST = 11
 KING_MOVES = {NORTH, SOUTH, EAST, WEST, NORTH_WEST, NORTH_EAST, SOUTH_WEST, SOUTH_EAST}
+KNIGHT_MOVES = {21, 19, 12, 8, -21, -19, -8, -12}
 
 # W_PAWN_MOVES = {-10}
 # W_PAWN_ATTACKS = {-9, -11}
@@ -96,9 +97,9 @@ KING_MOVES = {NORTH, SOUTH, EAST, WEST, NORTH_WEST, NORTH_EAST, SOUTH_WEST, SOUT
 # B_PAWN_MOVES = {10}
 # B_PAWN_ATTACKS = {9, 11}
 
-Q_MOVES = [-11, -10, -9, -1, 1, 9, 10, 11]
-R_MOVES = [-10, -1, 1, 10]
-B_MOVES = [-11, -9, 9, 11]
+Q_MOVES = {-11, -10, -9, -1, 1, 9, 10, 11}
+R_MOVES = {-10, -1, 1, 10}
+B_MOVES = {-11, -9, 9, 11}
 
 
 PIECE_MOVES = {'Q': Q_MOVES, 'R': R_MOVES, 'B': B_MOVES, 'q': Q_MOVES, 'r': R_MOVES, 'b': B_MOVES}
@@ -118,9 +119,4 @@ B_ROOK = 'r'
 B_QUEEN = 'q'
 B_PAWN = 'p'
 
-
-
-KNIGHT_MOVES = [21, 19, 12, 8, -21, -19, -8, -12]
-KING_MOVES = [NORTH, SOUTH, EAST, WEST, NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST]
-
-init_state = [init_board, 0, -1, 0, 1, [0, 0, 0, 0], init_board.index('K'), init_board.index('k')]
+init_state = [init_board, 0, -1, 0, 1, '0000', init_board.index('K'), init_board.index('k')]

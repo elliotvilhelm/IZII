@@ -2,6 +2,15 @@
 ranks = "87654321"
 
 
+def swap_turn(turn):
+    if turn is 0:
+        return 1
+    return 0
+
+
+def update(board, pos, piece):
+    return board[:pos] + piece + board[pos+1:]
+
 def int_sq120_sq64():
     sq120 = []
     for i in range(120):
@@ -31,12 +40,12 @@ def sq64_to_sq120(sq):
 
 
 def copy_state(state):
-    board = list(state[0])
+    board = state[0]
     turn = state[1]
     en_pass_sq = state[2]
     half_move = state[3]
     full_move = state[4]
-    castle_perm = list(state[5])
+    castle_perm = state[5]
     white_king_sq = state[6]
     black_king_sq = state[7]
     return board, turn, en_pass_sq, half_move, full_move, castle_perm, white_king_sq, black_king_sq

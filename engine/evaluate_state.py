@@ -3,9 +3,9 @@ from engine.constants import sq120, board_hash
 
 
 def evaluate_state(state):
-    board = list(state[0])
-    board.append(state[1])
-    hash_val = tuple(board)
+    board = state[0]
+    board += str(state[1])
+    hash_val = board
     if hash_val in board_hash:
         return board_hash[hash_val]
     pos_values = {'K': 0.0, 'Q': 0.0, 'R': 0.0, 'N': 0.0,
