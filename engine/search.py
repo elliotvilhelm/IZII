@@ -11,7 +11,6 @@ def best_move(state, depth=2, randomness=True):
     moves = get_all_moves_at_state(state)
     if len(moves) == 0:
         return None
-
     if state[1] == 0:
         current_score = -9999.0
     else:
@@ -37,7 +36,6 @@ def best_move(state, depth=2, randomness=True):
                 if randomness and random.randint(1, 5) == 3:
                     move_n = i
                     current_score = score
-
     return moves[move_n]
 
 
