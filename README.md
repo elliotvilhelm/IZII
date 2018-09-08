@@ -28,6 +28,7 @@ You can press `ctrl-t` on your keyboard and IZII will begin to play itself
 ## Development
 I wrote IZII on my free time as a means to improve my python and because I love chess!
 To implement IZII I used a 120 square chess board as used by Cray-1, one of the first chess playing computers.
+
 ![120sqboard](/images/cray.png?raw=true "120 square board")
 ![120sqboard](/images/120sqboard.png?raw=true "120 square board")
 
