@@ -1,6 +1,9 @@
-from engine.check_castle import check_wc_k, check_wc_q, check_bc_k, check_bc_q, can_castle
+from engine.check_castle import check_wc_k, check_wc_q, check_bc_k, check_bc_q
 from engine.check_detection import white_in_check, black_in_check
-from engine.constants import *
+from engine.constants import BOARD_INDEX, WK_SQ_INDEX, BK_SQ_INDEX, EN_PAS_INDEX, NORTH, SOUTH, \
+    RANK2, RANK7, A1, A8, E1, E8, C1, C8, G1, G8, H1, H8, WHITE, BLACK, TURN_INDEX, D1, D8, F1, F8, WHITE_PIECES, \
+    BLACK_PIECES, OUT_OF_BOUND, PIECE_MOVES, NORTH_WEST, SOUTH_EAST, NORTH_EAST, SOUTH_WEST, white_pieces, \
+    black_pieces, KNIGHT_MOVES, EMPTY, KING_MOVES
 from engine.move import move_at_state
 
 
