@@ -5,6 +5,7 @@ IZII is a Python Chess Engine
 Decisions are made using the minimax search algorithm with alpha-beta pruning to optimize search time. The engine is compatible with xboard or any other GUI using xboard/winboard protocol.
 
 ![chess gif](/images/chess.gif)
+![chess tree](/images/chess_tree.jpeg)
 ## Execution
 To run IZII, download all files to your local system. You also must have [xboard](https://www.gnu.org/software/xboard/) or any other GUI with xboard protocol compatibility.
 * For OSX users, brew supposrts xboard so simply 'brew install xboard'
