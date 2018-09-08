@@ -57,10 +57,10 @@ BKC_INDEX = 2
 BQC_INDEX = 3
 
 # Castle States
-CASTLE_NEW = 0
-CASTLE_OPEN = 1
-CASTLED = 2
-CASTLE_VOIDED = 3
+CASTLE_NEW = '0'
+CASTLE_OPEN = '1'
+CASTLED = '2'
+CASTLE_VOIDED = '3'
 
 black_pieces = "pnbrq"
 white_pieces = "PNBRQ"  # excludes king
@@ -119,4 +119,4 @@ B_ROOK = 'r'
 B_QUEEN = 'q'
 B_PAWN = 'p'
 
-init_state = [init_board, 0, -1, 0, 1, [0, 0, 0, 0], init_board.index('K'), init_board.index('k')]
+init_state = [init_board, 0, -1, 0, 1, '0000', init_board.index('K'), init_board.index('k')]
