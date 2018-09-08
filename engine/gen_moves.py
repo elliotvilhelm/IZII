@@ -11,30 +11,26 @@ def get_all_moves_at_state(state):
 
 
 def get_legal_moves(state, pseudo_moves):
-    # take move
-    # check if in check
-    # valid/invalid move
-    # undo move
     legal_moves = []
     in_check = False
     turn = state[TURN_INDEX]
-    for i in range(len(pseudo_moves)):
-        from_sq = pseudo_moves[i][0]
-        to_sq = pseudo_moves[i][1]
+    for move in pseudo_moves:
+        from_sq = move[0]
+        to_sq = move[1]
         # WK Castle
-        if pseudo_moves[i] == [E1, G1]:
+        if move == [E1, G1]:
             move_at_state(state, (E1, G1))  # move king
             s2 = move_at_state(state, (H1, F1))  # move castle
         # WQ Castle
-        elif pseudo_moves[i] == [E1, C1]:
+        elif move == [E1, C1]:
             move_at_state(state, (E1, C1))  # move king
             s2 = move_at_state(state, (A1, D1))  # move castle
         # BK Castle
-        elif pseudo_moves[i] == [E8, G8]:
+        elif move == [E8, G8]:
             move_at_state(state, (E8, G8))  # move king
             s2 = move_at_state(state, (H8, F8))  # move castle
         # BQ Castle
-        elif pseudo_moves[i] == [E8, C8]:
+        elif move == [E8, C8]:
             move_at_state(state, (E8, C8))  # move king
             s2 = move_at_state(state, (A8, D8))  # move castle
         # Non Castle Move
@@ -47,7 +43,7 @@ def get_legal_moves(state, pseudo_moves):
         elif turn == BLACK:
             in_check = black_in_check(s2[BOARD_INDEX], s2[BK_SQ_INDEX])
         if in_check is False:
-            legal_moves.append(pseudo_moves[i])
+            legal_moves.append(move)
     return legal_moves
 
 
@@ -113,8 +109,6 @@ def get_white_pawn_moves2(board, en_passant_square, tile_n):
     return result
 
 
-
-
 """
 | | _(_)_ __   __ _ ___
 | |/ | | '_ \ / _` / __|
@@ -146,17 +140,17 @@ def get_king_moves(board, tile_n, color):
 
 def get_white_knight_moves2(board, tile_n):
     result = []
-    for i in range(len(KNIGHT_MOVES)):
-        if board[tile_n + KNIGHT_MOVES[i]] == 'o' or board[tile_n + KNIGHT_MOVES[i]] in black_pieces:
-            result.append([tile_n, tile_n + KNIGHT_MOVES[i]])
+    for move in KNIGHT_MOVES:
+        if board[tile_n + move] == 'o' or board[tile_n + move] in black_pieces:
+            result.append([tile_n, tile_n + move])
     return result
 
 
 def get_black_knight_moves2(board, tile_n):
     result = []
-    for i in range(len(KNIGHT_MOVES)):
-        if board[tile_n + KNIGHT_MOVES[i]] == 'o' or board[tile_n + KNIGHT_MOVES[i]] in white_pieces:
-            result.append([tile_n, tile_n + KNIGHT_MOVES[i]])
+    for move in KNIGHT_MOVES:
+        if board[tile_n + move] == 'o' or board[tile_n + move] in white_pieces:
+            result.append([tile_n, tile_n + move])
     return result
 
 def swap_turn(turn):
@@ -196,38 +190,31 @@ def gen_pseudo_moves(state):
                 sq_slider_index = sq_index
                 while True:
                     sq_slider_index += offset
-
+                    # Hit border
+                    if b[sq_slider_index] == OUT_OF_BOUND:
+                        break
                     # Hit myself
-                    if turn is WHITE and b[sq_slider_index] in WHITE_PIECES or b[sq_slider_index] == 'k':
+                    elif turn is WHITE and b[sq_slider_index] in WHITE_PIECES or b[sq_slider_index] == 'k':
                         break
                     elif turn is BLACK and b[sq_slider_index] in BLACK_PIECES or b[sq_slider_index] == 'K':
                         break
                     elif b[sq_slider_index] is OUT_OF_BOUND:
                         break
-
                     moves.append([sq_index, sq_slider_index])
-
-                    # Attack!
+                    # Attack, break because we are done searching!
                     if turn is WHITE and b[sq_slider_index] in BLACK_PIECES:
                         break
                     elif turn is BLACK and b[sq_slider_index] in WHITE_PIECES:
                         break
-
-
-
     # Castling
     if state[TURN_INDEX] == WHITE:
-        # castle_move = {WKC_INDEX: [E1, G1], WQC_INDEX: [E1, C1], BKC_INDEX: [E8, G8], BQC_INDEX: [E8, C8]}
-        # if can_castle(state, WKC_INDEX):
-        #     state[C_PERM_INDEX][WKC_INDEX] = 1
-        #     moves.append([E1, G1])
         if check_wc_k(state):  # if im not in check and i have not fucked up my castle perm add the move
             state[C_PERM_INDEX][WKC_INDEX] = 1
             moves.append([E1, G1])
         if check_wc_q(state):
             state[C_PERM_INDEX][WQC_INDEX] = 1
             moves.append([E1, C1])
-    if state[TURN_INDEX] == BLACK:
+    elif state[TURN_INDEX] == BLACK:
         if check_bc_k(state):
             state[C_PERM_INDEX][BKC_INDEX] = 1
             moves.append([E8, G8])

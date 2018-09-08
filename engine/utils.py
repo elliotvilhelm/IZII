@@ -2,6 +2,9 @@
 ranks = "87654321"
 
 
+def update(board, pos, piece):
+    return board[:pos] + piece + board[pos+1:]
+
 def int_sq120_sq64():
     sq120 = []
     for i in range(120):
@@ -31,7 +34,7 @@ def sq64_to_sq120(sq):
 
 
 def copy_state(state):
-    board = list(state[0])
+    board = state[0]
     turn = state[1]
     en_pass_sq = state[2]
     half_move = state[3]
