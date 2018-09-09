@@ -5,7 +5,7 @@ from engine.gen_moves import get_all_moves_at_state
 from engine.move import move_at_state
 from engine.constants import TURN_INDEX, WHITE, BOARD_INDEX, WK_SQ_INDEX, BK_SQ_INDEX
 
-# Algorithm
+
 def best_move(state, depth=2, randomness=True):
     moves = get_all_moves_at_state(state)
     if len(moves) == 0:

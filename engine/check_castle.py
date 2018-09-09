@@ -1,5 +1,6 @@
 from engine.check_detection import white_in_check, black_in_check
-from engine.constants import CASTLED, CASTLE_VOIDED, BOARD_INDEX, C_PERM_INDEX, WQC_INDEX, WKC_INDEX, BKC_INDEX, BQC_INDEX
+from engine.constants import CASTLED, CASTLE_VOIDED, BOARD_INDEX, C_PERM_INDEX, WQC_INDEX, WKC_INDEX, BKC_INDEX, \
+    BQC_INDEX
 
 
 def can_castle(state, castle_index):
