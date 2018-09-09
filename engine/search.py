@@ -5,12 +5,12 @@ from engine.gen_moves import get_all_moves_at_state
 from engine.move import move_at_state
 from engine.constants import TURN_INDEX, WHITE, BOARD_INDEX, WK_SQ_INDEX, BK_SQ_INDEX
 
-
 # Algorithm
 def best_move(state, depth=2, randomness=True):
     moves = get_all_moves_at_state(state)
     if len(moves) == 0:
         return None
+
     if state[1] == 0:
         current_score = -9999.0
     else:
@@ -36,6 +36,7 @@ def best_move(state, depth=2, randomness=True):
                 if randomness and random.randint(1, 5) == 3:
                     move_n = i
                     current_score = score
+
     return moves[move_n]
 
 
@@ -45,7 +46,7 @@ def minimax(depth, state, alpha, beta):
         return b_val
     legal_moves = get_all_moves_at_state(state)
 
-    if state[TURN_INDEX] == WHITE:
+    if state[TURN_INDEX] == 0:
         best_value = -999
         history = []
         if len(legal_moves) == 0:
@@ -63,7 +64,7 @@ def minimax(depth, state, alpha, beta):
             if beta <= alpha:  # prune
                 break
         return best_value
-    else:  # Blacks turn
+    else:
         history = []
         best_value = 999
         if len(legal_moves) == 0:
