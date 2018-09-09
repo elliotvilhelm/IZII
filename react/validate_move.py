@@ -1,5 +1,5 @@
 from engine.move import move_at_state
-from engine.react_chess_to_IZII_state import react_chess_board_to_IZII_board
+from react.react_chess_to_IZII_state import react_chess_board_to_IZII_board
 from engine.search import best_move
 from engine.utils import print_board
 from engine.utils import int_sq120_sq64, sq64_to_RF, RF_sq64, sq64_to_sq120
