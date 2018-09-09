@@ -1,9 +1,9 @@
-from move import move_at_state
-from react_chess_to_IZII_state import react_chess_board_to_IZII_board
-from search import best_move
-from utils import print_board
-from utils import int_sq120_sq64, sq64_to_RF, RF_sq64, sq64_to_sq120
-from gen_moves import get_all_moves_at_state
+from engine.move import move_at_state
+from engine.react_chess_to_IZII_state import react_chess_board_to_IZII_board
+from engine.search import best_move
+from engine.utils import print_board
+from engine.utils import int_sq120_sq64, sq64_to_RF, RF_sq64, sq64_to_sq120
+from engine.gen_moves import get_all_moves_at_state
 import sys
 
 
@@ -12,10 +12,9 @@ try:
     # init_state = [init_board, 0, -1, 0, 1, [0, 0, 0, 0], init_board.index('K'), init_board.index('k')]
     if sys.argv[1] == 'undefined':
         print("undefined args")
-        exit()
+        exit(1)
 
-    state = [0,0,0,0,0,0, 0, 0]
-
+    state = [0, 0, 0, 0, 0, 0, 0, 0]
     state[0] = react_chess_board_to_IZII_board(sys.argv[1])
     state[1] = int(sys.argv[2])
     state[2] = int(sys.argv[3])

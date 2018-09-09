@@ -44,8 +44,49 @@ def test_wk_castle_voided():
             "xRNBQKBNRx" \
             "xxxxxxxxxx" \
             "xxxxxxxxxx"
-    state = init_state
+    state = list(init_state)
     state[0] = board
     move = [RF_sq120('H', '1'), RF_sq120('H', '2')]
     state = move_at_state(state, move)
+    assert state[C_PERM_INDEX][WKC_INDEX] == CASTLE_VOIDED
+
+
+def test_wq_castle_voided():
+    board = "xxxxxxxxxx" \
+            "xxxxxxxxxx" \
+            "xrnbqkbnrx" \
+            "xpoppppppx" \
+            "xopoooooox" \
+            "xoooooooox" \
+            "xoooooooox" \
+            "xPooooooox" \
+            "xoPPPPPPPx" \
+            "xRNBQKBNRx" \
+            "xxxxxxxxxx" \
+            "xxxxxxxxxx"
+    state = init_state
+    state[0] = board
+    move = [RF_sq120('A', '1'), RF_sq120('A', '2')]
+    state = move_at_state(state, move)
+    assert state[C_PERM_INDEX][WQC_INDEX] == CASTLE_VOIDED
+
+
+def test_white_castle_voided():
+    board = "xxxxxxxxxx" \
+            "xxxxxxxxxx" \
+            "xrnbqkbnrx" \
+            "xpoppppppx" \
+            "xopoooooox" \
+            "xoooooooox" \
+            "xoooooooox" \
+            "xooooPooox" \
+            "xPPPPoPPPx" \
+            "xRNBQKBNRx" \
+            "xxxxxxxxxx" \
+            "xxxxxxxxxx"
+    state = list(init_state)
+    state[0] = board
+    move = [RF_sq120('E', '1'), RF_sq120('E', '2')]
+    state = move_at_state(state, move)
+    assert state[C_PERM_INDEX][WQC_INDEX] == CASTLE_VOIDED
     assert state[C_PERM_INDEX][WKC_INDEX] == CASTLE_VOIDED
