@@ -13,6 +13,19 @@ init_board = "xxxxxxxxxx" \
              "xRNBQKBNRx" \
              "xxxxxxxxxx" \
              "xxxxxxxxxx"
+
+# init_board = "xxxxxxxxxx" \
+#              "xxxxxxxxxx" \
+#              "xooookooox" \
+#              "xoooooooox" \
+#              "xoRoooooox" \
+#              "xooQooooox" \
+#              "xoooooooox" \
+#              "xoooooooox" \
+#              "xoooooooox" \
+#              "xooooKooox" \
+#              "xxxxxxxxxx" \
+#              "xxxxxxxxxx"
 # init_board = list(init_board)
 
 sq120 = int_sq120_sq64()

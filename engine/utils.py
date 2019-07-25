@@ -1,4 +1,3 @@
-# having some import errors ..
 ranks = "87654321"
 
 
@@ -6,7 +5,6 @@ def swap_turn(turn):
     if turn is 0:
         return 1
     return 0
-
 
 def update(board, pos, piece):
     return board[:pos] + piece + board[pos+1:]
@@ -23,21 +21,12 @@ def int_sq120_sq64():
             skip += 2
     return sq120
 
-# def sq120_sq64(sq):
-#     return sq120[sq]
-
-
 def sq64_to_sq120(sq):
     extra = 0
     for i in range(1, sq):
         if i % 8 == 0:
             extra += 2
     return sq + 20 + extra
-
-
-# def print_move(move):
-#     print(sq64_to_RF(sq120[(move[0])), sq64_to_RF(sq120_sq64(move[1])))
-
 
 def copy_state(state):
     board = state[0]
@@ -162,9 +151,7 @@ def set_state_from_fen(fen):
         if counter % 8:
             board += 'x' * 2
 
-            # board[counter - 8
     board += 'x' * 20
-
     state = [board]
     try:
         index = fen.index("w")
@@ -178,7 +165,7 @@ def set_state_from_fen(fen):
     state.append(-1)
     state.append(0)
     state.append(0)
-    state.append([0, 0, 0, 0])
+    state.append('0000')  # should fix this to account for castle state from FEN
     state.append(board.index('K'))
     state.append(board.index('k'))
     return state
@@ -198,3 +185,9 @@ def get_board(board):
             k += 1
     board_str += ' A B C D E F G H\n'
     return board_str
+
+def in_range(tile_n):
+    from engine.constants import A8, H1
+    if tile_n < A8 or tile_n > H1:
+        return False
+    return True

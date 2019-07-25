@@ -33,9 +33,9 @@ def run_xboard():
             continue
         # Prep and log input
         cmd = line.strip()  # remove whitespace
-        # logging.debug(">> " + cmd)
+        logging.debug("CMD >> " + cmd)
         if cmd == 'xboard':
-            reply("tellics say     IZZI")
+            reply("tellics say     IZII")
             reply("tellics say     (c) Elliot Vilhelm Pourmand, All rights reserved.")
         elif cmd == 'new':
             state = init_state
@@ -73,16 +73,15 @@ def run_xboard():
             n = cmd.split(' ')[-1]
             reply('pong ' + n)
         elif cmd == 'white':
-            # my_team = WHITE
             reply('#Changed to  white')
         elif cmd == 'black':
-            # my_team = BLACK
             reply('#Changed to black')
         elif cmd == 'quit':
             return
-        elif cmd.startswith('set board'):
+        elif cmd.startswith('setboard'):
             fen = cmd[9:].strip()
             state = set_state_from_fen(fen)
+            logging.debug("state set: " + state[0])
             print("turn: ", state[1])
         elif cmd == 'undo':
             if len(history) > 0:
@@ -101,8 +100,6 @@ def run_xboard():
                 tosq120 = sq64_to_sq120(RF_sq64(tosq[0], tosq[1]))
                 history.append(state)
                 state = move_at_state(state, [fromsq120, tosq120])
-
-
 
                 if not force_mode:
                     # logging.debug(state[5])
@@ -128,5 +125,5 @@ if __name__ == '__main__':
     import random
     import string
 
-    logging.basicConfig(filename='test.log' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=3)), level=logging.DEBUG)
+    logging.basicConfig(filename='log.' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=3)), level=logging.DEBUG)
     run_xboard()

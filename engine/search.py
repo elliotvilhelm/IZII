@@ -54,9 +54,10 @@ def minimax(depth, state, alpha, beta):
                 return -9999
             else:
                 return 9999
-        for i in range(len(legal_moves)):
+
+        for move in legal_moves:
             history.append(state)
-            state = move_at_state(state, legal_moves[i])
+            state = move_at_state(state, move)
             value = minimax(depth - 1, state, alpha, beta)
             state = history.pop()
             best_value = max(best_value, value)
@@ -72,9 +73,9 @@ def minimax(depth, state, alpha, beta):
                 return 9999
             else:
                 return -999
-        for i in range(len(legal_moves)):
+        for move in legal_moves:
             history.append(state)
-            state = move_at_state(state, legal_moves[i])
+            state = move_at_state(state, move)
             value = minimax(depth - 1, state, alpha, beta)
             state = history.pop()
             best_value = min(best_value, value)

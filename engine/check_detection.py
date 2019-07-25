@@ -1,4 +1,5 @@
 from engine.constants import *
+from engine.utils import in_range
 
 
 def white_in_check(board, tile_n):
@@ -58,14 +59,14 @@ def check_white_king(board, tile_n):
 
 def check_black_knights(board, tile_n):
     for direction in KNIGHT_MOVES:
-        if board[tile_n + direction] == 'n':
+        if in_range(tile_n + direction) and board[tile_n + direction] == 'n':
             return True
     return False
 
 
 def check_white_knights(board, tile_n):
     for direction in KNIGHT_MOVES:
-        if board[tile_n + direction] == 'N':
+        if in_range(tile_n + direction) and board[tile_n + direction] == 'N':
             return True
     return False
 
