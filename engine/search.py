@@ -14,7 +14,7 @@ def best_move(state, depth=2, randomness=True):
     if n_moves == 0:
         return None
 
-    if n_moves < 40:  # search one layer deeper for end game
+    if n_moves < 10:  # search one layer deeper for end game
         depth += 1
 
     if state[1] == 0:
