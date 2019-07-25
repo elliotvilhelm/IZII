@@ -8,8 +8,12 @@ from engine.constants import TURN_INDEX, WHITE, BOARD_INDEX, WK_SQ_INDEX, BK_SQ_
 
 def best_move(state, depth=2, randomness=True):
     moves = get_all_moves_at_state(state)
-    if len(moves) == 0:
+    n_moves = len(moves)
+    if n_moves == 0:
         return None
+
+    if n_moves < 40:  # search one layer deeper for end game
+        depth += 1
 
     if state[1] == 0:
         current_score = -9999.0
@@ -17,7 +21,7 @@ def best_move(state, depth=2, randomness=True):
         current_score = 9999.0
     move_n = -1
     turn = state[1]
-    for i in range(len(moves)):
+    for i in range(n_moves):
         new_state = move_at_state(state, moves[i])
         score = minimax(depth, new_state, -999, 999)
         if turn == 0:
