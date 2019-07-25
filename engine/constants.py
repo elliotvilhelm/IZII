@@ -1,6 +1,5 @@
 from engine.utils import int_sq120_sq64
 
-board_hash = {}
 init_board = "xxxxxxxxxx" \
              "xxxxxxxxxx" \
              "xrnbqkbnrx" \

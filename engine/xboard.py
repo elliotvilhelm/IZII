@@ -8,7 +8,6 @@ from engine.utils import set_state_from_fen
 
 
 def reply(command):
-    # logging.debug('<<' + command)
     sys.stdout.write(command + '\n')
     sys.stdout.flush()
 
@@ -82,7 +81,6 @@ def run_xboard():
             fen = cmd[9:].strip()
             state = set_state_from_fen(fen)
             logging.debug("state set: " + state[0])
-            print("turn: ", state[1])
         elif cmd == 'undo':
             if len(history) > 0:
                 state = history.pop()
@@ -99,13 +97,10 @@ def run_xboard():
                 fromsq120 = sq64_to_sq120(RF_sq64(fromsq[0], fromsq[1]))
                 tosq120 = sq64_to_sq120(RF_sq64(tosq[0], tosq[1]))
                 history.append(state)
-                state = move_at_state(state, [fromsq120, tosq120])
+                state = move_at_state(state, [fromsq120, tosq120], True)
 
                 if not force_mode:
-                    # logging.debug(state[5])
-                    # logging.debug(state[2])
-                    move = best_move(state, 3)
-                    # logging.debug(move)
+                    move = best_move(state, 2)
                     if move is None:
                         return
                     fromsq = sq120[move[0]]

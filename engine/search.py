@@ -4,9 +4,11 @@ from engine.check_detection import white_in_check, black_in_check
 from engine.gen_moves import get_all_moves_at_state
 from engine.move import move_at_state
 from engine.constants import TURN_INDEX, WHITE, BOARD_INDEX, WK_SQ_INDEX, BK_SQ_INDEX
+from engine import board_hash
 
 
 def best_move(state, depth=2, randomness=True):
+    # print("hash: ", board_hash)
     moves = get_all_moves_at_state(state)
     n_moves = len(moves)
     if n_moves == 0:

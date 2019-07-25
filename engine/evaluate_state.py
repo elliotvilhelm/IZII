@@ -1,13 +1,15 @@
 from engine.positional_board_values import *
-from engine.constants import sq120, board_hash
+from engine.constants import sq120
+from engine import board_hash
 
 
 def evaluate_state(state):
     board = state[0]
-    board += str(state[1])
+    # hash_val = board + str(state[1])
     hash_val = board
     if hash_val in board_hash:
         return board_hash[hash_val]
+
     pos_values = {'K': 0.0, 'Q': 0.0, 'R': 0.0, 'N': 0.0,
                   'B': 0.0, 'P': 0.0, 'k': 0, 'q': 0.0,
                   'r': 0.0, 'n': 0.0, 'b': 0.0,
@@ -25,10 +27,8 @@ def evaluate_state(state):
             pos_values[board[i]] += POS_VALUE_TABLES[board[i]][safe_i]
             piece_counts[board[i]] += 1
 
-    # Piece counts
-    value = piece_value(piece_counts)
-    # Piece positional Values
-    value += positional_value(pos_values)
+    # Piece counts + Piece positional Values
+    value = piece_value(piece_counts) + positional_value(pos_values)
     board_hash[hash_val] = value
     return value
 

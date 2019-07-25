@@ -2,9 +2,10 @@ from engine.constants import BOARD_INDEX, C_PERM_INDEX, WK_SQ_INDEX, BK_SQ_INDEX
     RANK2, RANK7, WKC_INDEX, WQC_INDEX, BKC_INDEX, BQC_INDEX, CASTLE_VOIDED, CASTLED, A1, A8, E1, E8, C1, C8, G1, \
     G8, H1, H8, WHITE, BLACK, HALF_MOVE_INDEX, FULL_MOVE_INDEX, TURN_INDEX, B8, B1, D1, D8, F1, F8
 from engine.utils import update
+from engine import board_hash
+import logging
 
-
-def move_at_state(state, move):
+def move_at_state(state, move, live_move=False):
     board = state[BOARD_INDEX]
     castle_perm = state[C_PERM_INDEX]
     white_king_sq = state[WK_SQ_INDEX]
@@ -98,6 +99,11 @@ def move_at_state(state, move):
         castle_perm = update(castle_perm, BKC_INDEX, CASTLED)
         castle_perm = update(castle_perm, BQC_INDEX, CASTLED)
     else:
+        if live_move:
+            if board[to_tile_n] != 'o':
+                logging.debug('cleared board hash!!!')
+                print("cleared board hash", board[to_tile_n])
+                board_hash = {}
         board = update(board, to_tile_n, board[from_tile_n])
         board = update(board, from_tile_n, 'o')
     # Change Turns
