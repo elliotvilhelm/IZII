@@ -2,6 +2,8 @@ from engine.positional_board_values import *
 from engine.constants import sq120
 from engine import board_hash
 
+# State = {board, turn, en pass, half move, full move, castle perms, wk sq, bk sq]}
+# init_state = [init_board, 0, -1, 0, 1, [0, 0, 0, 0], init_board.index('K'), init_board.index('k')]
 
 def evaluate_state(state):
     board = state[0]

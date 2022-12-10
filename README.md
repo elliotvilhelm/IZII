@@ -25,6 +25,12 @@ IZII is packed with a script to run IZII on xboard
 
 You can press `ctrl-t` on your keyboard and IZII will begin to play itself
 
+## Test
+```
+pip3 install pytest
+pytest
+```
+
 ## Development
 I wrote IZII on my free time as a means to improve my python and because I love chess!
 To implement IZII I used a 120 square chess board as used by Cray-1, one of the first chess playing computers.
